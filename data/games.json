@@ -797,7 +797,9 @@
   "image": "assets/game-images/animales-vertebrados-2.png",
   "imageSource": "https://clic.xtec.cat/projects/avertebr/jclic.js/index.html",
   "title_en": "Vertebrate Animals",
-  "notes_en": "Interactive activity to practice natural sciences in the 2nd cycle of Primary."
+  "notes_en": "Interactive activity to practice natural sciences in the 2nd cycle of Primary.",
+  "title_ca": "Animals vertebrats",
+  "notes_ca": "Activitat interactiva per a practicar ciències naturals a Primària 2n cicle."
  },
  {
   "id": "animals-everywhere",
@@ -1780,7 +1782,9 @@
   "image": "assets/game-images/flores.png",
   "imageSource": "https://clic.xtec.cat/projects/flors/jclic.js/index.html",
   "title_en": "Flowers",
-  "notes_en": "Interactive activity to practice natural sciences in 2nd cycle of Primary."
+  "notes_en": "Interactive activity to practice natural sciences in 2nd cycle of Primary.",
+  "title_ca": "Flors",
+  "notes_ca": "Activitat interactiva per a practicar ciències naturals a Primària 2n cicle."
  },
  {
   "id": "formas-verbales",
@@ -2556,7 +2560,9 @@
   "image": "assets/game-images/los-disfraces.png",
   "imageSource": "https://clic.xtec.cat/projects/carnaval9/jclic.js/index.html",
   "title_en": "Costumes",
-  "notes_en": "Interactive activity to celebrate special days in Early Childhood Education, Lower Primary (grades 1-2), and Middle Primary (grades 3-4)."
+  "notes_en": "Interactive activity to celebrate special days in Early Childhood Education, Lower Primary (grades 1-2), and Middle Primary (grades 3-4).",
+  "title_ca": "Els disfresses",
+  "notes_ca": "Activitat interactiva per a practicar dies especials a Infantil, Primària 1r cicle, Primària 2n cicle."
  },
  {
   "id": "los-musicos-de-bremen",
@@ -2608,7 +2614,9 @@
   "image": "assets/game-images/los-oficios.png",
   "imageSource": "https://clic.xtec.cat/projects/oficis2/jclic.js/index.html",
   "title_en": "Jobs and Occupations",
-  "notes_en": "Interactive activity to practice social studies in 1st cycle of Primary, 2nd cycle of Primary."
+  "notes_en": "Interactive activity to practice social studies in 1st cycle of Primary, 2nd cycle of Primary.",
+  "title_ca": "Els oficis",
+  "notes_ca": "Activitat interactiva per a practicar ciències socials a Primària 1r cicle, Primària 2n cicle."
  },
  {
   "id": "los-tres-osos",
@@ -2964,7 +2972,9 @@
   ],
   "imageSource": "https://www.edu365.cat/flash/panellets/index.html",
   "title_en": "Panellets",
-  "notes_en": "Interactive activity to practice special days in Preschool, Primary 1st cycle, Primary 2nd cycle, Primary 3rd cycle."
+  "notes_en": "Interactive activity to practice special days in Preschool, Primary 1st cycle, Primary 2nd cycle, Primary 3rd cycle.",
+  "title_ca": "Panellets",
+  "notes_ca": "Activitat interactiva per a practicar dies especials a Infantil, Primària 1r cicle, Primària 2n cicle, Primària 3r cicle."
  },
  {
   "id": "partes-del-ordenador",
@@ -2996,7 +3006,9 @@
   "image": "assets/game-images/pasqua.png",
   "imageSource": "https://clic.xtec.cat/projects/pasqua2/jclic.js/index.html",
   "title_en": "Easter",
-  "notes_en": "Interactive activity to practice special days in Preschool."
+  "notes_en": "Interactive activity to practice special days in Preschool.",
+  "title_ca": "Pasqua",
+  "notes_ca": "Activitat interactiva per a practicar dies especials a Infantil."
  },
  {
   "id": "pedro-y-el-lobo",
@@ -3062,7 +3074,9 @@
   ],
   "imageSource": "https://edu365.cat/flash/poesia/menu_nad.htm",
   "title_en": "Christmas Poems",
-  "notes_en": "Interactive activity to practice special days in Preschool, Primary 1st cycle, Primary 2nd cycle, Primary 3rd cycle."
+  "notes_en": "Interactive activity to practice special days in Preschool, Primary 1st cycle, Primary 2nd cycle, Primary 3rd cycle.",
+  "title_ca": "Poemes de Nadal",
+  "notes_ca": "Activitat interactiva per a practicar dies especials a Infantil, Primària 1r cicle, Primària 2n cicle, Primària 3r cicle."
  },
  {
   "id": "poesia",
@@ -3264,7 +3278,9 @@
   "image": "assets/game-images/sant-jordi.png",
   "imageSource": "https://www.edu365.cat/interactius/sant-jordi-2025/index.html",
   "title_en": "Sant Jordi",
-  "notes_en": "Interactive activity to practice special days in Primary Education 2nd cycle, Primary Education 3rd cycle."
+  "notes_en": "Interactive activity to practice special days in Primary Education 2nd cycle, Primary Education 3rd cycle.",
+  "title_ca": "Sant Jordi",
+  "notes_ca": "Activitat interactiva per a practicar dies especials a Primària 2n cicle, Primària 3r cicle."
  },
  {
   "id": "scratch-catalogo",
@@ -3449,7 +3465,9 @@
   "image": "assets/game-images/sistema-solar-2.png",
   "imageSource": "https://www.edu365.cat/interactius/sistema_solar/index.html",
   "title_en": "Solar System",
-  "notes_en": "Interactive activity to practice social sciences in Primary Education 2nd cycle."
+  "notes_en": "Interactive activity to practice social sciences in Primary Education 2nd cycle.",
+  "title_ca": "Sistema Solar",
+  "notes_ca": "Activitat interactiva per a practicar ciències socials a Primària 2n cicle."
  },
  {
   "id": "skye-chace",
@@ -7442,7 +7460,9 @@
   "source": "jclic",
   "image": "./assets/game-images/jclic/anigranj.webp",
   "title_en": "Farm Animals",
-  "notes_en": ""
+  "notes_en": "",
+  "title_ca": "Els animals de la granja",
+  "notes_ca": ""
  },
  {
   "title": "Els animals marins",
@@ -7470,7 +7490,9 @@
   "source": "jclic",
   "image": "./assets/game-images/jclic/arbres.webp",
   "title_en": "The Trees at Our School",
-  "notes_en": ""
+  "notes_en": "",
+  "title_ca": "Els arbres de la nostra escola",
+  "notes_ca": ""
  },
  {
   "title": "Els colors",
@@ -7654,7 +7676,9 @@
   "source": "jclic",
   "image": "./assets/game-images/jclic/quadres2.webp",
   "title_en": "The Paintings at My School",
-  "notes_en": ""
+  "notes_en": "",
+  "title_ca": "Els quadres de la meva escola",
+  "notes_ca": ""
  },
  {
   "title": "Flors i plantes del Nadal",
@@ -8099,7 +8123,9 @@
   "source": "jclic",
   "image": "./assets/game-images/jclic/cargols3.webp",
   "title_en": "Parts of the Snail",
-  "notes_en": ""
+  "notes_en": "",
+  "title_ca": "Les parts del cargol",
+  "notes_ca": ""
  },
  {
   "title": "L'hivern (Gi)",
@@ -9104,7 +9130,9 @@
   "source": "jclic",
   "image": "./assets/game-images/jclic/tardor2.webp",
   "title_en": "Autumn fruits",
-  "notes_en": ""
+  "notes_en": "",
+  "title_ca": "Els fruits de la tardor",
+  "notes_ca": ""
  },
  {
   "title": "Els noms de la classe",
@@ -9118,7 +9146,9 @@
   "source": "jclic",
   "image": "./assets/game-images/jclic/nomsp3.webp",
   "title_en": "Class names",
-  "notes_en": ""
+  "notes_en": "",
+  "title_ca": "Els noms de la classe",
+  "notes_ca": ""
  },
  {
   "title": "Els ratolins",
@@ -11871,7 +11901,9 @@
   "source": "jclic",
   "image": "./assets/game-images/jclic/tardor6.webp",
   "title_en": "Autumn Fruits",
-  "notes_en": ""
+  "notes_en": "",
+  "title_ca": "Els fruits de la tardor",
+  "notes_ca": ""
  },
  {
   "title": "Els gegants de Terrrassa",
@@ -16582,7 +16614,9 @@
   "image": "assets/game-images/els-aliments-i-la-digestio.png",
   "imageSource": "https://jclic.edutictac.es/play.html?project=alidige4/alidige4.jclic.zip",
   "title_en": "Food and Digestion",
-  "notes_en": ""
+  "notes_en": "",
+  "title_ca": "Els aliments i la digestió",
+  "notes_ca": ""
  },
  {
   "title": "Els aliments i l'esport",
@@ -16611,7 +16645,9 @@
   "source": "jclic",
   "image": "./assets/game-images/jclic/merles.webp",
   "title_en": "The Little Creatures of the Merlés Stream",
-  "notes_en": ""
+  "notes_en": "",
+  "title_ca": "Els animalons de la riera de Merlés",
+  "notes_ca": ""
  },
  {
   "title": "Els animals invertebrats",
@@ -16698,7 +16734,9 @@
   "image": "assets/game-images/els-essers-vius-i-el-medi.png",
   "imageSource": "https://jclic.edutictac.es/play.html?project=sermedi4/sermedi4.jclic.zip",
   "title_en": "Living Things and the Environment",
-  "notes_en": ""
+  "notes_en": "",
+  "title_ca": "Els éssers vius i el medi",
+  "notes_ca": ""
  },
  {
   "title": "Els invents i les màquines",
@@ -17184,7 +17222,9 @@
   "image": "assets/game-images/les-pistes-del-passat.png",
   "imageSource": "https://jclic.edutictac.es/play.html?project=pistes4/pistes4.jclic.zip",
   "title_en": "Tracks from the Past",
-  "notes_en": ""
+  "notes_en": "",
+  "title_ca": "Les pistes del passat",
+  "notes_ca": ""
  },
  {
   "title": "Les plantes 1",
@@ -17229,7 +17269,9 @@
   "image": "assets/game-images/les-runes-del-nostre-passat.png",
   "imageSource": "https://jclic.edutictac.es/play.html?project=restes4/restes4.jclic.zip",
   "title_en": "The Ruins of Our Past",
-  "notes_en": ""
+  "notes_en": "",
+  "title_ca": "Les runes del nostre passat",
+  "notes_ca": ""
  },
  {
   "title": "Les roques i els minerals",
@@ -18045,7 +18087,9 @@
   "source": "jclic",
   "image": "./assets/game-images/jclic/setmes.webp",
   "title_en": "The Days of the Week",
-  "notes_en": ""
+  "notes_en": "",
+  "title_ca": "Els dies de la setmana",
+  "notes_ca": ""
  },
  {
   "title": "Els números romans",
@@ -22174,7 +22218,9 @@
   "image": "assets/game-images/els-canvis-en-el-menjar-i-el-transport.png",
   "imageSource": "https://jclic.edutictac.es/play.html?project=canvi1_5/canvi1_5.jclic.zip",
   "title_en": "Changes in Food and Transport",
-  "notes_en": ""
+  "notes_en": "",
+  "title_ca": "Els canvis en el menjar i el transport",
+  "notes_ca": ""
  },
  {
   "title": "Els canvis en el treball i la comunicació",
@@ -22189,7 +22235,9 @@
   "image": "assets/game-images/els-canvis-en-el-treball-i-la-comunicacio.png",
   "imageSource": "https://jclic.edutictac.es/play.html?project=canvi2_5/canvi2_5.jclic.zip",
   "title_en": "Changes in Work and Communication",
-  "notes_en": ""
+  "notes_en": "",
+  "title_ca": "Els canvis en el treball i la comunicació",
+  "notes_ca": ""
  },
  {
   "title": "Els canvis en les cases i els vestits",
@@ -22670,7 +22718,9 @@
   "source": "jclic",
   "image": "./assets/game-images/jclic/ausdelta.webp",
   "title_en": "The Birds of the Ebro Delta",
-  "notes_en": ""
+  "notes_en": "",
+  "title_ca": "Les aus del Delta de l'Ebre",
+  "notes_ca": ""
  },
  {
   "title": "Les edats de la Història",

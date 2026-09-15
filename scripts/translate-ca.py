@@ -25,7 +25,7 @@ API_URL = "https://api.deepseek.com/chat/completions"
 SKIP_LANGS = {"Ingles", "Inglés", "Frances", "Francés", "Aranes"}
 
 CA_MARKERS = ['à', 'è', 'ï', 'ò', 'ç', 'l·l', 'ny', 'tx', 'tge', 'són',
-              'és ', 'també', 'amb ', 'per a ', 'els ', 'les ', 'activitats',
+              'és ', 'també', 'amb ', 'per a ', ' els ', ' les ', 'activitats',
               'educació', 'aprenentatge', 'jocs', 'música', 'pantalla', 'ratolí',
               'teclat', 'ordinador', 'dibuix', 'descarreg', 'xarxa', 'nivells',
               'mitjà', 'aula', 'dites', 'imatge', 'paraules']
