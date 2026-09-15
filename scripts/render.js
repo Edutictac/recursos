@@ -33,11 +33,17 @@ export function tag(text, extraClass = "") {
 }
 
 export function localizedTitle(game) {
-  return getLang() === "ca" || getLang() === "va" ? (game.title_ca || game.title) : game.title;
+  const lang = getLang();
+  if (lang === "ca" || lang === "va") return game.title_ca || game.title;
+  if (lang === "en") return game.title_en || game.title;
+  return game.title;
 }
 
 export function localizedNotes(game) {
-  return getLang() === "ca" || getLang() === "va" ? (game.notes_ca || game.notes) : game.notes;
+  const lang = getLang();
+  if (lang === "ca" || lang === "va") return game.notes_ca || game.notes;
+  if (lang === "en") return game.notes_en || game.notes;
+  return game.notes;
 }
 
 export function linkHealth(url) {
