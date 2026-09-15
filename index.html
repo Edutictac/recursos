@@ -98,7 +98,7 @@
   </header>
 
   <main class="container">
-    <section class="controls" aria-label="Filtros de juegos">
+    <section class="controls" aria-label="Filtros de juegos" data-i18n-aria-label="controls_aria">
       <div id="authPanel" class="auth-panel hidden" aria-live="polite">
         <div class="auth-actions">
           <a id="loginBtn" class="btn-auth secondary" href="/api/auth/login" data-i18n="login_btn">Entrar</a>
@@ -207,8 +207,8 @@
       <img src="./assets/brand/edutictac-logo.png" width="129" height="55" alt="edutictac.es" />
     </a>
     <p class="footer-meta">
-      <a href="https://edutictac.es/privacitat.html">Privacitat</a> ·
-      <a href="https://git.edutictac.es/Edutictac/recursos" target="_blank" rel="noopener">Codi font</a> ·
+      <a href="https://edutictac.es/privacitat.html" data-i18n="footer_privacy">Privacitat</a> ·
+      <a href="https://git.edutictac.es/Edutictac/recursos" target="_blank" rel="noopener" data-i18n="footer_source">Codi font</a> ·
       AGPL-3.0
     </p>
   </footer>
@@ -217,30 +217,30 @@
     <div class="flash-header">
       <span id="flashTitle" class="flash-title"></span>
       <div class="flash-actions">
-        <button id="flashFullscreen" class="flash-fullscreen" aria-label="Pantalla completa" title="Pantalla completa">⛶</button>
+        <button id="flashFullscreen" class="flash-fullscreen" aria-label="Pantalla completa" title="Pantalla completa" data-i18n-aria-label="fullscreen_label" data-i18n-title="fullscreen_label">⛶</button>
         <button id="flashClose" class="flash-close" data-i18n-aria-label="flash_close_label" aria-label="Cerrar">✕</button>
       </div>
     </div>
     <div id="flashContainer" class="flash-container"></div>
   </dialog>
 
-  <dialog id="jclicDialog" class="flash-dialog" aria-label="Reproductor JClic">
+  <dialog id="jclicDialog" class="flash-dialog" aria-label="Reproductor JClic" data-i18n-aria-label="jclic_player_label">
     <div class="flash-header">
       <span id="jclicTitle" class="flash-title"></span>
       <div class="flash-actions">
-        <button id="jclicFullscreen" class="flash-fullscreen" aria-label="Pantalla completa" title="Pantalla completa">⛶</button>
-        <button id="jclicClose" class="flash-close" aria-label="Cerrar">✕</button>
+        <button id="jclicFullscreen" class="flash-fullscreen" aria-label="Pantalla completa" title="Pantalla completa" data-i18n-aria-label="fullscreen_label" data-i18n-title="fullscreen_label">⛶</button>
+        <button id="jclicClose" class="flash-close" aria-label="Cerrar" data-i18n-aria-label="flash_close_label">✕</button>
       </div>
     </div>
     <div id="jclicContainer" class="flash-container"></div>
   </dialog>
 
-  <dialog id="iframeDialog" class="iframe-dialog" aria-label="Reproductor extern">
+  <dialog id="iframeDialog" class="iframe-dialog" aria-label="Reproductor extern" data-i18n-aria-label="iframe_player_label">
     <div class="flash-header">
       <span id="iframeTitle" class="flash-title"></span>
       <div class="flash-actions">
-        <button id="iframeFullscreen" class="flash-fullscreen" aria-label="Pantalla completa" title="Pantalla completa">⛶</button>
-        <button id="iframeClose" class="flash-close" aria-label="Cerrar">✕</button>
+        <button id="iframeFullscreen" class="flash-fullscreen" aria-label="Pantalla completa" title="Pantalla completa" data-i18n-aria-label="fullscreen_label" data-i18n-title="fullscreen_label">⛶</button>
+        <button id="iframeClose" class="flash-close" aria-label="Cerrar" data-i18n-aria-label="flash_close_label">✕</button>
       </div>
     </div>
     <div id="iframeContainer" class="iframe-container"></div>

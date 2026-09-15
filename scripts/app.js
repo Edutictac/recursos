@@ -292,6 +292,10 @@ function applyStaticTranslations() {
   document.querySelectorAll("[data-i18n-aria-label]").forEach((el) => {
     el.setAttribute("aria-label", i18n(el.dataset.i18nAriaLabel));
   });
+  document.querySelectorAll("[data-i18n-title]").forEach((el) => {
+    el.setAttribute("title", i18n(el.dataset.i18nTitle));
+  });
+  document.title = i18n("doc_title");
 }
 
 function updatePreferencesNote() {
