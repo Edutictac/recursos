@@ -33,11 +33,11 @@ export function tag(text, extraClass = "") {
 }
 
 export function localizedTitle(game) {
-  return getLang() === "ca" ? (game.title_ca || game.title) : game.title;
+  return getLang() === "ca" || getLang() === "va" ? (game.title_ca || game.title) : game.title;
 }
 
 export function localizedNotes(game) {
-  return getLang() === "ca" ? (game.notes_ca || game.notes) : game.notes;
+  return getLang() === "ca" || getLang() === "va" ? (game.notes_ca || game.notes) : game.notes;
 }
 
 export function linkHealth(url) {

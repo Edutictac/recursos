@@ -1,5 +1,5 @@
-const STORAGE_KEY = "bibliojocs-lang";
-export const LANGS = ["es", "ca"];
+const STORAGE_KEY = "recursos-lang";
+export const LANGS = ["es", "ca", "va", "en"];
 
 const strings = {
   es: {
@@ -7,13 +7,13 @@ const strings = {
     auth_title: "Cuenta",
     auth_loading: "Conectando cuenta...",
     auth_signin_google: "Entrar con Google",
-    auth_signout: "Cerrar sesion",
+    auth_signout: "Cerrar sesión",
     auth_status_local: "Modo local sin cuenta en la nube.",
     auth_status_anon: "Sesión anónima.",
     auth_status_admin: "Modo administrador.",
     auth_status_google: (name) => `Conectado como ${name}`,
-    auth_status_google_available: "Puedes iniciar sesion con Google para sincronizar en todos tus dispositivos.",
-    auth_status_google_disabled: "Google no esta activado en esta instalacion.",
+    auth_status_google_available: "Puedes iniciar sesión con Google para sincronizar en todos tus dispositivos.",
+    auth_status_google_disabled: "Google no está activado en esta instalación.",
     login_btn: "Entrar",
     logout_btn: "Salir",
     student_login_btn: "Alumnado",
@@ -27,7 +27,7 @@ const strings = {
     student_login_loading: "Validando credencial...",
     student_login_success: "Credencial validada.",
     student_login_error: "No se pudo validar la credencial.",
-    auth_error_google: "No se pudo iniciar sesion con Google.",
+    auth_error_google: "No se pudo iniciar sesión con Google.",
     search_label: "Buscar",
     search_placeholder: "Título, área o notas",
     level_label: "Etapa",
@@ -35,7 +35,7 @@ const strings = {
     language_label: "Idioma",
     language_all: "Todos",
     favorites_only: "Solo mis favoritos",
-    rating_min_label: "Valoracion minima",
+    rating_min_label: "Valoración mínima",
     rating_all_filter: "Todas las valoraciones",
     personal_prefs_note_local: "Favoritos y valoraciones se guardan solo en este navegador (localStorage).",
     personal_prefs_note_remote: "Favoritos y valoraciones guardadas en el servidor.",
@@ -50,8 +50,8 @@ const strings = {
     play_ruffle: "▶ Jugar con Ruffle",
     favorite_add: "Guardar en favoritos",
     favorite_remove: "Quitar de favoritos",
-    rating_group_label: "Valoracion de la actividad",
-    rating_label: "Valoracion:",
+    rating_group_label: "Valoración de la actividad",
+    rating_label: "Valoración:",
     rating_set: (n) => `Calificar con ${n} estrella${n === 1 ? "" : "s"}`,
     rating_no_votes: "Sin votos",
     rating_avg: (avg, n) => `Media ${avg} (${n} voto${n === 1 ? "" : "s"})`,
@@ -72,7 +72,7 @@ const strings = {
     submit_dialog_title: "Proponer una actividad",
     submit_field_title: "Nombre de la actividad",
     submit_field_url: "Enlace (URL)",
-    submit_field_notes: "Descripcion (opcional)",
+    submit_field_notes: "Descripción (opcional)",
     submit_field_name: "Tu nombre (opcional)",
     submit_send: "Enviar",
     submit_cancel: "Cancelar",
@@ -105,18 +105,18 @@ const strings = {
     auth_title: "Compte",
     auth_loading: "Connectant compte...",
     auth_signin_google: "Entrar amb Google",
-    auth_signout: "Tancar sessio",
-    auth_status_local: "Mode local sense compte en el nuvol.",
+    auth_signout: "Tancar la sessió",
+    auth_status_local: "Mode local sense compte en el núvol.",
     auth_status_anon: "Sessió anònima.",
     auth_status_admin: "Mode administrador.",
     auth_status_google: (name) => `Connectat com ${name}`,
-    auth_status_google_available: "Pots iniciar sessio amb Google per sincronitzar en tots els teus dispositius.",
-    auth_status_google_disabled: "Google no esta activat en esta instal.lacio.",
+    auth_status_google_available: "Pots iniciar sessió amb Google per sincronitzar en tots els teus dispositius.",
+    auth_status_google_disabled: "Google no està activat en aquesta instal·lació.",
     login_btn: "Entrar",
-    logout_btn: "Eixir",
+    logout_btn: "Sortir",
     student_login_btn: "Alumnat",
-    student_logout_default: "Eixir alumnat",
-    student_logout_btn: (code) => `Eixir ${code}`,
+    student_logout_default: "Sortir alumnat",
+    student_logout_btn: (code) => `Sortir ${code}`,
     student_dialog_title: "Entrar amb credencial d'alumnat",
     student_code_label: "Codi públic",
     student_pin_label: "PIN",
@@ -125,17 +125,17 @@ const strings = {
     student_login_loading: "Validant credencial...",
     student_login_success: "Credencial validada.",
     student_login_error: "No s'ha pogut validar la credencial.",
-    auth_error_google: "No s'ha pogut iniciar sessio amb Google.",
+    auth_error_google: "No s'ha pogut iniciar sessió amb Google.",
     search_label: "Cercar",
     search_placeholder: "Títol, àrea o notes",
     level_label: "Etapa",
     level_all: "Totes",
     language_label: "Idioma",
     language_all: "Tots",
-    favorites_only: "Sols els meus favorits",
-    rating_min_label: "Valoracio minima",
+    favorites_only: "Només els meus favorits",
+    rating_min_label: "Valoració mínima",
     rating_all_filter: "Totes les valoracions",
-    personal_prefs_note_local: "Favorits i valoracions es guarden nomes en este navegador (localStorage).",
+    personal_prefs_note_local: "Favorits i valoracions es guarden només en aquest navegador (localStorage).",
     personal_prefs_note_remote: "Favorits i valoracions desades al servidor.",
     area_label: "Matèria",
     area_all: "Totes",
@@ -147,9 +147,9 @@ const strings = {
     open_game: "Obrir joc",
     play_ruffle: "▶ Jugar amb Ruffle",
     favorite_add: "Guardar en favorits",
-    favorite_remove: "Traure de favorits",
-    rating_group_label: "Valoracio de l'activitat",
-    rating_label: "Valoracio:",
+    favorite_remove: "Treure de favorits",
+    rating_group_label: "Valoració de l'activitat",
+    rating_label: "Valoració:",
     rating_set: (n) => `Valorar amb ${n} estrella${n === 1 ? "" : "es"}`,
     rating_no_votes: "Sense vots",
     rating_avg: (avg, n) => `Mitjana ${avg} (${n} vot${n === 1 ? "" : "s"})`,
@@ -163,7 +163,7 @@ const strings = {
     load_more: (n) => `Carregar ${n} més`,
     flash_player_label: "Reproductor Flash",
     flash_close_label: "Tancar",
-    submissions_only: "Sols propostes",
+    submissions_only: "Només propostes",
     submission_badge: "Nova",
     submission_by: (name) => `Proposat per ${name}`,
     submit_btn: "Proposar activitat",
@@ -187,16 +187,127 @@ const strings = {
     batch_generate: "Generar",
     batch_print: "Imprimir",
     batch_loading: "Generant credencials...",
-    batch_success: "Credencials generades. Imprimeix o desa este lot ara.",
+    batch_success: "Credencials generades. Imprimeix o desa aquest lot ara.",
     batch_error: "No s'han pogut generar les credencials.",
     report_broken: "Reportar que no funciona",
     report_broken_active: "Ja ho has reportat",
     report_broken_feedback: "Gràcies, ho revisarem aviat.",
     admin_hide_resource: "Ocultar activitat",
-    admin_hide_confirm: "Vols ocultar esta activitat del llistat públic?",
+    admin_hide_confirm: "Vols ocultar aquesta activitat del llistat públic?",
     broken_only: "No funciona (admin)",
     reported_only: "Reportades (admin)",
     offline_banner: "Sense connexió — navegant en mode sense xarxa",
+  },
+  va: {
+    auth_signout: "Tancar sessió",
+    logout_btn: "Eixir",
+    student_logout_default: "Eixir alumnat",
+    student_logout_btn: (code) => `Eixir ${code}`,
+    auth_status_google_disabled: "Google no està activat en esta instal·lació.",
+    personal_prefs_note_local: "Favorits i valoracions es guarden només en este navegador (localStorage).",
+    favorites_only: "Sols els meus favorits",
+    submissions_only: "Sols propostes",
+    admin_hide_confirm: "Vols ocultar esta activitat del llistat públic?",
+    batch_success: "Credencials generades. Imprimeix o desa este lot ara.",
+    favorite_remove: "Traure de favorits",
+  },
+  en: {
+    subtitle: "Educational games selected for Preschool, Primary and Secondary, with quick filters to find the perfect activity at any time.",
+    auth_title: "Account",
+    auth_loading: "Connecting account...",
+    auth_signin_google: "Sign in with Google",
+    auth_signout: "Sign out",
+    auth_status_local: "Local mode without cloud account.",
+    auth_status_anon: "Anonymous session.",
+    auth_status_admin: "Administrator mode.",
+    auth_status_google: (name) => `Connected as ${name}`,
+    auth_status_google_available: "You can sign in with Google to sync across all your devices.",
+    auth_status_google_disabled: "Google is not enabled in this installation.",
+    login_btn: "Log in",
+    logout_btn: "Log out",
+    student_login_btn: "Students",
+    student_logout_default: "Log out student",
+    student_logout_btn: (code) => `Log out ${code}`,
+    student_dialog_title: "Log in with student credentials",
+    student_code_label: "Public code",
+    student_pin_label: "PIN",
+    student_send: "Log in",
+    student_login_missing: "Enter both code and PIN.",
+    student_login_loading: "Validating credentials...",
+    student_login_success: "Credentials validated.",
+    student_login_error: "Could not validate the credentials.",
+    auth_error_google: "Could not sign in with Google.",
+    search_label: "Search",
+    search_placeholder: "Title, area or notes",
+    level_label: "Stage",
+    level_all: "All",
+    language_label: "Language",
+    language_all: "All",
+    favorites_only: "My favorites only",
+    rating_min_label: "Minimum rating",
+    rating_all_filter: "All ratings",
+    personal_prefs_note_local: "Favorites and ratings are saved only in this browser (localStorage).",
+    personal_prefs_note_remote: "Favorites and ratings saved on the server.",
+    area_label: "Subject",
+    area_all: "All",
+    format_label: "Format",
+    format_all: "All",
+    section_title: "Games",
+    result_count: (n, total) => `${n} of ${total} games`,
+    empty: "No results with the current filters.",
+    open_game: "Open game",
+    play_ruffle: "▶ Play with Ruffle",
+    favorite_add: "Save to favorites",
+    favorite_remove: "Remove from favorites",
+    rating_group_label: "Activity rating",
+    rating_label: "Rating:",
+    rating_set: (n) => `Rate with ${n} star${n === 1 ? "" : "s"}`,
+    rating_no_votes: "No votes",
+    rating_avg: (avg, n) => `Average ${avg} (${n} vote${n === 1 ? "" : "s"})`,
+    no_title: "No title",
+    no_notes: "No notes.",
+    no_level: "No stage",
+    not_checked: "Not checked",
+    link_ok: (status) => `OK (${status})`,
+    link_warn: (reason) => `Warning: ${reason}`,
+    link_error: (reason) => `Issue: ${reason}`,
+    load_more: (n) => `Load ${n} more`,
+    flash_player_label: "Flash player",
+    flash_close_label: "Close",
+    submissions_only: "Proposals only",
+    submission_badge: "New",
+    submission_by: (name) => `Proposed by ${name}`,
+    submit_btn: "Propose activity",
+    submit_dialog_title: "Propose an activity",
+    submit_field_title: "Activity name",
+    submit_field_url: "Link (URL)",
+    submit_field_notes: "Description (optional)",
+    submit_field_name: "Your name (optional)",
+    submit_send: "Send",
+    submit_cancel: "Cancel",
+    submit_success: "Thanks! The activity has been sent.",
+    submit_error: "Could not send. Please try again.",
+    submit_loading: "Sending...",
+    teacher_dashboard_title: "Teacher dashboard",
+    teacher_dashboard_text: "Manage pseudonymous credentials so that students use their favorites and ratings without personal data.",
+    generate_students_btn: "Generate students",
+    sources_title: "Resource sources",
+    batch_dialog_title: "Generate students",
+    batch_count_label: "Number of credentials",
+    batch_pin_length_label: "PIN length",
+    batch_generate: "Generate",
+    batch_print: "Print",
+    batch_loading: "Generating credentials...",
+    batch_success: "Credentials generated. Print or save this batch now.",
+    batch_error: "Could not generate the credentials.",
+    report_broken: "Report as not working",
+    report_broken_active: "You already reported it",
+    report_broken_feedback: "Thanks, we'll review it soon.",
+    admin_hide_resource: "Hide activity",
+    admin_hide_confirm: "Hide this activity from the public list?",
+    broken_only: "Not working (admin)",
+    reported_only: "Reported (admin)",
+    offline_banner: "Offline — browsing without a connection",
   },
 };
 
@@ -248,6 +359,30 @@ const areaLabels = {
     "Educacion Fisica": "Educació Física",
     "Seguridad Digital": "Seguretat Digital",
     "Tecnología": "Tecnologia",
+  },
+  en: {
+    Artes: "Artistic Education",
+    "Ciencias Naturales": "Natural Sciences",
+    "Ciencias Sociales": "Social Sciences",
+    "Conocimiento del Medio": "Knowledge of the Environment",
+    "Dias especiales": "Special days",
+    "Diversas áreas": "Various areas",
+    "Educacion emocional": "Emotional education",
+    Frances: "French",
+    General: "General",
+    Juegos: "Games",
+    Informatica: "Computer Science and Digitalisation",
+    Ingles: "English",
+    Lectoescritura: "Reading and writing",
+    Lengua: "Language",
+    Logica: "Logic",
+    Manualitats: "Crafts",
+    Matematicas: "Mathematics",
+    Musica: "Music",
+    Religion: "Religion",
+    "Seguridad Digital": "Digital Safety",
+    "Educacion Fisica": "Physical Education",
+    "Tecnología": "Technology",
   },
 };
 
@@ -324,6 +459,42 @@ const languageLabels = {
     rmq: "Mirandès",
     arn: "Mapudungun",
   },
+  en: {
+    ca: "Catalan/Valencian",
+    es: "Spanish",
+    en: "English",
+    fr: "French",
+    oc: "Occitan (Aranese)",
+    de: "German",
+    it: "Italian",
+    pt: "Portuguese",
+    nl: "Dutch",
+    bg: "Bulgarian",
+    hr: "Croatian",
+    cs: "Czech",
+    da: "Danish",
+    et: "Estonian",
+    fi: "Finnish",
+    el: "Greek",
+    hu: "Hungarian",
+    ga: "Irish",
+    lv: "Latvian",
+    lt: "Lithuanian",
+    mt: "Maltese",
+    pl: "Polish",
+    ro: "Romanian",
+    sk: "Slovak",
+    sl: "Slovenian",
+    sv: "Swedish",
+    eu: "Basque",
+    gl: "Galician",
+    la: "Latin",
+    ar: "Arabic",
+    eo: "Esperanto",
+    zh: "Chinese",
+    rmq: "Mirandese",
+    arn: "Mapudungun",
+  },
 };
 
 const levelLabels = {
@@ -343,22 +514,48 @@ const levelLabels = {
     "Primaria 3er ciclo": "Primària 3r cicle",
     Secundaria: "Secundària",
   },
+  en: {
+    Infantil: "Preschool",
+    Primaria: "Primary",
+    "Primaria 1er ciclo": "Primary 1st cycle",
+    "Primaria 2o ciclo": "Primary 2nd cycle",
+    "Primaria 3er ciclo": "Primary 3rd cycle",
+    Secundaria: "Secondary",
+  },
 };
 
 let _lang = "es";
 
+function lookup(dicts, key) {
+  const chain = _lang === "va" ? ["va", "ca", "es"] : [_lang, "es"];
+  for (const l of chain) {
+    const dict = dicts[l];
+    if (dict && Object.prototype.hasOwnProperty.call(dict, key)) return dict[key];
+  }
+  return key;
+}
+
 export function detectLang() {
   const stored = localStorage.getItem(STORAGE_KEY);
   if (stored && LANGS.includes(stored)) return stored;
-  const browser = (navigator.language || "es").toLowerCase();
-  return browser.startsWith("ca") || browser.startsWith("va") ? "ca" : "es";
+  const candidates = navigator.languages && navigator.languages.length
+    ? navigator.languages
+    : [navigator.language || "es"];
+  for (const candidate of candidates) {
+    const tag = String(candidate || "").toLowerCase();
+    if (tag.includes("valencia")) return "va";
+    const primary = tag.split("-")[0];
+    if (primary === "ca") return "va";
+    if (LANGS.includes(primary)) return primary;
+  }
+  return "es";
 }
 
 export function setLang(lang) {
   if (!LANGS.includes(lang)) return;
   _lang = lang;
   localStorage.setItem(STORAGE_KEY, lang);
-  document.documentElement.lang = lang;
+  document.documentElement.lang = lang === "va" ? "ca" : lang;
 }
 
 export function getLang() {
@@ -366,18 +563,18 @@ export function getLang() {
 }
 
 export function i18n(key, ...args) {
-  const val = strings[_lang]?.[key] ?? strings.es[key];
-  return typeof val === "function" ? val(...args) : (val ?? key);
+  const val = lookup(strings, key);
+  return typeof val === "function" ? val(...args) : val;
 }
 
 export function areaLabel(area) {
-  return areaLabels[_lang]?.[area] ?? areaLabels.es[area] ?? area;
+  return lookup(areaLabels, area);
 }
 
 export function languageLabel(language) {
-  return languageLabels[_lang]?.[language] ?? languageLabels.es[language] ?? language;
+  return lookup(languageLabels, language);
 }
 
 export function levelLabel(level) {
-  return levelLabels[_lang]?.[level] ?? levelLabels.es[level] ?? level;
+  return lookup(levelLabels, level);
 }
