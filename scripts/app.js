@@ -93,6 +93,9 @@ initOfflineBanner(offlineBanner, i18n);
 state._onAuthChange = () => {
   updateAuthUi();
   updatePreferencesNote();
+  loadFederatedEduHoot().then(() => render()).catch((error) => {
+    console.warn("No se pudo actualizar EduHoot", error);
+  });
 };
 
 boot().catch((error) => {
@@ -114,6 +117,9 @@ async function boot() {
   wireEvents();
   readFiltersFromUrl({ searchInput, levelFilter, languageFilter, areaFilter, ratingFilter, favoritesOnly });
   render();
+  loadFederatedEduHoot()
+    .then(() => { hydrateFilterOptions(); render(); })
+    .catch((error) => console.warn("No se pudo cargar EduHoot", error));
 
   if (state.backendMode === "remote") {
     loadSubmissions()
@@ -135,9 +141,44 @@ async function boot() {
 
     hydrateFilterOptions();
     render();
+    return loadFederatedEduHoot();
+  }).then(() => {
+    hydrateFilterOptions();
+    render();
   }).catch((error) => {
     console.warn("Error en càrrega completa de dades", error);
   });
+}
+
+function federatedEduHootGame(resource) {
+  const url = resource.source_url || resource.play_url || "";
+  return {
+    title: resource.title || "",
+    title_ca: resource.title_ca || "",
+    title_en: resource.title_en || "",
+    notes: resource.description || "",
+    notes_ca: resource.description_ca || "",
+    area: resource.subject || "General",
+    language: Array.isArray(resource.language) ? resource.language : [],
+    levels: Array.isArray(resource.educational_level) && resource.educational_level.length
+      ? resource.educational_level
+      : (resource.educational_stage ? [resource.educational_stage] : []),
+    format: resource.format || "eduhoot",
+    url,
+    image: resource.thumbnail_url || "",
+    provider: resource.provider,
+    external_id: resource.external_id,
+    _isFederated: true,
+  };
+}
+
+async function loadFederatedEduHoot() {
+  const response = await fetch("/api/resources?provider=eduhoot&limit=200", { credentials: "same-origin" });
+  if (!response.ok) throw new Error(`EduHoot API: ${response.status}`);
+  const data = await response.json();
+  const federated = Array.isArray(data.items) ? data.items.map(federatedEduHootGame) : [];
+  state.games = state.games.filter((game) => !game._isFederated).concat(federated);
+  state.isPartialLoad = false;
 }
 
 async function fetchJson(url, optional = false) {
