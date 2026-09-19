@@ -11,7 +11,7 @@ import {
   initPreferenceBackend, loadSubmissions,
   toggleFavoritePreference, setRatingPreference, reportBroken,
   hideResource, isAdmin, submitActivity, loadSources, authMe,
-  studentLogin, studentLogout, generateStudentBatch,
+  studentLogin, studentLogout,
 } from "./api.js";
 
 const dataUrl = "./data/games.json";
@@ -40,8 +40,6 @@ const offlineBanner = document.querySelector("#offlineBanner");
 const personalPrefsNote = document.querySelector("#personalPrefsNote");
 const authPanel = document.querySelector("#authPanel");
 const loginBtn = document.querySelector("#loginBtn");
-const teacherPanel = document.querySelector("#teacherPanel");
-const generateStudentsBtn = document.querySelector("#generateStudentsBtn");
 const studentLoginBtn = document.querySelector("#studentLoginBtn");
 const studentLogoutBtn = document.querySelector("#studentLogoutBtn");
 const studentDialog = document.querySelector("#studentDialog");
@@ -65,15 +63,6 @@ const submitLanguageSelect = document.querySelector("#submitLanguage");
 const submitCancelBtn = document.querySelector("#submitCancelBtn");
 const submitFeedback = document.querySelector("#submitFeedback");
 const submitSendBtn = document.querySelector("#submitSendBtn");
-const batchDialog = document.querySelector("#batchDialog");
-const batchForm = document.querySelector("#batchForm");
-const batchCountInput = document.querySelector("#batchCount");
-const batchPinLengthSelect = document.querySelector("#batchPinLength");
-const batchCloseBtn = document.querySelector("#batchCloseBtn");
-const batchPrintBtn = document.querySelector("#batchPrintBtn");
-const batchFeedback = document.querySelector("#batchFeedback");
-const batchResult = document.querySelector("#batchResult");
-const batchGenerateBtn = document.querySelector("#batchGenerateBtn");
 
 const cardDeps = {
   onFavoriteToggle: toggleFavoritePreference,
@@ -313,7 +302,6 @@ async function updateLoginBtn() {
       ? i18n("student_logout_btn", me.student_code || "")
       : i18n("student_logout_default");
   }
-  if (teacherPanel) teacherPanel.classList.toggle("hidden", !me.logged_in);
 }
 
 function updateLangButtons() {
@@ -377,15 +365,6 @@ function wireEvents() {
     });
   }
   if (studentForm) studentForm.addEventListener("submit", handleStudentLogin);
-  if (generateStudentsBtn) generateStudentsBtn.addEventListener("click", openBatchDialog);
-  if (batchCloseBtn) batchCloseBtn.addEventListener("click", () => batchDialog?.close());
-  if (batchPrintBtn) batchPrintBtn.addEventListener("click", () => window.print());
-  if (batchDialog) {
-    batchDialog.addEventListener("click", (e) => {
-      if (e.target === batchDialog) batchDialog.close();
-    });
-  }
-  if (batchForm) batchForm.addEventListener("submit", handleBatchGenerate);
 
   document.querySelectorAll(".btn-lang").forEach((btn) => {
     btn.addEventListener("click", () => {
@@ -509,63 +488,3 @@ function showStudentFeedback(text, type) {
   studentFeedback.className = `submit-feedback${type ? ` ${type}` : ""}${text ? "" : " hidden"}`;
 }
 
-// --- Teacher student credentials ---
-
-function openBatchDialog() {
-  if (!batchDialog) return;
-  batchForm?.reset();
-  if (batchCountInput) batchCountInput.value = "25";
-  if (batchPinLengthSelect) batchPinLengthSelect.value = "4";
-  showBatchFeedback("", "");
-  if (batchResult) {
-    batchResult.innerHTML = "";
-    batchResult.classList.add("hidden");
-  }
-  if (batchPrintBtn) batchPrintBtn.classList.add("hidden");
-  batchDialog.showModal();
-  batchCountInput?.focus();
-}
-
-async function handleBatchGenerate(e) {
-  e.preventDefault();
-  const count = Math.max(1, Math.min(120, Number(batchCountInput?.value || 0)));
-  const pinLength = Number(batchPinLengthSelect?.value || 4) === 6 ? 6 : 4;
-  if (batchGenerateBtn) batchGenerateBtn.disabled = true;
-  showBatchFeedback(i18n("batch_loading"), "");
-  try {
-    const data = await generateStudentBatch({ count, pinLength });
-    renderBatchCredentials(Array.isArray(data.credentials) ? data.credentials : []);
-    showBatchFeedback(i18n("batch_success"), "ok");
-    if (batchPrintBtn) batchPrintBtn.classList.remove("hidden");
-  } catch (error) {
-    console.error("Error en generar credencials", error);
-    showBatchFeedback(i18n("batch_error"), "error");
-  } finally {
-    if (batchGenerateBtn) batchGenerateBtn.disabled = false;
-  }
-}
-
-function renderBatchCredentials(credentials) {
-  if (!batchResult) return;
-  batchResult.innerHTML = "";
-  batchResult.classList.toggle("hidden", credentials.length === 0);
-  const grid = document.createElement("div");
-  grid.className = "credential-grid";
-  credentials.forEach((credential) => {
-    const card = document.createElement("article");
-    card.className = "credential-card";
-    const code = document.createElement("strong");
-    code.textContent = credential.code || "";
-    const pin = document.createElement("span");
-    pin.textContent = credential.pin || "";
-    card.append(code, pin);
-    grid.append(card);
-  });
-  batchResult.append(grid);
-}
-
-function showBatchFeedback(text, type) {
-  if (!batchFeedback) return;
-  batchFeedback.textContent = text;
-  batchFeedback.className = `submit-feedback${type ? ` ${type}` : ""}${text ? "" : " hidden"}`;
-}
