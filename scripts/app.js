@@ -176,7 +176,12 @@ async function fetchJson(url, optional = false) {
     if (optional) return null;
     throw new Error(`Fallo al cargar ${url}: ${response.status}`);
   }
-  return response.json();
+  try {
+    return await response.json();
+  } catch (error) {
+    if (optional) return null;
+    throw error;
+  }
 }
 
 function allGames() {
