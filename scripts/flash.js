@@ -1,4 +1,5 @@
 const RUFFLE_SRC = "./assets/ruffle/ruffle.js";
+const REMOTE_FLASH_BASE = "https://recursos.edutictac.es/assets/flash/";
 
 const flashDialog = document.querySelector("#flashDialog");
 const flashClose = document.querySelector("#flashClose");
@@ -87,43 +88,49 @@ async function loadRuffle() {
 }
 
 async function resolveFlashUrl(url) {
-  const localCandidate = localFlashCandidate(url);
-  if (!localCandidate) {
+  const candidates = flashAssetCandidates(url);
+  if (!candidates) {
     return url;
   }
 
   try {
-    const response = await fetch(localCandidate, {
+    const response = await fetch(candidates.local, {
       method: "HEAD",
       cache: "no-store"
     });
     if (response.ok) {
-      return localCandidate;
+      return candidates.local;
     }
   } catch {
-    // Si no existe en local o falla la consulta, seguimos con URL remota.
+    // Si no existe en local o falla la consulta, seguimos con la URL remota.
   }
 
-  return url;
+  return candidates.remote;
 }
 
-function localFlashCandidate(url) {
-  try {
-    const parsed = new URL(url);
-    const path = parsed.pathname || "";
-    if (parsed.hostname !== "edutictac.es" || !path.startsWith("/inici/flash/") || !path.toLowerCase().endsWith(".swf")) {
-      return null;
-    }
-
-    const fileName = path.split("/").pop();
-    if (!fileName) {
-      return null;
-    }
-
-    return `./assets/flash/${fileName}`;
-  } catch {
+// Los .swf del catálogo se referencian siempre como "assets/flash/<ruta>"
+// (relativa o absoluta, con posibles subcarpetas y querystring, p. ej.
+// "assets/flash/cisco/RootMovie.swf?lesson=1"). No todas las instalaciones
+// de Commons llevan el archivo completo (algunos pesan hasta 100 MB y no
+// están en git), así que probamos primero en local y si no está caemos
+// al mismo fichero servido en recursos.edutictac.es.
+function flashAssetCandidates(url) {
+  const str = String(url || "");
+  const marker = "assets/flash/";
+  const idx = str.toLowerCase().indexOf(marker);
+  if (idx === -1) {
     return null;
   }
+
+  const rest = str.slice(idx + marker.length);
+  if (!rest) {
+    return null;
+  }
+
+  return {
+    local: `./assets/flash/${rest}`,
+    remote: `${REMOTE_FLASH_BASE}${rest}`
+  };
 }
 
 function createFlashError(url) {
