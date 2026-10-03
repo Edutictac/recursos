@@ -152,7 +152,7 @@ export function createFavoriteButton(gameKeyValue, isFavorite, { onToggle, onRen
   return button;
 }
 
-export function createReportButton(gameKeyValue, article, { onReport, onRender }) {
+export function createReportButton(gameKeyValue, article, { onReport, onRender, title }) {
   if (state.backendMode !== "remote") return null;
 
   const alreadyReported = state.userReports.has(gameKeyValue);
@@ -166,6 +166,8 @@ export function createReportButton(gameKeyValue, article, { onReport, onRender }
 
   if (!alreadyReported) {
     button.addEventListener("click", async () => {
+      const confirmKey = isAdmin() ? "report_broken_confirm_admin" : "report_broken_confirm";
+      if (!window.confirm(i18n(confirmKey, title || i18n("no_title")))) return;
       button.disabled = true;
       try {
         await onReport(gameKeyValue);
@@ -287,7 +289,7 @@ export function buildCard(game, cardDeps) {
 
   const cardHead = document.createElement("div");
   cardHead.className = "card-head";
-  const reportBtn = createReportButton(key, article, { onReport, onRender });
+  const reportBtn = createReportButton(key, article, { onReport, onRender, title: localizedTitle(game) });
   const hideBtn = createAdminHideButton(key, { onHide, onRender });
   const headButtons = [createFavoriteButton(key, isFavorite, { onToggle: onFavoriteToggle, onRender, favoritesOnlyEl })];
   if (reportBtn) headButtons.push(reportBtn);
