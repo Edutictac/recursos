@@ -102,13 +102,13 @@ export function createCardImageAction(game) {
     return trigger;
   }
 
-  if (game.format === "eduhoot") {
+  if (game.format === "eduhoot" || game.format === "llibres") {
     const trigger = document.createElement("button");
     trigger.type = "button";
     trigger.className = "card-image-link";
     trigger.title = i18n("open_game");
     trigger.setAttribute("aria-label", i18n("open_game"));
-    trigger.addEventListener("click", () => openIframeDialog(game.url, game.title));
+    trigger.addEventListener("click", () => openIframeDialog(game.url, game.title, game.format === "llibres"));
     trigger.appendChild(image);
     return trigger;
   }
@@ -300,7 +300,7 @@ export function buildCard(game, cardDeps) {
   const meta = document.createElement("div");
   meta.className = "meta";
   const gameLevels = game.levels || (game.level ? [game.level] : [i18n("no_level")]);
-  const FORMAT_TAGS = ["jclic", "h5p", "eduhoot", "scorm"];
+  const FORMAT_TAGS = ["jclic", "h5p", "eduhoot", "scorm", "llibres"];
   meta.append(
     ...(game._isSubmission ? [tag(i18n("submission_badge"), "submission")] : []),
     tag(areaLabel(game.area || "General")),

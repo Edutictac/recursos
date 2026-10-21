@@ -251,3 +251,13 @@ El workflow `.github/workflows/deploy.yml` fa el deploy automàticament en fer p
 ## Llicència
 
 Codi: GNU Affero General Public License v3.0 (AGPL-3.0). El catàleg d'activitats i els seus continguts pertanyen als autors respectius (p. ex. clic.xtec.cat).
+
+
+## Històries de Llibres
+
+El catàleg incorpora `GET /api/llibres/books` del mateix recursos-api i reutilitza
+el visor iframe per al format `llibres`, amb sandbox sense scripts. Comparteix
+publicació, portada i enllaç de lectura amb «Històries compartides» de Llibres.
+La consulta pública no necessita sessió. Les retirades es reflectixen en tornar a
+carregar el catàleg; el service worker no guarda les rutes `/api/llibres/`.
+No executa projectes `.elpx`: l'editable opcional només es descarrega des del lector.

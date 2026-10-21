@@ -14,7 +14,7 @@ if (iframeFullscreen) {
   iframeFullscreen.addEventListener("click", toggleIframeFullscreen);
 }
 
-export function openIframeDialog(url, title) {
+export function openIframeDialog(url, title, book = false) {
   if (!url) return;
 
   iframeTitle.textContent = title || "";
@@ -24,6 +24,7 @@ export function openIframeDialog(url, title) {
   const frame = document.createElement("iframe");
   frame.src = url;
   frame.title = title || "";
+  if (book) frame.setAttribute("sandbox", "allow-downloads");
   frame.setAttribute("allowfullscreen", "");
   iframeContainer.appendChild(frame);
   activeIframe = frame;

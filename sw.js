@@ -1,4 +1,4 @@
-const CACHE_NAME = "recursos-v1.19.2";
+const CACHE_NAME = "recursos-v1.19.3";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -63,6 +63,12 @@ self.addEventListener("fetch", (event) => {
 
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) {
+    return;
+  }
+
+  // Published books and withdrawals must never fall back to an old cached copy.
+  if (url.pathname.startsWith("/api/llibres/")) {
+    event.respondWith(fetch(request, {cache:"no-store"}));
     return;
   }
 

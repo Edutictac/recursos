@@ -82,7 +82,7 @@ initOfflineBanner(offlineBanner, i18n);
 state._onAuthChange = () => {
   updateAuthUi();
   updatePreferencesNote();
-  loadFederatedEduHoot().then(() => render()).catch((error) => {
+  loadFederatedResources().then(() => render()).catch((error) => {
     console.warn("No se pudo actualizar EduHoot", error);
   });
 };
@@ -106,7 +106,7 @@ async function boot() {
   wireEvents();
   readFiltersFromUrl({ searchInput, levelFilter, languageFilter, areaFilter, ratingFilter, favoritesOnly });
   render();
-  loadFederatedEduHoot()
+  loadFederatedResources()
     .then(() => { hydrateFilterOptions(); render(); })
     .catch((error) => console.warn("No se pudo cargar EduHoot", error));
 
@@ -130,7 +130,7 @@ async function boot() {
 
     hydrateFilterOptions();
     render();
-    return loadFederatedEduHoot();
+    return loadFederatedResources();
   }).then(() => {
     hydrateFilterOptions();
     render();
@@ -139,7 +139,7 @@ async function boot() {
   });
 }
 
-function federatedEduHootGame(resource) {
+function federatedGame(resource) {
   const url = resource.source_url || resource.play_url || "";
   return {
     title: resource.title || "",
@@ -161,13 +161,28 @@ function federatedEduHootGame(resource) {
   };
 }
 
-async function loadFederatedEduHoot() {
-  const response = await fetch("/api/resources?provider=eduhoot&limit=200", { credentials: "same-origin" });
-  if (!response.ok) throw new Error(`EduHoot API: ${response.status}`);
-  const data = await response.json();
-  const federated = Array.isArray(data.items) ? data.items.map(federatedEduHootGame) : [];
-  state.games = state.games.filter((game) => !game._isFederated).concat(federated);
-  state.isPartialLoad = false;
+async function loadFederatedResources() {
+  const results = await Promise.allSettled([
+    fetch("/api/resources?provider=eduhoot&limit=200", {credentials:"same-origin"}).then(async r => {
+      if (!r.ok) throw new Error("EduHoot unavailable");
+      return (await r.json()).items || [];
+    }),
+    (async () => {
+      const books=[];
+      for (let offset=0; offset<10000; offset+=80) {
+        const r=await fetch("/api/llibres/books?limit=80&offset="+offset,{cache:"no-store"});
+        if (!r.ok) throw new Error("Llibres unavailable");
+        const data=await r.json(); books.push(...data.items);
+        if (!data.more) break;
+      }
+      return books;
+    })(),
+  ]);
+  const resources=results.flatMap(r => r.status==="fulfilled" ? r.value : []);
+  const federated=resources.map(r => ({...federatedGame(r),
+    url:r.play_url || r.source_url || "", download_url:r.download_url || ""}));
+  state.games=state.games.filter(g => !g._isFederated && g.provider!=="edutictac-llibres" && g.source!=="edutictac-llibres").concat(federated);
+  state.isPartialLoad=false;
 }
 
 async function fetchJson(url, optional = false) {

@@ -1,4 +1,7 @@
 .git
+.env*
+*.key
+*.pem
 node_modules
 reports/auditoria-cataleg-*.md
 reports/language-audit.json
