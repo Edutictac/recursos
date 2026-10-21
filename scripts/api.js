@@ -167,6 +167,13 @@ export async function hideResource(gameKeyValue) {
   });
 }
 
+export async function unhideResource(gameKeyValue) {
+  if (state.backendMode !== "remote" || !isAdmin()) return;
+  const res = await api("/admin/resources/unhide", { method: "POST", body: { game_key: gameKeyValue } });
+  state.brokenSummary.set(gameKeyValue, { count: 0, adminReported: false });
+  return res;
+}
+
 export async function submitActivity({ title, url, notes, area, language, name }) {
   if (state.backendMode !== "remote") return;
   return api("/submissions", {

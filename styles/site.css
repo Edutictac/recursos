@@ -412,6 +412,24 @@ select:focus {
   outline-offset: 2px;
 }
 
+.admin-unhide-btn {
+  border-color: #9fc9b4;
+  background: #eef8f1;
+  color: #1c6b3c;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.admin-unhide-btn:hover {
+  background: #ddf0e4;
+  transform: translateY(-1px);
+}
+
+.admin-unhide-btn:focus-visible {
+  outline: 2px solid #3f9c69;
+  outline-offset: 2px;
+}
+
 .report-btn {
   border: 1px solid #d9c08a;
   background: #fdf8ee;

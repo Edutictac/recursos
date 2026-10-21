@@ -152,7 +152,7 @@ export function createFavoriteButton(gameKeyValue, isFavorite, { onToggle, onRen
   return button;
 }
 
-export function createReportButton(gameKeyValue, article, { onReport, onRender }) {
+export function createReportButton(gameKeyValue, article, { onReport, onRender, title }) {
   if (state.backendMode !== "remote") return null;
 
   const alreadyReported = state.userReports.has(gameKeyValue);
@@ -166,6 +166,8 @@ export function createReportButton(gameKeyValue, article, { onReport, onRender }
 
   if (!alreadyReported) {
     button.addEventListener("click", async () => {
+      const confirmKey = isAdmin() ? "report_broken_confirm_admin" : "report_broken_confirm";
+      if (!window.confirm(i18n(confirmKey, title || i18n("no_title")))) return;
       button.disabled = true;
       try {
         await onReport(gameKeyValue);
@@ -209,6 +211,32 @@ export function createAdminHideButton(gameKeyValue, { onHide, onRender }) {
       onRender();
     } catch (error) {
       console.error("No se pudo ocultar actividad", error);
+      button.disabled = false;
+    }
+  });
+
+  return button;
+}
+
+export function createAdminUnhideButton(gameKeyValue, { onUnhide, onRender }) {
+  if (state.backendMode !== "remote" || !isAdmin()) return null;
+  if (!state.brokenSummary.get(gameKeyValue)?.adminReported) return null;
+
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "admin-unhide-btn";
+  button.textContent = "↩";
+  button.title = i18n("admin_unhide_resource");
+  button.setAttribute("aria-label", button.title);
+
+  button.addEventListener("click", async () => {
+    if (!window.confirm(i18n("admin_unhide_confirm"))) return;
+    button.disabled = true;
+    try {
+      await onUnhide(gameKeyValue);
+      onRender();
+    } catch (error) {
+      console.error("No se pudo restaurar la actividad", error);
       button.disabled = false;
     }
   });
@@ -267,7 +295,7 @@ export function createRatingControl(gameKeyValue, selectedRating, ratingSummary,
 }
 
 export function buildCard(game, cardDeps) {
-  const { onFavoriteToggle, onRatingSet, onReport, onHide, onRender, favoritesOnlyEl } = cardDeps;
+  const { onFavoriteToggle, onRatingSet, onReport, onHide, onUnhide, onRender, favoritesOnlyEl } = cardDeps;
   const health = linkHealth(game.url);
   const key = gameKey(game);
   const isFavorite = state.favorites.has(key);
@@ -287,11 +315,13 @@ export function buildCard(game, cardDeps) {
 
   const cardHead = document.createElement("div");
   cardHead.className = "card-head";
-  const reportBtn = createReportButton(key, article, { onReport, onRender });
+  const reportBtn = createReportButton(key, article, { onReport, onRender, title: localizedTitle(game) });
   const hideBtn = createAdminHideButton(key, { onHide, onRender });
+  const unhideBtn = createAdminUnhideButton(key, { onUnhide, onRender });
   const headButtons = [createFavoriteButton(key, isFavorite, { onToggle: onFavoriteToggle, onRender, favoritesOnlyEl })];
   if (reportBtn) headButtons.push(reportBtn);
   if (hideBtn) headButtons.push(hideBtn);
+  if (unhideBtn) headButtons.push(unhideBtn);
   const actions = document.createElement("div");
   actions.className = "card-actions";
   actions.append(...headButtons);

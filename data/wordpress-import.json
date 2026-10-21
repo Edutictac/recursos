@@ -15,7 +15,7 @@
     "area": "Musica",
     "level": "Primaria 1er ciclo",
     "language": "Castellano",
-    "url": "https://sasogu.github.io/EduMusic/",
+    "url": "https://edumusic.edutictac.es/",
     "notes": "EduMúsic és una col·lecció de jocs interactius dissenyats per a l’aula de música, desenvolupada amb la idea de fer l’aprenentatge divertit i motivador. Està pensat tant per a mestres com per a alumnes, principalment de nivells inicials/intermedis, que volen consolidar conceptes com ara:",
     "source": "https://edutictac.es/blog/bibliojocs/edumusic/"
   },
@@ -145,7 +145,7 @@
     "area": "Musica",
     "level": "Primaria 1er ciclo",
     "language": "Castellano",
-    "url": "https://sasogu.github.io/EduSampler/",
+    "url": "https://edutictac.github.io/EduSampler/",
     "notes": "Bucles i sàmplers per a compondre música molt fàcilment.",
     "source": "https://edutictac.es/blog/bibliojocs/edusamplers/"
   },

@@ -10,7 +10,7 @@ import { clearSelect, fillSelect, updateSelectLabels, buildCard } from "./render
 import {
   initPreferenceBackend, loadSubmissions,
   toggleFavoritePreference, setRatingPreference, reportBroken,
-  hideResource, isAdmin, submitActivity, loadSources, authMe,
+  hideResource, isAdmin, submitActivity, loadSources, authMe, unhideResource,
   studentLogin, studentLogout,
 } from "./api.js";
 
@@ -69,6 +69,7 @@ const cardDeps = {
   onRatingSet: setRatingPreference,
   onReport: reportBroken,
   onHide: hideResource,
+  onUnhide: unhideResource,
   onRender: () => render(),
   favoritesOnlyEl: favoritesOnly,
 };
