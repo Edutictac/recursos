@@ -197,3 +197,37 @@ contractes simulats i dades sintètiques; no acrediten una sessió OIDC personal
 No es creen propostes, favorits o publicacions en comptes de la instal·lació.
 La comprovació instal·lada és anònima i de lectura. L’acceptació docent real
 continua sent un pas previ a producció.
+
+## Activació local i punt de parada
+
+Frontend activat en `http://100.74.151.108:8086/` amb la imatge local
+`registry.edutictac.es/edutictac/recursos:bank-vue-complete-candidate`.
+Versió anterior preservada com a `before-bank-vue-complete-20261022`.
+Per a recrear **només el frontend**, des del repositori de Commons:
+
+```sh
+RECURSOS_TAG=bank-vue-complete-candidate COMPOSE_PROFILES=authentik,recursos \
+  ./scripts/up-rebost-local.sh up -d --no-build --pull never --no-deps recursos
+```
+
+No reutilitzar este tag per a Recursos API. La configuració instal·lada i els
+volums de les API es conserven tal com recull Commons en
+`docs/LLIBRES_LOCAL_CONNECTION.md`.
+
+Comprovacions locals de lectura aprovades: bundle servit idèntic al compilat,
+catàleg i cerca, diàlegs d’alumnat i propostes, PIN buit i ocult, absència de
+controls administratius públics, lector amb sandbox i descàrrega del llibre
+existent amb bytes ELPX idèntics. Layout comprovat a 393, 820 i 1024 píxels,
+sense desbordament horitzontal en els dos extrems ni errors JavaScript. Són
+contextos de navegador, no una prova física d’iPad. Captures locals revisades.
+
+Només es recrea `recursos`: identificadors i hora d’arrancada de huit serveis
+complementaris comprovats sense canvis, incloses les API, Authentik, portal,
+Blocs i Llibres. Les dos API continuen saludables. No es canvien bases de dades,
+comptes o publicacions. La neteja final dels helpers antics passa sis regressions
+específiques addicionals i les tres proves del service worker.
+
+Migració Vue del banc completada en desenvolupament. Per instrucció de l’usuari,
+el treball es deté ací: no s’inicia Play, Administració ni Quiosc, i no es fa push
+ni desplegament al VPS. Abans de producció queda l’acceptació manual amb comptes
+autoritzats, indicada en la llista anterior.
