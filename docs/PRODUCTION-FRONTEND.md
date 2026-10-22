@@ -71,10 +71,40 @@ python -m pytest tests/test_frontend_upgrade.py -q
 
 Si cal retirar el frontend, conservar totes les dades actuals. Preparar una
 versió de retorn amb el shell anterior i un worker amb un nom de caché nou que
-mantinga les API privades en mode només xarxa; no recuperar el worker antic que
+mantinga les API privades en mode només xarxa i la precàrrega amb `cache: "reload"`;
+no recuperar el worker antic que
 guardava respostes d'identitat. Canviar l'enllaç cap a eixa versió i verificar la
 recàrrega. No restaurar SQLite ni snapshots de dades per un problema del frontend.
 
 Després de la verificació pública, retirar el vhost candidat i tancar el túnel.
 La fase següent és HTTPS de Llibres, activació de publicació i acceptació humana
 docent → alumnat → tutor → lectura pública.
+
+## Resultat en producció — 22-10-2026
+
+Publicat en `https://recursos.edutictac.es/`. L'enllaç actual apunta a
+`/var/www/recursos-releases/20261022-vue-llibres-cachefix`. El shell Vue inclou
+la consulta de Llibres i el lector sense execució de scripts, amb etiqueta i
+filtre propis. El catàleg existent i els directoris de mitjans es conserven.
+
+Validació: compilació correcta, 90 proves d'interfície, 4 de caché, 2 del paquet,
+2 de regressió de l'actualització i 7 sobre HTTPS públic. El candidat inicial
+també va passar 7 comprovacions abans del canvi d'arrel. L'assaig final sobre
+el VPS va carregar el worker públic antic `recursos-v1.19.4-dialog-fix-20261022`
+en un navegador temporal i el va actualitzar al worker corregit `recursos-v1.24.4`:
+el catàleg Vue s'obri i l'HTML, el carregador i el bundle de la caché coincidixen
+exactament amb els servits. No s'han creat llibres ni comptes en producció.
+
+La primera comprovació d'actualització va detectar que la caché HTTP podia
+introduir fitxers antics dins del worker `v1.24.3`; eixa versió queda superada.
+La correcció de precàrrega i la prova que reproduïx el problema estan en Git.
+
+Els hashes dels dos JSON de catàleg i de l'informe d'enllaços no han canviat.
+Tots els contenidors conserven identificador i hora d'arrancada, i Play conserva
+el PID: només s'ha recarregat nginx. API, Commons, Play i EduHoot responen 200.
+Llibres continua privat en `127.0.0.1:8182`, amb publicació desactivada.
+
+Còpia privada de nginx, línia base i resultats:
+`/var/backups/edutictac/recursos-vue-20261022/`. Versió de retorn preparada:
+`/var/www/recursos-releases/20261022-legacy-rollback`, amb worker separat, API
+només xarxa i precàrrega que evita la caché HTTP. No tornar a `v1.24.3`.

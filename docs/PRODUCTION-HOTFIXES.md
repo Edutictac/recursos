@@ -1,6 +1,11 @@
 
 # Correcciones puntuales de producción
 
+La actualización completa posterior del 22-10-2026 sustituye este frontend
+anterior por Vue y el worker `recursos-v1.24.4`. Estado actual y comprobaciones en
+[PRODUCTION-FRONTEND.md](PRODUCTION-FRONTEND.md). La corrección del diálogo se
+conserva; lo siguiente describe el despliegue histórico anterior.
+
 ## Reproductor cerrado visible — 22-10-2026
 
 Corrección de código `9fc4c27`: `.iframe-dialog` reserva su diseño flexible solo
