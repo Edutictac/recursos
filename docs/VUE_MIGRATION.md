@@ -116,11 +116,21 @@ No s'executen importadors, captures externes o comprovacions massives d'enllaço
   JavaScript; el bundle servit coincidix amb el compilat. Captura valenciana
   en `/tmp/recursos-catalogue-vue-va.png`. No s'han modificat preferències o
   continguts de comptes reals.
-- La API local actual respon 200 a `/api/preferences` i 404 a
-  `/api/llibres/books`; el treball del servidor continua en paral·lel. El lector
-  es comprova amb contractes sintètics, però queda pendent repetir el recorregut
-  amb llibres reals quan la API local publique eixa ruta.
+- Després de finalitzar el treball paral·lel de la API, es connecten les
+  versions locals de Recursos API i ID API. `/api/llibres/books` retorna 200
+  des del banc, Commons i Llibres. Es trasllada l’únic llibre ja publicat de la
+  base de proves a la instal·lació activa, conservant exactament els 6.933
+  registres previs. El lector real i la descàrrega ELPX queden comprovats.
 
 Per a provar-ho en la tailnet: `http://100.74.151.108:8086/`. Cal recarregar la
 pàgina si ja estava oberta perquè s'active la nova versió del service worker.
 No s'ha fet push ni desplegament al VPS. El següent bloc és accés i propostes.
+
+
+Connexió local completada el 22-10-2026: el filtre de format `llibres` mostra
+el llibre existent, el lector del banc l'obri i «Històries compartides» de
+Llibres també permet llegir-lo. Les comprovacions usen navegadors anònims i no
+creen publicacions noves. No s'ha comprovat una nova publicació amb un compte
+OIDC personal. El desplegament i les còpies estan documentats en Commons,
+`docs/LLIBRES_LOCAL_CONNECTION.md`. El següent bloc Vue continua sent accés i
+propostes.
