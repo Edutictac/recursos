@@ -1,6 +1,6 @@
 # Banc de recursos
 
-Directori de jocs educatius per a Infantil, Primària i Secundària. Lloc estàtic (HTML + CSS, catàleg Vue precompilat i mòduls JavaScript) amb sincronització via API autoalojada (FastAPI + SQLite).
+Directori de jocs educatius per a Infantil, Primària i Secundària. Lloc estàtic (HTML + CSS, interfície Vue precompilada i mòduls JavaScript) amb sincronització via API autoalojada (FastAPI + SQLite).
 
 🌐 **Producció**: [recursos.edutictac.es](https://recursos.edutictac.es)
 
@@ -59,7 +59,8 @@ npm test
 
 Cal Node 22.12 o posterior per a compilar. El bundle versionat permet servir
 el lloc amb nginx sense Node en execució. El [pla Vue](docs/VUE_MIGRATION.md)
-recull l’arquitectura, les fases pendents i les comprovacions.
+recull l’arquitectura i les comprovacions del catàleg, accés, propostes i fonts,
+ja migrats. Els motors Flash/JClic i el lector de llibres es conserven.
 
 ---
 

@@ -20,5 +20,6 @@ export const state = {
   isTeacher: false,
   backendMode: "local",
   authReady: false,
+  sessionChanging: false,
   preferenceEpoch: 0,
 };

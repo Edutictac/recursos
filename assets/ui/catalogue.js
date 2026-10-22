@@ -2922,7 +2922,7 @@ var Eo = ["aria-busy"], Do = [
 			O.value && (a.game.flash ? m(O.value, a.game.title) : a.game.format === "jclic" ? h(O.value, a.game.title) : g(O.value, a.game.title, a.game.format === "llibres"));
 		}
 		async function A(e, t) {
-			if (l.value || ["hide", "unhide"].includes(e) && !a.context.isAdmin) return;
+			if (l.value || a.context.sessionChanging || ["hide", "unhide"].includes(e) && !a.context.isAdmin) return;
 			let r = e === "report" ? a.context.isAdmin ? "report_broken_confirm_admin" : "report_broken_confirm" : e === "hide" ? "admin_hide_confirm" : e === "unhide" ? "admin_unhide_confirm" : null;
 			if (!r || window.confirm(n(r, v.value))) {
 				l.value = !0, u.value = "", d.value = !1;
@@ -2980,7 +2980,7 @@ var Eo = ["aria-busy"], Do = [
 					title: U(n)(b.value ? "favorite_remove" : "favorite_add"),
 					"aria-label": U(n)(b.value ? "favorite_remove" : "favorite_add"),
 					"aria-pressed": b.value,
-					disabled: l.value,
+					disabled: r.context.sessionChanging || l.value,
 					onClick: a[2] ||= (e) => A("favorite")
 				}, "❤", 10, No),
 				T.value ? (Y(), X("button", {
@@ -2989,7 +2989,7 @@ var Eo = ["aria-busy"], Do = [
 					class: Ae(["report-btn", { active: w.value }]),
 					title: U(n)(w.value ? "report_broken_active" : "report_broken"),
 					"aria-label": U(n)(w.value ? "report_broken_active" : "report_broken"),
-					disabled: l.value || w.value,
+					disabled: r.context.sessionChanging || l.value || w.value,
 					onClick: a[3] ||= (e) => A("report")
 				}, "⚠", 10, Po)) : Q("", !0),
 				T.value && r.context.isAdmin ? (Y(), X("button", {
@@ -2998,7 +2998,7 @@ var Eo = ["aria-busy"], Do = [
 					class: "admin-hide-btn",
 					title: U(n)("admin_hide_resource"),
 					"aria-label": U(n)("admin_hide_resource"),
-					disabled: l.value,
+					disabled: r.context.sessionChanging || l.value,
 					onClick: a[4] ||= (e) => A("hide")
 				}, "×", 8, Fo)) : Q("", !0),
 				T.value && r.context.isAdmin && C.value?.adminReported ? (Y(), X("button", {
@@ -3007,7 +3007,7 @@ var Eo = ["aria-busy"], Do = [
 					class: "admin-unhide-btn",
 					title: U(n)("admin_unhide_resource"),
 					"aria-label": U(n)("admin_unhide_resource"),
-					disabled: l.value,
+					disabled: r.context.sessionChanging || l.value,
 					onClick: a[5] ||= (e) => A("unhide")
 				}, "↩", 8, Io)) : Q("", !0)
 			])]),
@@ -3042,7 +3042,7 @@ var Eo = ["aria-busy"], Do = [
 					title: U(n)("rating_set", e),
 					"aria-label": U(n)("rating_set", e),
 					"aria-pressed": e <= x.value,
-					disabled: l.value,
+					disabled: r.context.sessionChanging || l.value,
 					onClick: (t) => A("rating", e)
 				}, "★", 10, qo)), 64))])
 			], 8, Uo),
@@ -3240,7 +3240,7 @@ var Eo = ["aria-busy"], Do = [
 	id: "authPanel",
 	class: "auth-panel",
 	"aria-live": "polite"
-}, vs = { class: "auth-actions" }, ys = ["href"], bs = ["disabled"], xs = ["disabled"], Ss = ["disabled"], Cs = {
+}, vs = { class: "auth-actions" }, ys = ["aria-disabled", "href"], bs = ["disabled"], xs = ["disabled"], Ss = ["disabled"], Cs = {
 	key: 0,
 	role: "alert"
 }, ws = {
@@ -3250,7 +3250,8 @@ var Eo = ["aria-busy"], Do = [
 	__name: "Access",
 	props: {
 		onSessionChange: Function,
-		onPropose: Function
+		onPropose: Function,
+		onBusy: Function
 	},
 	setup(e, { expose: r }) {
 		let i = e, a = /* @__PURE__ */ un({
@@ -3290,7 +3291,7 @@ var Eo = ["aria-busy"], Do = [
 			let e = m.value.trim(), t = h.value.trim();
 			if (h.value = "", !e || !t) l.value = "student_login_missing", u.value = !0;
 			else {
-				s.value = !0, l.value = "student_login_loading", u.value = !1;
+				s.value = !0, i.onBusy(!0), l.value = "student_login_loading", u.value = !1;
 				try {
 					let n = y({
 						publicCode: e,
@@ -3301,19 +3302,19 @@ var Eo = ["aria-busy"], Do = [
 				} catch {
 					v && d.value?.open && (l.value = "student_login_error", u.value = !0);
 				} finally {
-					t = "", s.value = !1;
+					t = "", s.value = !1, i.onBusy(!1);
 				}
 			}
 		}
 		async function ee() {
 			if (!s.value && v && a.value.epoch === p.preferenceEpoch) {
-				s.value = !0, l.value = "";
+				s.value = !0, i.onBusy(!0), l.value = "";
 				try {
 					await b(), v && await i.onSessionChange();
 				} catch {
 					v && (l.value = "session_error", u.value = !0);
 				} finally {
-					s.value = !1;
+					s.value = !1, i.onBusy(!1);
 				}
 			}
 		}
@@ -3333,6 +3334,10 @@ var Eo = ["aria-busy"], Do = [
 					key: 0,
 					id: "loginBtn",
 					class: "btn-auth secondary",
+					onClick: t[0] ||= (e) => {
+						s.value && e.preventDefault();
+					},
+					"aria-disabled": s.value,
 					href: o.value.logged_in ? "/api/auth/logout" : "/api/auth/login"
 				}, I(x(o.value.logged_in ? "logout_btn" : "login_btn")), 9, ys)),
 				o.value.student_logged_in ? (Y(), X("button", {
@@ -3352,7 +3357,7 @@ var Eo = ["aria-busy"], Do = [
 					id: "submitActivityBtn",
 					class: "btn-auth secondary",
 					disabled: s.value || c.value,
-					onClick: t[0] ||= (e) => i.onPropose()
+					onClick: t[1] ||= (e) => i.onPropose()
 				}, I(x("submit_btn")), 9, Ss)
 			]), l.value === "session_error" ? (Y(), X("p", Cs, I(x(l.value)), 1)) : Q("", !0)])) : Q("", !0)])),
 			(Y(), Fi(dr, { to: "#prefsMount" }, [Z("p", {
@@ -3367,7 +3372,7 @@ var Eo = ["aria-busy"], Do = [
 				"aria-labelledby": "studentDialogTitle",
 				onClose: S,
 				onCancel: S,
-				onClick: t[3] ||= (e) => {
+				onClick: t[4] ||= (e) => {
 					e.target === d.value && C();
 				}
 			}, [Z("h2", ws, I(x("student_dialog_title")), 1), Z("form", {
@@ -3378,7 +3383,7 @@ var Eo = ["aria-busy"], Do = [
 					ref_key: "codeInput",
 					ref: f,
 					id: "studentCode",
-					"onUpdate:modelValue": t[1] ||= (e) => m.value = e,
+					"onUpdate:modelValue": t[2] ||= (e) => m.value = e,
 					type: "text",
 					required: "",
 					autocomplete: "off",
@@ -3386,7 +3391,7 @@ var Eo = ["aria-busy"], Do = [
 					disabled: s.value
 				}, null, 8, Es), [[co, m.value]])]), Z("label", null, [Z("span", null, I(x("student_pin_label")), 1), G(Z("input", {
 					id: "studentPin",
-					"onUpdate:modelValue": t[2] ||= (e) => h.value = e,
+					"onUpdate:modelValue": t[3] ||= (e) => h.value = e,
 					type: "password",
 					required: "",
 					inputmode: "numeric",
@@ -3596,7 +3601,7 @@ var Eo = ["aria-busy"], Do = [
 			language: t()
 		}), a = /* @__PURE__ */ H([]), o = /* @__PURE__ */ H(!1), s = /* @__PURE__ */ H(!1), c = /* @__PURE__ */ H(!0), l = 0;
 		function u() {
-			return c.value && i.value.isAdmin && i.value.backendMode === "remote" && i.value.epoch === p.preferenceEpoch;
+			return c.value && !i.value.sessionChanging && i.value.isAdmin && i.value.backendMode === "remote" && i.value.epoch === p.preferenceEpoch;
 		}
 		function d(e, ...t) {
 			return i.value.language, n(e, ...t);
@@ -3620,7 +3625,7 @@ var Eo = ["aria-busy"], Do = [
 			}
 		}
 		function h(e) {
-			let n = e.epoch !== i.value.epoch || e.isAdmin !== i.value.isAdmin || e.backendMode !== i.value.backendMode;
+			let n = e.epoch !== i.value.epoch || e.isAdmin !== i.value.isAdmin || e.backendMode !== i.value.backendMode || e.sessionChanging !== i.value.sessionChanging;
 			i.value = {
 				...e,
 				language: t()
@@ -3636,7 +3641,7 @@ var Eo = ["aria-busy"], Do = [
 			window.addEventListener("pagehide", g), window.addEventListener("pageshow", _);
 		}), kr(() => {
 			g(), window.removeEventListener("pagehide", g), window.removeEventListener("pageshow", _);
-		}), r({ setContext: h }), (e, t) => c.value && i.value.isAdmin && i.value.backendMode === "remote" ? (Y(), X("section", {
+		}), r({ setContext: h }), (e, t) => c.value && !i.value.sessionChanging && i.value.isAdmin && i.value.backendMode === "remote" ? (Y(), X("section", {
 			key: 0,
 			id: "sourcesPanel",
 			class: "sources-panel",

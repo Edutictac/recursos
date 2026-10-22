@@ -32,7 +32,7 @@ async function boot() {
     catalogue = mountCatalogue(document.querySelector('#catalogueApp'), {onAction: catalogueAction});
     sources = mountSources(document.querySelector('#sourcesApp'));
     proposal = mountProposal(document.querySelector('#proposalApp'), {onSubmitted:async()=>{await loadSubmissions();render();}});
-    access = mountAccess(document.querySelector('#accessApp'), {onSessionChange:refreshSession,onPropose:()=>proposal?.open()});
+    access = mountAccess(document.querySelector('#accessApp'), {onSessionChange:refreshSession,onPropose:()=>proposal?.open(),onBusy:value=>{state.sessionChanging=value;render();}});
   } catch {
     const output=document.querySelector('#catalogueApp');
     output.textContent=i18n('catalogue_load_error');
@@ -147,16 +147,16 @@ function allGames() {
 }
 
 function render() {
-  sources?.setContext({backendMode:state.backendMode,isAdmin:isAdmin(),epoch:state.preferenceEpoch});
+  sources?.setContext({backendMode:state.backendMode,isAdmin:isAdmin(),epoch:state.preferenceEpoch,sessionChanging:state.sessionChanging});
   access?.setContext({backendMode:state.backendMode,epoch:state.preferenceEpoch});
   proposal?.setContext({backendMode:state.backendMode,epoch:state.preferenceEpoch,games:allGames()});
   catalogue?.setContext({games:allGames(),favorites:new Set(state.favorites),userRatings:new Map(state.userRatings),
     ratingSummary:new Map(state.ratingSummary),userReports:new Set(state.userReports),brokenSummary:new Map(state.brokenSummary),
-    reportByUrl:new Map(state.reportByUrl),backendMode:state.backendMode,isAdmin:isAdmin(),epoch:state.preferenceEpoch,loading:state.isPartialLoad,error:state.catalogueError});
+    reportByUrl:new Map(state.reportByUrl),backendMode:state.backendMode,isAdmin:isAdmin(),epoch:state.preferenceEpoch,sessionChanging:state.sessionChanging,loading:state.isPartialLoad,error:state.catalogueError});
 }
 
 async function catalogueAction(type,key,value,epoch) {
-  if (epoch !== state.preferenceEpoch) { render(); throw new Error("preference_context_changed"); }
+  if (epoch !== state.preferenceEpoch || state.sessionChanging) { render(); throw new Error("preference_context_changed"); }
   const actions={favorite:()=>toggleFavoritePreference(key),rating:()=>setRatingPreference(key,value),report:()=>reportBroken(key),hide:()=>hideResource(key),unhide:()=>unhideResource(key)};
   if(!actions[type])return;
   await actions[type](); render();

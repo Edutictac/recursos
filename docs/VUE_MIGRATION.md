@@ -69,7 +69,7 @@ Títols i notes s'interpolen com a text. Els enllaços i imatges només accepten
 HTTP/HTTPS sense credencials; es conserva la miniatura de reserva. El lector de
 llibres conserva el seu sandbox i no s'executa HTML del catàleg com a plantilla.
 
-El service worker actual usa `recursos-v1.23.0`, inclou el bundle i els mòduls
+El service worker actual usa `recursos-v1.24.0`, inclou el bundle i els mòduls
 necessaris per a tornar a obrir el catàleg sense xarxa, i retira la caché de les
 respostes de la API. Els llibres publicats i retirats continuen exigint xarxa.
 Les miniatures públiques mantenen la seua política anterior. Les preferències
@@ -181,3 +181,19 @@ El coordinador `scripts/app.js` conserva la càrrega/federació de dades,
 instantànies compartides, shell estàtic i traducció de capçalera/reproductors.
 Catàleg, accés, propostes i fonts es gestionen exclusivament amb components Vue.
 No es modifiquen API, bases de dades, Authentik, Blocs, Llibres ni EduHoot.
+
+## Tancament i protecció del canvi de sessió
+
+Mentre hi ha un accés o una eixida pendent, les escriptures de preferències i
+moderació es bloquegen, encara que es tanque el diàleg de credencials. El panell
+de fonts s’oculta durant eixe canvi. Les respostes d’escriptura anteriors tampoc
+modifiquen les preferències del nou context. Totes les peticions del client de
+API usen `cache: no-store`, també sense service worker. Es retiren els antics
+helpers de filtres per DOM de `url-state.js`, ja substituïts pel catàleg Vue.
+
+Verificació conjunta: **78 proves de navegador** aprovades en escriptori i mòbil
+i **3 proves del service worker**. Les proves de compte i administració usen
+contractes simulats i dades sintètiques; no acrediten una sessió OIDC personal.
+No es creen propostes, favorits o publicacions en comptes de la instal·lació.
+La comprovació instal·lada és anònima i de lectura. L’acceptació docent real
+continua sent un pas previ a producció.

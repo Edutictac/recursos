@@ -57,3 +57,12 @@ test('identitat pendent anterior no restaura una sessió docent nova',async({pag
  await expect(page.locator('#loginBtn')).toHaveAttribute('href','/api/auth/login');release();
  await expect(page.locator('#loginBtn')).toHaveAttribute('href','/api/auth/login');
 });
+
+test('canvi de sessió pendent bloqueja preferències fins i tot si tanquem el diàleg',async({page})=>{
+ const model=await bank(page);let release,started;const waiting=new Promise(resolve=>started=resolve);
+ await page.route('**/api/student/login',async route=>{started();await new Promise(resolve=>release=resolve);model.student=true;await route.fulfill({json:{ok:true}});});
+ await credentials(page);await page.locator('#studentSendBtn').click();await waiting;await page.locator('#studentCancelBtn').click();
+ await expect(page.locator('.fav-btn')).toBeDisabled();await page.locator('.fav-btn').evaluate(button=>button.click());
+ expect(model.calls).toHaveLength(0);
+ release();await expect(page.locator('#studentLogoutBtn')).toBeEnabled();await expect(page.locator('.fav-btn')).toBeEnabled();
+});

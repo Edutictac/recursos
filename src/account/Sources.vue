@@ -6,7 +6,7 @@ import {state} from '/scripts/state.js';
 const context=shallowRef({isAdmin:false,backendMode:'local',epoch:-1,language:getLang()});
 const providers=ref([]),loading=ref(false),error=ref(false),visible=ref(true);
 let sequence=0;
-function allowed(){return visible.value&&context.value.isAdmin&&context.value.backendMode==='remote'&&context.value.epoch===state.preferenceEpoch;}
+function allowed(){return visible.value&&!context.value.sessionChanging&&context.value.isAdmin&&context.value.backendMode==='remote'&&context.value.epoch===state.preferenceEpoch;}
 function t(key,...args){context.value.language;return i18n(key,...args);}
 function date(value){const parsed=new Date(value);return value&&Number.isFinite(parsed.getTime())?parsed.toLocaleString(context.value.language==='va'?'ca-ES-valencia':context.value.language):t('sources_never');}
 async function refresh(){
@@ -20,7 +20,7 @@ async function refresh(){
   finally{if(token===sequence)loading.value=false;}
 }
 function setContext(next){
-  const changed=next.epoch!==context.value.epoch||next.isAdmin!==context.value.isAdmin||next.backendMode!==context.value.backendMode;
+  const changed=next.epoch!==context.value.epoch||next.isAdmin!==context.value.isAdmin||next.backendMode!==context.value.backendMode||next.sessionChanging!==context.value.sessionChanging;
   context.value={...next,language:getLang()};
   if(changed){++sequence;providers.value=[];error.value=false;loading.value=false;if(allowed())void refresh();}
 }
@@ -31,7 +31,7 @@ onBeforeUnmount(()=>{hide();window.removeEventListener('pagehide',hide);window.r
 defineExpose({setContext});
 </script>
 <template>
-  <section v-if="visible&&context.isAdmin&&context.backendMode==='remote'" id="sourcesPanel" class="sources-panel" aria-labelledby="sourcesTitle" :aria-busy="loading">
+  <section v-if="visible&&!context.sessionChanging&&context.isAdmin&&context.backendMode==='remote'" id="sourcesPanel" class="sources-panel" aria-labelledby="sourcesTitle" :aria-busy="loading">
     <h2 id="sourcesTitle">{{t('sources_title')}}</h2>
     <button id="sourcesRefresh" class="btn-auth secondary" :disabled="loading" @click="refresh">{{t('sources_refresh')}}</button>
     <p v-if="loading" role="status">{{t('sources_loading')}}</p>

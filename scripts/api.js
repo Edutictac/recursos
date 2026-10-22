@@ -1,4 +1,3 @@
-import { i18n } from "./i18n.js";
 import {
   state, FAVORITES_STORAGE_KEY, RATINGS_STORAGE_KEY,
 } from "./state.js";
@@ -7,10 +6,6 @@ const API_BASE = (typeof window !== "undefined" && window.EDUBIBLIOJOCS_API_BASE
 
 export function isAdmin() {
   return Boolean(state.isAdmin);
-}
-
-export function currentUserDisplayName(_user) {
-  return "";
 }
 
 function loadLocalPreferences() {
@@ -52,6 +47,7 @@ async function api(path, { method = "GET", body } = {}) {
   const res = await fetch(API_BASE + path, {
     method,
     credentials: "same-origin",
+    cache: "no-store",
     headers: body ? { "Content-Type": "application/json" } : undefined,
     body: body ? JSON.stringify(body) : undefined,
   });
@@ -130,7 +126,7 @@ export async function toggleFavoritePreference(gameKeyValue) {
     return state.favorites.has(gameKeyValue);
   }
   const res = await api("/favorites/toggle", { method: "POST", body: { game_key: gameKeyValue } });
-  if (epoch !== state.preferenceEpoch) throw new Error("preference_context_changed");
+  if (epoch !== state.preferenceEpoch || state.sessionChanging) throw new Error("preference_context_changed");
   if (res.favorite) state.favorites.add(gameKeyValue);
   else state.favorites.delete(gameKeyValue);
   return state.favorites.has(gameKeyValue);
@@ -150,7 +146,7 @@ export async function setRatingPreference(gameKeyValue, requestedRating) {
   }
 
   const res = await api("/ratings", { method: "POST", body: { game_key: gameKeyValue, value: clamped } });
-  if (epoch !== state.preferenceEpoch) throw new Error("preference_context_changed");
+  if (epoch !== state.preferenceEpoch || state.sessionChanging) throw new Error("preference_context_changed");
   const next = Number(res.value) || 0;
   if (next > 0) state.userRatings.set(gameKeyValue, next);
   else state.userRatings.delete(gameKeyValue);
@@ -167,7 +163,7 @@ export async function reportBroken(gameKeyValue) {
   const epoch = state.preferenceEpoch;
   if (state.backendMode !== "remote") return;
   const res = await api("/reports", { method: "POST", body: { game_key: gameKeyValue } });
-  if (epoch !== state.preferenceEpoch) throw new Error("preference_context_changed");
+  if (epoch !== state.preferenceEpoch || state.sessionChanging) throw new Error("preference_context_changed");
   state.userReports.add(gameKeyValue);
   state.brokenSummary.set(gameKeyValue, {
     count: Number(res.count) || 1,
@@ -179,7 +175,7 @@ export async function hideResource(gameKeyValue) {
   const epoch = state.preferenceEpoch;
   if (state.backendMode !== "remote" || !isAdmin()) return;
   const res = await api("/admin/resources/hide", { method: "POST", body: { game_key: gameKeyValue } });
-  if (epoch !== state.preferenceEpoch) throw new Error("preference_context_changed");
+  if (epoch !== state.preferenceEpoch || state.sessionChanging) throw new Error("preference_context_changed");
   state.brokenSummary.set(gameKeyValue, {
     count: Number(res.count) || 0,
     adminReported: Boolean(res.admin_reported),
@@ -190,7 +186,7 @@ export async function unhideResource(gameKeyValue) {
   const epoch = state.preferenceEpoch;
   if (state.backendMode !== "remote" || !isAdmin()) return;
   const res = await api("/admin/resources/unhide", { method: "POST", body: { game_key: gameKeyValue } });
-  if (epoch !== state.preferenceEpoch) throw new Error("preference_context_changed");
+  if (epoch !== state.preferenceEpoch || state.sessionChanging) throw new Error("preference_context_changed");
   state.brokenSummary.set(gameKeyValue, { count: 0, adminReported: false });
   return res;
 }

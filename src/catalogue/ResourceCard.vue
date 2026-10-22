@@ -30,7 +30,7 @@ function open() {
   else openIframeDialog(url.value,props.game.title,props.game.format==='llibres');
 }
 async function action(type,value) {
-  if(pending.value)return;
+  if(pending.value||props.context.sessionChanging)return;
   if(['hide','unhide'].includes(type)&&!props.context.isAdmin)return;
   const confirmKey=type==='report'?(props.context.isAdmin?'report_broken_confirm_admin':'report_broken_confirm'):type==='hide'?'admin_hide_confirm':type==='unhide'?'admin_unhide_confirm':null;
   if(confirmKey&&!window.confirm(i18n(confirmKey,title.value)))return;
@@ -45,10 +45,10 @@ async function action(type,value) {
     <button v-if="embedded" type="button" class="card-image-link" :title="i18n(game.flash?'play_ruffle':'open_game')" :aria-label="i18n(game.flash?'play_ruffle':'open_game')" :disabled="!url" @click="open"><img class="card-image" :src="fallback?DEFAULT_GAME_IMAGE:image" :alt="game.title||i18n('no_title')" loading="lazy" decoding="async" @error="fallback=true"></button>
     <a v-else class="card-image-link" :href="url||undefined" target="_blank" rel="noreferrer noopener" :title="i18n('open_game')" :aria-label="i18n('open_game')"><img class="card-image" :src="fallback?DEFAULT_GAME_IMAGE:image" :alt="game.title||i18n('no_title')" loading="lazy" decoding="async" @error="fallback=true"></a>
     <div class="card-head"><h3>{{ title }}</h3><div class="card-actions">
-      <button type="button" class="fav-btn" :class="{active:favorite}" :title="i18n(favorite?'favorite_remove':'favorite_add')" :aria-label="i18n(favorite?'favorite_remove':'favorite_add')" :aria-pressed="favorite" :disabled="pending" @click="action('favorite')">❤</button>
-      <button v-if="remote" type="button" class="report-btn" :class="{active:reported}" :title="i18n(reported?'report_broken_active':'report_broken')" :aria-label="i18n(reported?'report_broken_active':'report_broken')" :disabled="pending||reported" @click="action('report')">⚠</button>
-      <button v-if="remote&&context.isAdmin" type="button" class="admin-hide-btn" :title="i18n('admin_hide_resource')" :aria-label="i18n('admin_hide_resource')" :disabled="pending" @click="action('hide')">×</button>
-      <button v-if="remote&&context.isAdmin&&report?.adminReported" type="button" class="admin-unhide-btn" :title="i18n('admin_unhide_resource')" :aria-label="i18n('admin_unhide_resource')" :disabled="pending" @click="action('unhide')">↩</button>
+      <button type="button" class="fav-btn" :class="{active:favorite}" :title="i18n(favorite?'favorite_remove':'favorite_add')" :aria-label="i18n(favorite?'favorite_remove':'favorite_add')" :aria-pressed="favorite" :disabled="context.sessionChanging||pending" @click="action('favorite')">❤</button>
+      <button v-if="remote" type="button" class="report-btn" :class="{active:reported}" :title="i18n(reported?'report_broken_active':'report_broken')" :aria-label="i18n(reported?'report_broken_active':'report_broken')" :disabled="context.sessionChanging||pending||reported" @click="action('report')">⚠</button>
+      <button v-if="remote&&context.isAdmin" type="button" class="admin-hide-btn" :title="i18n('admin_hide_resource')" :aria-label="i18n('admin_hide_resource')" :disabled="context.sessionChanging||pending" @click="action('hide')">×</button>
+      <button v-if="remote&&context.isAdmin&&report?.adminReported" type="button" class="admin-unhide-btn" :title="i18n('admin_unhide_resource')" :aria-label="i18n('admin_unhide_resource')" :disabled="context.sessionChanging||pending" @click="action('unhide')">↩</button>
     </div></div>
     <div class="meta">
       <span v-if="game._isSubmission" class="tag submission">{{ i18n('submission_badge') }}</span>
@@ -61,7 +61,7 @@ async function action(type,value) {
     <div class="rating" role="group" :aria-label="i18n('rating_group_label')">
       <span class="rating-label">{{ i18n('rating_label') }}</span>
       <span v-if="remote" class="rating-summary">{{ summary?.count?i18n('rating_avg',summary.avg.toFixed(1),summary.count):i18n('rating_no_votes') }}</span>
-      <div class="stars"><button v-for="value in 5" :key="value" class="star-btn" :class="{active:value<=rating}" type="button" :title="i18n('rating_set',value)" :aria-label="i18n('rating_set',value)" :aria-pressed="value<=rating" :disabled="pending" @click="action('rating',value)">★</button></div>
+      <div class="stars"><button v-for="value in 5" :key="value" class="star-btn" :class="{active:value<=rating}" type="button" :title="i18n('rating_set',value)" :aria-label="i18n('rating_set',value)" :aria-pressed="value<=rating" :disabled="context.sessionChanging||pending" @click="action('rating',value)">★</button></div>
     </div>
     <p class="note">{{ notes }}</p><p v-if="healthText" class="health">{{ healthText }}</p>
     <p v-if="game._isSubmission&&game._submittedBy" class="note submission-by">{{ i18n('submission_by',game._submittedBy) }}</p>

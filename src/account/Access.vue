@@ -3,7 +3,7 @@ import {ref, shallowRef, nextTick, onMounted, onBeforeUnmount} from 'vue';
 import {i18n, getLang} from '/scripts/i18n.js';
 import {authMe, studentLogin, studentLogout} from '/scripts/api.js';
 import {state} from '/scripts/state.js';
-const props=defineProps({onSessionChange:Function,onPropose:Function});
+const props=defineProps({onSessionChange:Function,onPropose:Function,onBusy:Function});
 const context=shallowRef({backendMode:'local',epoch:-1,language:getLang()});
 const identity=ref({}), busy=ref(false), checking=ref(false), feedback=ref(''), error=ref(false);
 const dialog=ref(), codeInput=ref(), code=ref(''), pin=ref('');
@@ -31,20 +31,20 @@ async function authenticate(){
   if(busy.value||!active||context.value.epoch!==state.preferenceEpoch)return;
   const publicCode=code.value.trim();let submittedPin=pin.value.trim();pin.value='';
   if(!publicCode||!submittedPin){feedback.value='student_login_missing';error.value=true;return;}
-  busy.value=true;feedback.value='student_login_loading';error.value=false;
+  busy.value=true;props.onBusy(true);feedback.value='student_login_loading';error.value=false;
   try{
     const pending=studentLogin({publicCode,pin:submittedPin});submittedPin='';
     await pending;
     if(!active)return;
     close();await props.onSessionChange();
   }catch{if(active&&dialog.value?.open){feedback.value='student_login_error';error.value=true;}}
-  finally{submittedPin='';busy.value=false;}
+  finally{submittedPin='';busy.value=false;props.onBusy(false);}
 }
 async function logout(){
-  if(busy.value||!active||context.value.epoch!==state.preferenceEpoch)return;busy.value=true;feedback.value='';
+  if(busy.value||!active||context.value.epoch!==state.preferenceEpoch)return;busy.value=true;props.onBusy(true);feedback.value='';
   try{await studentLogout();if(active)await props.onSessionChange();}
   catch{if(active){feedback.value='session_error';error.value=true;}}
-  finally{busy.value=false;}
+  finally{busy.value=false;props.onBusy(false);}
 }
 function hide(){active=false;++sequence;close();identity.value={};checking.value=true;}
 async function show(event){if(!event.persisted)return;active=true;await props.onSessionChange();void identify();}
@@ -56,7 +56,7 @@ defineExpose({setContext});
   <Teleport to="#authMount">
     <div v-if="context.backendMode==='remote'" id="authPanel" class="auth-panel" aria-live="polite">
       <div class="auth-actions">
-        <a v-if="!checking" id="loginBtn" class="btn-auth secondary" :href="identity.logged_in?'/api/auth/logout':'/api/auth/login'">{{t(identity.logged_in?'logout_btn':'login_btn')}}</a>
+        <a v-if="!checking" id="loginBtn" class="btn-auth secondary" @click="event=>{if(busy)event.preventDefault();}" :aria-disabled="busy" :href="identity.logged_in?'/api/auth/logout':'/api/auth/login'">{{t(identity.logged_in?'logout_btn':'login_btn')}}</a>
         <button v-if="!identity.student_logged_in" id="studentLoginBtn" class="btn-auth secondary" :disabled="busy||checking" @click="open">{{t('student_login_btn')}}</button>
         <button v-else id="studentLogoutBtn" class="btn-auth secondary" :disabled="busy||checking" @click="logout">{{t('student_logout_btn',identity.student_code||'')}}</button>
         <button id="submitActivityBtn" class="btn-auth secondary" :disabled="busy||checking" @click="props.onPropose()">{{t('submit_btn')}}</button>
