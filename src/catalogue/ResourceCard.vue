@@ -1,7 +1,7 @@
 <script setup>
 import {computed, ref} from 'vue';
 import {i18n, getLang, areaLabel, levelLabel} from '/scripts/i18n.js';
-import {gameKey, gameLanguageText, normalizeUrl} from '/scripts/filters.js';
+import {applicationLabel, gameKey, gameLanguageText, normalizeUrl} from '/scripts/filters.js';
 import {DEFAULT_GAME_IMAGE} from '/scripts/state.js';
 import {openFlashDialog} from '/scripts/flash.js';
 import {openJClicDialog} from '/scripts/jclic.js';
@@ -56,6 +56,7 @@ async function action(type,value) {
       <span v-for="level in game.levels||(game.level?[game.level]:[i18n('no_level')])" :key="level" class="tag">{{ levelLabel(level) }}</span>
       <span class="tag lang">{{ gameLanguageText(game)||i18n('catalogue_no_language') }}</span>
       <span v-if="['jclic','h5p','eduhoot','scorm','llibres'].includes(game.format)" class="tag format">{{ game.format.toUpperCase() }}</span>
+      <span v-if="applicationLabel(game)" class="tag application">{{ applicationLabel(game) }}</span>
       <span v-if="game.flash" class="tag flash">Flash</span>
     </div>
     <div class="rating" role="group" :aria-label="i18n('rating_group_label')">

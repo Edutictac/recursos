@@ -231,3 +231,26 @@ Migració Vue del banc completada en desenvolupament. Per instrucció de l’usu
 el treball es deté ací: no s’inicia Play, Administració ni Quiosc, i no es fa push
 ni desplegament al VPS. Abans de producció queda l’acceptació manual amb comptes
 autoritzats, indicada en la llista anterior.
+
+
+## Aplicació d’origen: Play (22-10-2026)
+
+Les activitats publicades de Play es carreguen des de l’índex existent amb
+`provider=edutictac-play`, en pàgines de 200 (màxim 10.000), i mostren
+l’etiqueta **Play**, mantenint **H5P** com a format. La càrrega és independent
+de Llibres/EduHoot; un error d’una font no interromp les altres. No es canvia
+el contracte de publicació ni els permisos del banc.
+
+El filtre **Aplicació** permet triar Play, Llibres o EduHoot quan hi ha recursos
+d’eixa aplicació. Es combina amb el format i la resta de filtres i es conserva
+en l’URL (`?application=Play`), també en recarregar o canviar d’idioma.
+Textos disponibles en castellà, català, valencià i anglés. SW v1.24.1.
+
+Validació: build, 44 proves de navegador del catàleg (escriptori/mòbil) i
+3 del service worker aprovades. El cas nou carrega 201 activitats sintètiques
+per verificar paginació, etiqueta, format, filtre combinat i restauració d’URL.
+Activat només el frontend local amb la imatge `recursos:play-label-candidate`;
+rollback `recursos:before-play-label-20261022`. Fitxers instal·lats idèntics,
+API Play/Llibres HTTP 200 i UI a 393/1024 píxels sense errors ni desbordament.
+La resta de contenidors es conserven sense reiniciar. Sense publicacions de
+prova, canvis de dades, push ni desplegament públic.

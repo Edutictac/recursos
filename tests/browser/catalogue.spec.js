@@ -1,6 +1,6 @@
 import {test,expect} from '@playwright/test';
 const games=Array.from({length:55},(_,i)=>({id:'game-'+i,title:'Game '+i,title_ca:'Joc '+i,title_en:'Game EN '+i,url:'https://games.example.test/'+i,area:i%2?'Musica':'Matematicas',language:i%2?'Castellano':'Català/Valencià',levels:['Primaria'],format:i%2?'h5p':'html',notes:'Geometry numbers'}));
-async function bank(page,{remote=false,admin=false,items=games,books=[]}={}){
+async function bank(page,{remote=false,admin=false,items=games,books=[],play=[]}={}){
  const prefs={admin,favorites:[],ratings:{},reports:[],rating_summary:{},broken_reports:{}};const calls=[];
  await page.addInitScript(()=>localStorage.setItem('recursos-lang','va'));
  await page.route('**/*',route=>{const url=new URL(route.request().url());if(url.hostname!=='127.0.0.1')return route.abort();return route.continue();});
@@ -9,7 +9,7 @@ async function bank(page,{remote=false,admin=false,items=games,books=[]}={}){
  await page.route('**/api/**',route=>{
   const path=new URL(route.request().url()).pathname,method=route.request().method();
   if(path==='/api/llibres/books')return route.fulfill({json:{items:books,more:false}});
-  if(path==='/api/resources')return route.fulfill({json:{items:[]}});
+  if(path==='/api/resources'){const url=new URL(route.request().url());const offset=Number(url.searchParams.get('offset'))||0;return route.fulfill({json:{items:url.searchParams.get('provider')==='edutictac-play'?play.slice(offset,offset+200):[],total:play.length}});}
   if(path==='/api/preferences'&&remote)return route.fulfill({json:prefs});
   if(path==='/api/auth/me')return route.fulfill({json:{logged_in:remote,admin,student_logged_in:false}});
   if(path==='/api/submissions')return route.fulfill({json:[]});
@@ -185,4 +185,28 @@ test('una targeta d’un context anterior no envia favorits al context nou',asyn
  await expect(page.locator('.fav-btn')).toBeEnabled();
  expect(calls).toHaveLength(0);
  expect(await page.evaluate(async()=>[...(await import('/scripts/state.js')).state.favorites])).toEqual([]);
+});
+
+
+test('Play té etiqueta pròpia, conserva H5P i filtra per aplicació amb enllaç compartible',async({page})=>{
+ const play=Array.from({length:201},(_,i)=>({provider:'edutictac-play',external_id:'edutictac-play:'+i,title:'Play activity '+i,format:'h5p',play_url:'https://play.example.test/'+i,subject:'General'}));
+ await bank(page,{items:[games[1]],play,books:[{provider:'edutictac-llibres',title:'Story',format:'llibres',play_url:'https://books.example.test/story'}]});
+ await page.locator('#applicationFilter').selectOption('Play');
+ await expect(page.locator('#resultCount')).toContainText('201');
+ await expect(page.locator('#grid .tag.application')).toHaveText(Array(48).fill('Play'));
+ await expect(page.locator('#grid .tag.format')).toHaveText(Array(48).fill('H5P'));
+ await page.locator('#formatFilter').selectOption('h5p');
+ expect(new URL(page.url()).searchParams.get('application')).toBe('Play');
+ await page.reload();await expect(page.locator('#applicationFilter')).toHaveValue('Play');
+ await expect(page.locator('#resultCount')).toContainText('201');
+ await page.locator('#applicationFilter').selectOption('');
+ await expect(page.locator('#resultCount')).toContainText('202');
+ await page.locator('#formatFilter').selectOption('');
+ await page.locator('#applicationFilter').selectOption('Llibres');
+ await expect(page.locator('#grid article')).toHaveCount(1);
+ await expect(page.locator('#grid h3')).toHaveText('Story');
+ for(const [lang,label] of [['es','Aplicación'],['va','Aplicació'],['en','Application']]){
+  await page.locator('[data-lang='+lang+']').click();
+  await expect(page.locator('label').filter({has:page.locator('#applicationFilter')})).toContainText(label);
+ }
 });

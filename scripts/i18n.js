@@ -3,6 +3,8 @@ export const LANGS = ["es", "ca", "va", "en"];
 
 const strings = {
   es: {
+    application_label: "Aplicación",
+    application_all: "Todas",
     sources_refresh: "Actualizar fuentes",
     sources_loading: "Cargando fuentes…",
     sources_error: "No se pudieron cargar las fuentes. Puedes volver a intentarlo.",
@@ -116,6 +118,8 @@ const strings = {
     footer_source: "Código fuente",
   },
   ca: {
+    application_label: "Aplicació",
+    application_all: "Totes",
     sources_refresh: "Actualitzar fonts",
     sources_loading: "Carregant fonts…",
     sources_error: "No s’han pogut carregar les fonts. Pots tornar-ho a intentar.",
@@ -229,6 +233,8 @@ const strings = {
     footer_source: "Codi font",
   },
   va: {
+    application_label: "Aplicació",
+    application_all: "Totes",
     catalogue_action_error: "No s’ha pogut guardar el canvi. Torna-ho a provar.",
     catalogue_no_language: "Idioma no definit",
     catalogue_loading: "Carregant catàleg…",
@@ -245,6 +251,8 @@ const strings = {
     favorite_remove: "Traure de favorits",
   },
   en: {
+    application_label: "Application",
+    application_all: "All",
     sources_refresh: "Refresh sources",
     sources_loading: "Loading sources…",
     sources_error: "Could not load sources. Please try again.",

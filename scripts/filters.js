@@ -77,6 +77,14 @@ export function gameLanguageText(game) {
   return langs.length > 0 ? langs.map(languageLabel).join(", ") : "";
 }
 
+export function applicationLabel(game) {
+  const provider = game.provider || game.source;
+  if (provider === "edutictac-play") return "Play";
+  if (provider === "edutictac-llibres" || game.format === "llibres") return "Llibres";
+  if (provider === "eduhoot" || game.format === "eduhoot") return "EduHoot";
+  return "";
+}
+
 export function uniqueValues(items, key) {
   return [...new Set(items.map((item) => item[key]).filter(Boolean))].sort((a, b) => a.localeCompare(b));
 }
@@ -100,7 +108,7 @@ export function getRatingForFilter(gameKeyValue, preferences = state) {
 
 export function computeFilteredGames(games, criteria, preferences = state) {
   const {
-    term, selectedLevel, selectedLanguage, selectedArea, selectedFormat,
+    term, selectedLevel, selectedLanguage, selectedArea, selectedFormat, selectedApplication,
     onlyFavorites, onlySubmissions, onlyBroken, onlyReported, minRating,
   } = criteria;
   const termWords = normalizeSearch(term).split(/\s+/).filter(Boolean);
@@ -124,6 +132,7 @@ export function computeFilteredGames(games, criteria, preferences = state) {
     if (selectedLevel && !gameLevels.includes(selectedLevel)) return false;
     if (selectedLanguage && !gameLanguages(game).includes(selectedLanguage)) return false;
     if (selectedArea && game.area !== selectedArea) return false;
+    if (selectedApplication && applicationLabel(game) !== selectedApplication) return false;
     if (selectedFormat && game.format !== selectedFormat) return false;
 
     if (termWords.length > 0) {

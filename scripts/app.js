@@ -106,6 +106,16 @@ function federatedGame(resource) {
 async function loadFederatedResources() {
   const sequence = ++federationSequence, epoch = state.preferenceEpoch;
   const results = await Promise.allSettled([
+    (async () => {
+      const activities=[];
+      for (let offset=0; offset<10000; offset+=200) {
+        const r=await fetch("/api/resources?provider=edutictac-play&limit=200&offset="+offset,{cache:"no-store",credentials:"same-origin"});
+        if (!r.ok) throw new Error("Play unavailable");
+        const data=await r.json(); const items=data.items || []; activities.push(...items);
+        if (items.length<200 || activities.length>=data.total) break;
+      }
+      return activities;
+    })(),
     fetch("/api/resources?provider=eduhoot&limit=200", {credentials:"same-origin"}).then(async r => {
       if (!r.ok) throw new Error("EduHoot unavailable");
       return (await r.json()).items || [];
@@ -125,7 +135,7 @@ async function loadFederatedResources() {
   const resources=results.flatMap(r => r.status==="fulfilled" ? r.value : []);
   const federated=resources.map(r => ({...federatedGame(r),
     url:r.play_url || r.source_url || "", download_url:r.download_url || ""}));
-  state.games=state.games.filter(g => !g._isFederated && g.provider!=="edutictac-llibres" && g.source!=="edutictac-llibres").concat(federated);
+  state.games=state.games.filter(g => !g._isFederated && g.provider!=="edutictac-play" && g.source!=="edutictac-play" && g.provider!=="edutictac-llibres" && g.source!=="edutictac-llibres").concat(federated);
 }
 
 async function fetchJson(url, optional = false) {
