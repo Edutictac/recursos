@@ -1,4 +1,4 @@
-const CACHE_NAME = "recursos-v1.24.3";
+const CACHE_NAME = "recursos-v1.24.4";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -35,7 +35,9 @@ const APP_SHELL = [
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then((cache) => cache.addAll(APP_SHELL))
+      // Bypass the browser's HTTP cache: a previous shell can still be fresh
+      // there even after nginx has switched to a new release.
+      .then((cache) => cache.addAll(APP_SHELL.map(path => new Request(path, {cache:"reload"}))))
       .then(() => self.skipWaiting())
   );
 });

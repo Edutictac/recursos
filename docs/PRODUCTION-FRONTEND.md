@@ -58,8 +58,16 @@ disponibilitat HTTP: una recàrrega correcta no implica que els treballadors nou
 ja estiguen escoltant. No reiniciar API, Commons, Play o EduHoot.
 
 Repetir les proves sobre HTTPS públic i comprovar l'actualització d'un navegador
-amb la caché antiga. El worker nou usa `recursos-v1.24.3`: elimina les cachés
+amb la caché antiga. El worker nou usa `recursos-v1.24.4`: elimina les cachés
 anteriors i no guarda sessions, preferències ni publicacions de Llibres.
+La precàrrega usa `Request` amb `cache: "reload"` per a evitar que la caché HTTP
+encara vàlida del navegador introduïsca fitxers de la versió anterior en el shell
+nou. `tests/test_frontend_upgrade.py` reproduïx el problema i comprova la solució
+amb un servidor temporal local i un navegador real:
+
+```bash
+python -m pytest tests/test_frontend_upgrade.py -q
+```
 
 Si cal retirar el frontend, conservar totes les dades actuals. Preparar una
 versió de retorn amb el shell anterior i un worker amb un nom de caché nou que

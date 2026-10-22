@@ -89,9 +89,9 @@ def test_public_service_worker_install_and_offline_shell(browser):
     expect(page.locator('#grid article').first).to_be_visible(timeout=30000)
     page.wait_for_function('navigator.serviceWorker.controller !== null', timeout=30000)
     versions = page.evaluate('caches.keys()')
-    assert 'recursos-v1.24.3' in versions
+    assert 'recursos-v1.24.4' in versions
     assert len(versions) == 1
-    cached = page.evaluate("""async () => (await (await caches.open('recursos-v1.24.3')).keys()).map(r => new URL(r.url).pathname)""")
+    cached = page.evaluate("""async () => (await (await caches.open('recursos-v1.24.4')).keys()).map(r => new URL(r.url).pathname)""")
     for path in ('/scripts/language-preference.js', '/assets/ui/catalogue.js', '/data/games.json'):
         assert path in cached
     assert not any(path.startswith('/api/') and not path.startswith('/api/thumb') for path in cached)
