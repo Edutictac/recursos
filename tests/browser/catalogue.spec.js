@@ -91,10 +91,15 @@ test('els informes no s’envien dos voltes i no apareixen controls admin per a 
 
 test('lector Llibres i EduHoot mantenen el reproductor existent i sandbox del llibre',async({page})=>{
  const book={provider:'edutictac-llibres',external_id:'book',title:'Story',format:'llibres',play_url:'/book-reader',subject:'General',language:['Castellano']};
- await bank(page,{items:[],books:[book]});await page.route('**/book-reader',route=>route.fulfill({contentType:'text/html',body:'<h1>Story reader</h1>'}));
+ await bank(page,{items:[],books:[book]});
+ await expect(page.locator('#iframeDialog')).toBeHidden();
+ expect(await page.locator('#iframeDialog').evaluate(el=>el.getBoundingClientRect().height)).toBe(0);
+ await page.route('**/book-reader',route=>route.fulfill({contentType:'text/html',body:'<h1>Story reader</h1>'}));
  await page.locator('#grid .card-image-link').click();await expect(page.locator('#iframeDialog')).toBeVisible();
  await expect(page.locator('#iframeContainer iframe')).toHaveAttribute('sandbox','allow-downloads');
  await page.locator('#iframeClose').click();await expect(page.locator('#iframeContainer iframe')).toHaveCount(0);
+ await expect(page.locator('#iframeDialog')).toBeHidden();
+ expect(await page.locator('#iframeDialog').evaluate(el=>el.getBoundingClientRect().height)).toBe(0);
 });
 
 test('títols i notes amb HTML queden inerts i URL executables no creen enllaços',async({page})=>{

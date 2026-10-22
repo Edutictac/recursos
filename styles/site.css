@@ -890,9 +890,12 @@ select:focus {
   height: min(820px, 92vh);
   box-shadow: 0 24px 60px rgba(31, 42, 68, 0.25);
   background: #fff;
-  display: flex;
   flex-direction: column;
   overflow: hidden;
+}
+
+.iframe-dialog[open] {
+  display: flex;
 }
 
 .iframe-dialog::backdrop {
