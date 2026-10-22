@@ -26,26 +26,28 @@ El banc continua servint-se en el seu domini o port propi.
 ## Ordre acordat
 
 El 22-10-2026 l'usuari prioritza el banc abans de Play dins del pla Vue de
-Commons. El treball de la API continua en paral·lel i no es desplega des d'esta
-migració del frontend.
+Commons. El treball paral·lel de la API ja ha finalitzat. La connexió local amb les
+versions actuals està verificada; esta fase només canvia el frontend.
 
 - [x] Catàleg: filtres, cerca, targetes, paginació, favorits, valoracions,
   informes i accions d'ocultar/restaurar. Conservació dels reproductors.
 - [x] Compilació estàtica amb versions fixades i comprovació del bundle en CI.
 - [x] Caché del nou graf de mòduls; cap resposta de sessió/preferències en caché.
-- [ ] Accés docent/alumnat i formularis de propostes: extracció dels diàlegs
-  encara coordinats per `scripts/app.js`, amb neteja de PIN i proves de sessió.
-- [ ] Panell de fonts i operacions de gestió pròpies del banc.
-- [ ] Revisió conjunta amb la API en desenvolupament i proves amb comptes
-  autoritzats abans de publicar una versió.
+- [x] Accés docent/alumnat i formularis de propostes en Vue, amb neteja de PIN,
+  confirmació persistent i proves de sessió.
+- [x] Panell de fonts en Vue: càrrega, estat de sincronització, actualització,
+  errors i permisos d’administració. Ocultar/restaurar recursos ja està en Vue.
+- [x] Connexió local amb la API actual i lectura de llibres reals.
+- [ ] Acceptació manual amb comptes autoritzats abans de publicar en producció
+  (OIDC personal i proposta de publicació/revisió de llibres).
 
 ## Primera fase
 
 `src/catalogue/Catalogue.vue` controla els filtres i la paginació de 48 recursos.
 `ResourceCard.vue` mostra les dades i executa les accions a través del client
 existent. Les plantilles DOM i els manejadors equivalents es retiren de
-`scripts/render.js` i `app.js`; el primer conserva només les utilitats dels
-selects del formulari de propostes, encara sense migrar.
+`app.js`; `scripts/render.js` es retira després de migrar també el formulari
+de propostes. No queda una segona implementació dels controls.
 
 `app.js` passa al component una instantània de les col·leccions i preferències
 quan acaben les càrregues o accions. No s'introduïx un segon magatzem persistent.
@@ -67,7 +69,7 @@ Títols i notes s'interpolen com a text. Els enllaços i imatges només accepten
 HTTP/HTTPS sense credencials; es conserva la miniatura de reserva. El lector de
 llibres conserva el seu sandbox i no s'executa HTML del catàleg com a plantilla.
 
-El service worker puja a `recursos-v1.20.0`, inclou el bundle i els mòduls
+El service worker actual usa `recursos-v1.23.0`, inclou el bundle i els mòduls
 necessaris per a tornar a obrir el catàleg sense xarxa, i retira la caché de les
 respostes de la API. Els llibres publicats i retirats continuen exigint xarxa.
 Les miniatures públiques mantenen la seua política anterior. Les preferències
@@ -124,7 +126,8 @@ No s'executen importadors, captures externes o comprovacions massives d'enllaço
 
 Per a provar-ho en la tailnet: `http://100.74.151.108:8086/`. Cal recarregar la
 pàgina si ja estava oberta perquè s'active la nova versió del service worker.
-No s'ha fet push ni desplegament al VPS. El següent bloc és accés i propostes.
+No s'ha fet push ni desplegament al VPS. Les fases d’accés i propostes
+posteriors queden documentades a continuació.
 
 
 Connexió local completada el 22-10-2026: el filtre de format `llibres` mostra
@@ -132,8 +135,8 @@ el llibre existent, el lector del banc l'obri i «Històries compartides» de
 Llibres també permet llegir-lo. Les comprovacions usen navegadors anònims i no
 creen publicacions noves. No s'ha comprovat una nova publicació amb un compte
 OIDC personal. El desplegament i les còpies estan documentats en Commons,
-`docs/LLIBRES_LOCAL_CONNECTION.md`. El següent bloc Vue continua sent accés i
-propostes.
+`docs/LLIBRES_LOCAL_CONNECTION.md`. La migració d’accés, propostes i fonts
+queda completada en els apartats següents.
 
 ## Accés en Vue — 22-10-2026
 
@@ -162,3 +165,19 @@ alteren un formulari posterior. No hi ha temporitzadors que tanquen altres diàl
 
 Deu proves noves en escriptori/mòbil comproven estos fluxos, URL perilloses,
 contracte, errors de refresc i canvis de context. Service worker v1.22.0.
+
+## Fonts en Vue — 22-10-2026
+
+`src/account/Sources.vue` retira l’últim panell amb construcció manual de DOM.
+Només un context administratiu pot consultar `/api/admin/sources`. Mostra
+recompte, estat i data de l’última sincronització, obtinguts, altes, actualitzats
+i errors, amb els quatre idiomes existents. El botó actualitza la consulta; no
+executa importacions ni sincronitzacions en el servidor. Inclou estat buit,
+error i reintent. Canviar de sessió o pagehide buida les dades, i una resposta
+antiga no pot tornar a mostrar-les. `loadSources` comprova també la versió de
+context.
+
+El coordinador `scripts/app.js` conserva la càrrega/federació de dades,
+instantànies compartides, shell estàtic i traducció de capçalera/reproductors.
+Catàleg, accés, propostes i fonts es gestionen exclusivament amb components Vue.
+No es modifiquen API, bases de dades, Authentik, Blocs, Llibres ni EduHoot.

@@ -204,9 +204,10 @@ export async function submitActivity({ title, url, notes, area, language, name }
 }
 
 export async function loadSources() {
+  const epoch = state.preferenceEpoch;
   if (!isAdmin()) return null;
   const data = await api("/admin/sources");
-  if (!isAdmin()) return null;
+  if (!isAdmin() || epoch !== state.preferenceEpoch) return null;
   return Array.isArray(data?.providers) ? data.providers : [];
 }
 

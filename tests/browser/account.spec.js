@@ -47,3 +47,13 @@ test('mode sense API conserva catàleg i preferències locals sense controls pri
  await bank(page,{remote:false});await expect(page.locator('#authPanel')).toHaveCount(0);
  await expect(page.locator('#personalPrefsNote')).toContainText('navegador');await page.locator('.fav-btn').click();await expect(page.locator('.fav-btn')).toHaveAttribute('aria-pressed','true');
 });
+
+test('identitat pendent anterior no restaura una sessió docent nova',async({page})=>{
+ const model=await bank(page,{teacher:true});let release,started;const waiting=new Promise(resolve=>started=resolve);
+ await page.route('**/api/auth/me',async route=>{started();await new Promise(resolve=>release=resolve);await route.fulfill({json:{logged_in:true,student_logged_in:false}});});
+ await page.evaluate(async()=>{await (await import('/scripts/api.js')).initPreferenceBackend();document.querySelector('[data-lang=en]').click();});await waiting;
+ await page.unroute('**/api/auth/me');model.teacher=false;
+ await page.evaluate(async()=>{await (await import('/scripts/api.js')).initPreferenceBackend();document.querySelector('[data-lang=es]').click();});
+ await expect(page.locator('#loginBtn')).toHaveAttribute('href','/api/auth/login');release();
+ await expect(page.locator('#loginBtn')).toHaveAttribute('href','/api/auth/login');
+});

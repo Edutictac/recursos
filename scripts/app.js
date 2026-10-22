@@ -6,18 +6,16 @@ import {buildReportIndex} from './filters.js';
 import {
   initPreferenceBackend, loadSubmissions,
   toggleFavoritePreference, setRatingPreference, reportBroken,
-  hideResource, isAdmin, loadSources, unhideResource,
+  hideResource, isAdmin, unhideResource,
 } from "./api.js";
 
 const dataUrl = "./data/games.json";
 const homeDataUrl = "./data/games-home.json";
 const reportUrl = "./reports/link-report.json";
-let catalogue, access, proposal, federationSequence = 0, sessionSequence = 0;
+let catalogue, access, proposal, sources, federationSequence = 0, sessionSequence = 0;
 
 // DOM refs
 const offlineBanner = document.querySelector("#offlineBanner");
-const sourcesPanel = document.querySelector("#sourcesPanel");
-const sourcesList = document.querySelector("#sourcesList");
 setLang(detectLang());
 registerServiceWorker();
 updateSwVersionFromSource();
@@ -30,8 +28,9 @@ boot().catch((error) => {
 
 async function boot() {
   try {
-    const {mountCatalogue, mountAccess, mountProposal} = await import('/assets/ui/catalogue.js');
+    const {mountCatalogue, mountAccess, mountProposal, mountSources} = await import('/assets/ui/catalogue.js');
     catalogue = mountCatalogue(document.querySelector('#catalogueApp'), {onAction: catalogueAction});
+    sources = mountSources(document.querySelector('#sourcesApp'));
     proposal = mountProposal(document.querySelector('#proposalApp'), {onSubmitted:async()=>{await loadSubmissions();render();}});
     access = mountAccess(document.querySelector('#accessApp'), {onSessionChange:refreshSession,onPropose:()=>proposal?.open()});
   } catch {
@@ -46,7 +45,6 @@ async function boot() {
   state.isPartialLoad = true;
 
   await initPreferenceBackend();
-  updateAuthUi();
   applyStaticTranslations();
   updateLangButtons();
   wireEvents();
@@ -149,6 +147,7 @@ function allGames() {
 }
 
 function render() {
+  sources?.setContext({backendMode:state.backendMode,isAdmin:isAdmin(),epoch:state.preferenceEpoch});
   access?.setContext({backendMode:state.backendMode,epoch:state.preferenceEpoch});
   proposal?.setContext({backendMode:state.backendMode,epoch:state.preferenceEpoch,games:allGames()});
   catalogue?.setContext({games:allGames(),favorites:new Set(state.favorites),userRatings:new Map(state.userRatings),
@@ -165,41 +164,12 @@ async function catalogueAction(type,key,value,epoch) {
 
 async function refreshSession() {
   const sequence=++sessionSequence;
-  const pending=initPreferenceBackend();render();updateAuthUi();
+  const pending=initPreferenceBackend();render();
   await pending;
   if(sequence!==sessionSequence)return;
-  render();updateAuthUi();
+  render();
   await Promise.allSettled([loadSubmissions(),loadFederatedResources()]);
   if(sequence===sessionSequence)render();
-}
-
-function updateAuthUi() {
-  sourcesPanel?.classList.toggle("hidden",state.backendMode!=="remote"||!isAdmin());
-  if(state.backendMode==="remote"&&isAdmin())void renderSources();
-}
-
-async function renderSources() {
-  if (!sourcesList || !isAdmin()) return;
-  const providers = await loadSources();
-  if (!providers) return;
-  sourcesList.innerHTML = "";
-  for (const p of providers) {
-    const last = p.last_sync || {};
-    const row = document.createElement("div");
-    row.className = "source-row";
-    const title = document.createElement("strong");
-    title.textContent = p.provider;
-    const info = document.createElement("span");
-    const status = last.status || "—";
-    const fetched = last.fetched ?? "—";
-    const created = last.created ?? "—";
-    const updated = last.updated ?? "—";
-    const errors = last.errors ?? "—";
-    const finished = last.finished_at ? new Date(last.finished_at).toLocaleString() : "nunca";
-    info.textContent = `Recursos: ${p.resources} · Estado: ${status} · Última sync: ${finished} · fetched ${fetched}, nuevos ${created}, actualizados ${updated}, errores ${errors}`;
-    row.append(title, info);
-    sourcesList.append(row);
-  }
 }
 
 function updateLangButtons() {
@@ -231,7 +201,6 @@ function wireEvents() {
       setLang(btn.dataset.lang);
       updateLangButtons();
       applyStaticTranslations();
-      updateAuthUi();
       render();
     });
   });

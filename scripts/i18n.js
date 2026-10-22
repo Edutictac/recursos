@@ -3,6 +3,13 @@ export const LANGS = ["es", "ca", "va", "en"];
 
 const strings = {
   es: {
+    sources_refresh: "Actualizar fuentes",
+    sources_loading: "Cargando fuentes…",
+    sources_error: "No se pudieron cargar las fuentes. Puedes volver a intentarlo.",
+    sources_empty: "No hay fuentes registradas.",
+    sources_never: "Nunca",
+    sources_summary: (count,status,date) => `Recursos: ${count} · Estado: ${status} · Última sincronización: ${date}`,
+    sources_counts: (fetched,created,updated,errors) => `Obtenidos: ${fetched} · Nuevos: ${created} · Actualizados: ${updated} · Errores: ${errors}`,
     submit_invalid: "Escribe un título y un enlace válido que empiece por https:// o http://.",
     submit_refresh_error: "La actividad se ha enviado. No se pudo actualizar la lista; recarga la página para verla.",
     dialog_close: "Cerrar",
@@ -109,6 +116,13 @@ const strings = {
     footer_source: "Código fuente",
   },
   ca: {
+    sources_refresh: "Actualitzar fonts",
+    sources_loading: "Carregant fonts…",
+    sources_error: "No s’han pogut carregar les fonts. Pots tornar-ho a intentar.",
+    sources_empty: "No hi ha fonts registrades.",
+    sources_never: "Mai",
+    sources_summary: (count,status,date) => `Recursos: ${count} · Estat: ${status} · Última sincronització: ${date}`,
+    sources_counts: (fetched,created,updated,errors) => `Obtinguts: ${fetched} · Nous: ${created} · Actualitzats: ${updated} · Errors: ${errors}`,
     submit_invalid: "Escriu un títol i un enllaç vàlid que comence per https:// o http://.",
     submit_refresh_error: "L’activitat s’ha enviat. No s’ha pogut actualitzar la llista; recarrega la pàgina per a veure-la.",
     dialog_close: "Tancar",
@@ -231,6 +245,13 @@ const strings = {
     favorite_remove: "Traure de favorits",
   },
   en: {
+    sources_refresh: "Refresh sources",
+    sources_loading: "Loading sources…",
+    sources_error: "Could not load sources. Please try again.",
+    sources_empty: "No sources registered.",
+    sources_never: "Never",
+    sources_summary: (count,status,date) => `Resources: ${count} · Status: ${status} · Last sync: ${date}`,
+    sources_counts: (fetched,created,updated,errors) => `Fetched: ${fetched} · New: ${created} · Updated: ${updated} · Errors: ${errors}`,
     submit_invalid: "Enter a title and a valid link starting with https:// or http://.",
     submit_refresh_error: "The activity has been sent. Could not refresh the list; reload the page to see it.",
     dialog_close: "Close",
