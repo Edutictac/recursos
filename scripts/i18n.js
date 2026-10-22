@@ -3,6 +3,7 @@ export const LANGS = ["es", "ca", "va", "en"];
 
 const strings = {
   es: {
+    session_error: "No se pudo actualizar la sesión. Inténtalo de nuevo.",
     catalogue_action_error: "No se ha podido guardar el cambio. Vuelve a intentarlo.",
     catalogue_no_language: "Idioma no definido",
     catalogue_loading: "Cargando catálogo…",
@@ -105,6 +106,7 @@ const strings = {
     footer_source: "Código fuente",
   },
   ca: {
+    session_error: "No s’ha pogut actualitzar la sessió. Torna-ho a intentar.",
     catalogue_action_error: "No s’ha pogut desar el canvi. Torna-ho a provar.",
     catalogue_no_language: "Idioma no definit",
     catalogue_loading: "Carregant catàleg…",
@@ -223,6 +225,7 @@ const strings = {
     favorite_remove: "Traure de favorits",
   },
   en: {
+    session_error: "Could not update the session. Please try again.",
     catalogue_action_error: "Could not save the change. Try again.",
     catalogue_no_language: "Language not defined",
     catalogue_loading: "Loading catalogue…",

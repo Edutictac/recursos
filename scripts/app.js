@@ -7,32 +7,18 @@ import {clearSelect, fillSelect} from './render.js';
 import {
   initPreferenceBackend, loadSubmissions,
   toggleFavoritePreference, setRatingPreference, reportBroken,
-  hideResource, isAdmin, submitActivity, loadSources, authMe, unhideResource,
-  studentLogin, studentLogout,
+  hideResource, isAdmin, submitActivity, loadSources, unhideResource,
 } from "./api.js";
 
 const dataUrl = "./data/games.json";
 const homeDataUrl = "./data/games-home.json";
 const reportUrl = "./reports/link-report.json";
-let catalogue, federationSequence = 0;
+let catalogue, access, federationSequence = 0, sessionSequence = 0;
 
 // DOM refs
 const offlineBanner = document.querySelector("#offlineBanner");
-const personalPrefsNote = document.querySelector("#personalPrefsNote");
-const authPanel = document.querySelector("#authPanel");
-const loginBtn = document.querySelector("#loginBtn");
-const studentLoginBtn = document.querySelector("#studentLoginBtn");
-const studentLogoutBtn = document.querySelector("#studentLogoutBtn");
-const studentDialog = document.querySelector("#studentDialog");
-const studentForm = document.querySelector("#studentForm");
-const studentCodeInput = document.querySelector("#studentCode");
-const studentPinInput = document.querySelector("#studentPin");
-const studentCancelBtn = document.querySelector("#studentCancelBtn");
-const studentFeedback = document.querySelector("#studentFeedback");
-const studentSendBtn = document.querySelector("#studentSendBtn");
 const sourcesPanel = document.querySelector("#sourcesPanel");
 const sourcesList = document.querySelector("#sourcesList");
-const submitActivityBtn = document.querySelector("#submitActivityBtn");
 const submitDialog = document.querySelector("#submitDialog");
 const submitForm = document.querySelector("#submitForm");
 const submitTitleInput = document.querySelector("#submitTitle");
@@ -50,15 +36,6 @@ registerServiceWorker();
 updateSwVersionFromSource();
 initOfflineBanner(offlineBanner, i18n);
 
-// Let api.js notify app.js when auth state changes.
-state._onAuthChange = () => {
-  updateAuthUi();
-  updatePreferencesNote();
-  loadFederatedResources().then(() => render()).catch((error) => {
-    console.warn("No se pudo actualizar EduHoot", error);
-  });
-};
-
 boot().catch((error) => {
   console.error("No se pudo iniciar la aplicacion", error);
   state.isPartialLoad = false; state.catalogueError = true; render();
@@ -66,8 +43,9 @@ boot().catch((error) => {
 
 async function boot() {
   try {
-    const {mountCatalogue} = await import('/assets/ui/catalogue.js');
+    const {mountCatalogue, mountAccess} = await import('/assets/ui/catalogue.js');
     catalogue = mountCatalogue(document.querySelector('#catalogueApp'), {onAction: catalogueAction});
+    access = mountAccess(document.querySelector('#accessApp'), {onSessionChange:refreshSession,onPropose:openSubmitDialog});
   } catch {
     const output=document.querySelector('#catalogueApp');
     output.textContent=i18n('catalogue_load_error');
@@ -81,9 +59,7 @@ async function boot() {
 
   await initPreferenceBackend();
   updateAuthUi();
-  updateLoginBtn();
   applyStaticTranslations();
-  updatePreferencesNote();
   updateLangButtons();
   wireEvents();
   render();
@@ -185,6 +161,7 @@ function allGames() {
 }
 
 function render() {
+  access?.setContext({backendMode:state.backendMode,epoch:state.preferenceEpoch});
   catalogue?.setContext({games:allGames(),favorites:new Set(state.favorites),userRatings:new Map(state.userRatings),
     ratingSummary:new Map(state.ratingSummary),userReports:new Set(state.userReports),brokenSummary:new Map(state.brokenSummary),
     reportByUrl:new Map(state.reportByUrl),backendMode:state.backendMode,isAdmin:isAdmin(),epoch:state.preferenceEpoch,loading:state.isPartialLoad,error:state.catalogueError});
@@ -197,22 +174,19 @@ async function catalogueAction(type,key,value,epoch) {
   await actions[type](); render();
 }
 
+async function refreshSession() {
+  const sequence=++sessionSequence;
+  const pending=initPreferenceBackend();render();updateAuthUi();
+  await pending;
+  if(sequence!==sessionSequence)return;
+  render();updateAuthUi();
+  await Promise.allSettled([loadSubmissions(),loadFederatedResources()]);
+  if(sequence===sessionSequence)render();
+}
+
 function updateAuthUi() {
-  if (!authPanel) return;
-
-  if (state.backendMode !== "remote") {
-    authPanel.classList.add("hidden");
-    if (submitActivityBtn) submitActivityBtn.classList.add("hidden");
-    return;
-  }
-
-  authPanel.classList.remove("hidden");
-  if (submitActivityBtn) submitActivityBtn.classList.remove("hidden");
-
-  if (sourcesPanel) {
-    sourcesPanel.classList.toggle("hidden", !isAdmin());
-    if (isAdmin()) renderSources();
-  }
+  sourcesPanel?.classList.toggle("hidden",state.backendMode!=="remote"||!isAdmin());
+  if(state.backendMode==="remote"&&isAdmin())void renderSources();
 }
 
 async function renderSources() {
@@ -239,26 +213,6 @@ async function renderSources() {
   }
 }
 
-async function updateLoginBtn() {
-  if (!loginBtn) return;
-  const me = await authMe();
-  state.isTeacher = Boolean(me.logged_in);
-  if (me.logged_in) {
-    loginBtn.href = "/api/auth/logout";
-    loginBtn.textContent = i18n("logout_btn");
-  } else {
-    loginBtn.href = "/api/auth/login";
-    loginBtn.textContent = i18n("login_btn");
-  }
-  if (studentLoginBtn) studentLoginBtn.classList.toggle("hidden", Boolean(me.student_logged_in));
-  if (studentLogoutBtn) {
-    studentLogoutBtn.classList.toggle("hidden", !me.student_logged_in);
-    studentLogoutBtn.textContent = me.student_logged_in
-      ? i18n("student_logout_btn", me.student_code || "")
-      : i18n("student_logout_default");
-  }
-}
-
 function updateLangButtons() {
   const lang = getLang();
   document.querySelectorAll(".btn-lang").forEach((btn) => {
@@ -282,16 +236,7 @@ function applyStaticTranslations() {
   document.title = i18n("doc_title");
 }
 
-function updatePreferencesNote() {
-  if (!personalPrefsNote) return;
-  const isRemote = state.backendMode === "remote";
-  const key = isRemote ? "personal_prefs_note_remote" : "personal_prefs_note_local";
-  personalPrefsNote.textContent = i18n(key);
-  personalPrefsNote.classList.toggle("remote", isRemote);
-}
-
 function wireEvents() {
-  if (submitActivityBtn) submitActivityBtn.addEventListener("click", openSubmitDialog);
   if (submitCancelBtn) submitCancelBtn.addEventListener("click", () => submitDialog?.close());
   if (submitDialog) {
     submitDialog.addEventListener("click", (e) => {
@@ -299,24 +244,12 @@ function wireEvents() {
     });
   }
   if (submitForm) submitForm.addEventListener("submit", handleSubmitForm);
-  if (studentLoginBtn) studentLoginBtn.addEventListener("click", openStudentDialog);
-  if (studentLogoutBtn) studentLogoutBtn.addEventListener("click", handleStudentLogout);
-  if (studentCancelBtn) studentCancelBtn.addEventListener("click", () => studentDialog?.close());
-  if (studentDialog) {
-    studentDialog.addEventListener("click", (e) => {
-      if (e.target === studentDialog) studentDialog.close();
-    });
-  }
-  if (studentForm) studentForm.addEventListener("submit", handleStudentLogin);
-
   document.querySelectorAll(".btn-lang").forEach((btn) => {
     btn.addEventListener("click", () => {
       setLang(btn.dataset.lang);
       updateLangButtons();
       applyStaticTranslations();
-      updatePreferencesNote();
       updateAuthUi();
-      updateLoginBtn();
       render();
     });
   });
@@ -374,58 +307,5 @@ function showSubmitFeedback(text, type) {
   if (!submitFeedback) return;
   submitFeedback.textContent = text;
   submitFeedback.className = `submit-feedback${type ? ` ${type}` : ""}`;
-}
-
-// --- Student identity dialog ---
-
-function openStudentDialog() {
-  if (!studentDialog) return;
-  studentForm?.reset();
-  showStudentFeedback("", "");
-  studentDialog.showModal();
-  studentCodeInput?.focus();
-}
-
-async function handleStudentLogin(e) {
-  e.preventDefault();
-  const publicCode = studentCodeInput?.value.trim() || "";
-  const pin = studentPinInput?.value.trim() || "";
-  if (!publicCode || !pin) {
-    showStudentFeedback(i18n("student_login_missing"), "error");
-    return;
-  }
-  if (studentSendBtn) studentSendBtn.disabled = true;
-  showStudentFeedback(i18n("student_login_loading"), "");
-  try {
-    await studentLogin({ publicCode, pin });
-    await initPreferenceBackend();
-    await updateLoginBtn();
-    render();
-    showStudentFeedback(i18n("student_login_success"), "ok");
-    setTimeout(() => studentDialog?.close(), 900);
-  } catch (error) {
-    console.error("Error en iniciar sessio d'alumnat", error);
-    showStudentFeedback(i18n("student_login_error"), "error");
-  } finally {
-    if (studentSendBtn) studentSendBtn.disabled = false;
-  }
-}
-
-async function handleStudentLogout() {
-  if (studentLogoutBtn) studentLogoutBtn.disabled = true;
-  try {
-    await studentLogout();
-    await initPreferenceBackend();
-    await updateLoginBtn();
-    render();
-  } finally {
-    if (studentLogoutBtn) studentLogoutBtn.disabled = false;
-  }
-}
-
-function showStudentFeedback(text, type) {
-  if (!studentFeedback) return;
-  studentFeedback.textContent = text;
-  studentFeedback.className = `submit-feedback${type ? ` ${type}` : ""}${text ? "" : " hidden"}`;
 }
 

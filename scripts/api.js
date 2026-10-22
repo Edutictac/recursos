@@ -65,7 +65,8 @@ async function api(path, { method = "GET", body } = {}) {
 
 export async function initPreferenceBackend() {
   const epoch = ++state.preferenceEpoch;
-  state.isAdmin = false;
+  state.isAdmin = false; state.isTeacher = false; state.submissions = [];
+  state.backendMode = "local"; state.authReady = false;
   state.favorites = new Set(); state.userRatings = new Map();
   state.userReports = new Set(); state.ratingSummary = new Map(); state.brokenSummary = new Map();
   loadLocalPreferences();

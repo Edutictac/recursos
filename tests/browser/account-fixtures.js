@@ -1,0 +1,27 @@
+import {expect} from '@playwright/test';
+export async function bank(page,{admin=false,teacher=false,remote=true}={}){
+ const model={student:false,admin,teacher,calls:[],submissions:[],providers:[]};
+ await page.addInitScript(()=>{if(window.top===window)localStorage.setItem('recursos-lang','va');});
+ await page.route('**/*',route=>new URL(route.request().url()).hostname==='127.0.0.1'?route.continue():route.abort());
+ await page.route('**/data/games*.json',route=>route.fulfill({json:[{title:'Geometry',url:'https://games.example.test/a',area:'Matematicas',language:'Castellano',levels:['Primaria'],format:'html'}]}));
+ await page.route('**/reports/link-report.json',route=>route.fulfill({json:{results:[]}}));
+ await page.route('**/api/**',route=>{
+  const path=new URL(route.request().url()).pathname,method=route.request().method();
+  if(method==='POST')model.calls.push({path,body:route.request().postDataJSON()});
+  if(path==='/api/preferences')return route.fulfill({status:remote?200:503,json:{admin:model.admin,favorites:model.student?['https://games.example.test/a']:[],ratings:{},reports:[],rating_summary:{},broken_reports:{}}});
+  if(path==='/api/auth/me')return route.fulfill({json:{logged_in:model.teacher,student_logged_in:model.student,student_code:model.student?'TEST01':'',admin:model.admin}});
+  if(path==='/api/student/login'){model.student=true;model.teacher=false;model.admin=false;return route.fulfill({json:{ok:true}});}
+  if(path==='/api/student/logout'){model.student=false;model.admin=false;return route.fulfill({json:{ok:true}});}
+  if(path==='/api/submissions'){
+   if(method==='POST'){model.submissions.push({...route.request().postDataJSON(),id:'new'});return route.fulfill({status:201,json:{id:'new'}});}
+   return route.fulfill({json:model.submissions});
+  }
+  if(path==='/api/admin/sources')return route.fulfill({json:{providers:model.providers}});
+  if(path==='/api/llibres/books')return route.fulfill({json:{items:[],more:false}});
+  if(path==='/api/resources')return route.fulfill({json:{items:[]}});
+  return route.fulfill({status:404,json:{detail:'not found'}});
+ });
+ await page.goto('/');await expect(page.locator('#grid article')).toHaveCount(1);
+ if(remote)await expect(page.locator('#studentLoginBtn')).toBeEnabled();
+ return model;
+}

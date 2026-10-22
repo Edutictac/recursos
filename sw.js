@@ -1,4 +1,4 @@
-const CACHE_NAME = "recursos-v1.20.0";
+const CACHE_NAME = "recursos-v1.21.0";
 const APP_SHELL = [
   "./",
   "./index.html",

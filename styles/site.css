@@ -1019,3 +1019,5 @@ code {
 #catalogueFilters { display: contents; }
 #catalogueApp, .card { min-width: 0; }
 .card h3, .card .note { overflow-wrap: anywhere; }
+
+#authMount, #prefsMount { display: contents; }

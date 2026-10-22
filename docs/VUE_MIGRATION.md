@@ -134,3 +134,17 @@ creen publicacions noves. No s'ha comprovat una nova publicació amb un compte
 OIDC personal. El desplegament i les còpies estan documentats en Commons,
 `docs/LLIBRES_LOCAL_CONNECTION.md`. El següent bloc Vue continua sent accés i
 propostes.
+
+## Accés en Vue — 22-10-2026
+
+`src/account/Access.vue` substituïx el diàleg i els manejadors de sessió del
+controlador antic. Conserva `/api/auth/login` i `/api/auth/logout` per a docents;
+l’alumnat continua amb `/api/student/login` i codi/PIN, sense Authentik. El PIN
+es buida en enviar, cancel·lar, Escape i pagehide; no es persistix ni es registra.
+Les respostes d’identitat es descarten si canvia el context. Canviar de sessió
+neteja immediatament privilegis, preferències i propostes abans de recarregar.
+El retorn des de la caché d’historial torna a consultar la sessió.
+
+Deu comprovacions noves en escriptori/mòbil cobrixen accés, eixida, errors,
+peticions duplicades, neteja de credencials, traducció i mode sense API. Les
+42 proves del catàleg continuen aprovades. El service worker passa a v1.21.0.
