@@ -3,6 +3,9 @@ export const LANGS = ["es", "ca", "va", "en"];
 
 const strings = {
   es: {
+    submit_invalid: "Escribe un título y un enlace válido que empiece por https:// o http://.",
+    submit_refresh_error: "La actividad se ha enviado. No se pudo actualizar la lista; recarga la página para verla.",
+    dialog_close: "Cerrar",
     session_error: "No se pudo actualizar la sesión. Inténtalo de nuevo.",
     catalogue_action_error: "No se ha podido guardar el cambio. Vuelve a intentarlo.",
     catalogue_no_language: "Idioma no definido",
@@ -106,6 +109,9 @@ const strings = {
     footer_source: "Código fuente",
   },
   ca: {
+    submit_invalid: "Escriu un títol i un enllaç vàlid que comence per https:// o http://.",
+    submit_refresh_error: "L’activitat s’ha enviat. No s’ha pogut actualitzar la llista; recarrega la pàgina per a veure-la.",
+    dialog_close: "Tancar",
     session_error: "No s’ha pogut actualitzar la sessió. Torna-ho a intentar.",
     catalogue_action_error: "No s’ha pogut desar el canvi. Torna-ho a provar.",
     catalogue_no_language: "Idioma no definit",
@@ -225,6 +231,9 @@ const strings = {
     favorite_remove: "Traure de favorits",
   },
   en: {
+    submit_invalid: "Enter a title and a valid link starting with https:// or http://.",
+    submit_refresh_error: "The activity has been sent. Could not refresh the list; reload the page to see it.",
+    dialog_close: "Close",
     session_error: "Could not update the session. Please try again.",
     catalogue_action_error: "Could not save the change. Try again.",
     catalogue_no_language: "Language not defined",

@@ -1021,3 +1021,5 @@ code {
 .card h3, .card .note { overflow-wrap: anywhere; }
 
 #authMount, #prefsMount { display: contents; }
+
+fieldset.submit-fields { margin: 0; padding: 0; border: 0; min-width: 0; }

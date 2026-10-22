@@ -148,3 +148,17 @@ El retorn des de la caché d’historial torna a consultar la sessió.
 Deu comprovacions noves en escriptori/mòbil cobrixen accés, eixida, errors,
 peticions duplicades, neteja de credencials, traducció i mode sense API. Les
 42 proves del catàleg continuen aprovades. El service worker passa a v1.21.0.
+
+## Propostes en Vue — 22-10-2026
+
+`src/account/Proposal.vue` substituïx el formulari antic, inclosos els selects
+reactius de matèria i idioma. Es retira `scripts/render.js`, ja sense consumidors.
+Es conserva el contracte `/api/submissions` i l’accés anònim que ja admetia el
+servidor. La validació accepta HTTP/HTTPS sense credencials i tracta text com a
+text. En cas d’error conserva l’esborrany. El guardat té una confirmació persistent:
+si falla el refresc posterior, informa que ja s’ha enviat i no permet reenviar.
+Tancar, canviar de sessió i pagehide netegen dades; les respostes anteriors no
+alteren un formulari posterior. No hi ha temporitzadors que tanquen altres diàlegs.
+
+Deu proves noves en escriptori/mòbil comproven estos fluxos, URL perilloses,
+contracte, errors de refresc i canvis de context. Service worker v1.22.0.

@@ -1,36 +1,23 @@
-import { i18n, areaLabel, languageLabel, levelLabel, detectLang, setLang, getLang } from "./i18n.js";
+import { i18n, detectLang, setLang, getLang } from "./i18n.js";
 import { registerServiceWorker, updateSwVersionFromSource } from "./sw-manager.js";
 import { initOfflineBanner } from "./url-state.js";
 import { state } from "./state.js";
-import {uniqueValues, uniqueLanguageValues, buildReportIndex} from './filters.js';
-import {clearSelect, fillSelect} from './render.js';
+import {buildReportIndex} from './filters.js';
 import {
   initPreferenceBackend, loadSubmissions,
   toggleFavoritePreference, setRatingPreference, reportBroken,
-  hideResource, isAdmin, submitActivity, loadSources, unhideResource,
+  hideResource, isAdmin, loadSources, unhideResource,
 } from "./api.js";
 
 const dataUrl = "./data/games.json";
 const homeDataUrl = "./data/games-home.json";
 const reportUrl = "./reports/link-report.json";
-let catalogue, access, federationSequence = 0, sessionSequence = 0;
+let catalogue, access, proposal, federationSequence = 0, sessionSequence = 0;
 
 // DOM refs
 const offlineBanner = document.querySelector("#offlineBanner");
 const sourcesPanel = document.querySelector("#sourcesPanel");
 const sourcesList = document.querySelector("#sourcesList");
-const submitDialog = document.querySelector("#submitDialog");
-const submitForm = document.querySelector("#submitForm");
-const submitTitleInput = document.querySelector("#submitTitle");
-const submitUrlInput = document.querySelector("#submitUrl");
-const submitNotesInput = document.querySelector("#submitNotes");
-const submitNameInput = document.querySelector("#submitName");
-const submitAreaSelect = document.querySelector("#submitArea");
-const submitLanguageSelect = document.querySelector("#submitLanguage");
-const submitCancelBtn = document.querySelector("#submitCancelBtn");
-const submitFeedback = document.querySelector("#submitFeedback");
-const submitSendBtn = document.querySelector("#submitSendBtn");
-
 setLang(detectLang());
 registerServiceWorker();
 updateSwVersionFromSource();
@@ -43,9 +30,10 @@ boot().catch((error) => {
 
 async function boot() {
   try {
-    const {mountCatalogue, mountAccess} = await import('/assets/ui/catalogue.js');
+    const {mountCatalogue, mountAccess, mountProposal} = await import('/assets/ui/catalogue.js');
     catalogue = mountCatalogue(document.querySelector('#catalogueApp'), {onAction: catalogueAction});
-    access = mountAccess(document.querySelector('#accessApp'), {onSessionChange:refreshSession,onPropose:openSubmitDialog});
+    proposal = mountProposal(document.querySelector('#proposalApp'), {onSubmitted:async()=>{await loadSubmissions();render();}});
+    access = mountAccess(document.querySelector('#accessApp'), {onSessionChange:refreshSession,onPropose:()=>proposal?.open()});
   } catch {
     const output=document.querySelector('#catalogueApp');
     output.textContent=i18n('catalogue_load_error');
@@ -162,6 +150,7 @@ function allGames() {
 
 function render() {
   access?.setContext({backendMode:state.backendMode,epoch:state.preferenceEpoch});
+  proposal?.setContext({backendMode:state.backendMode,epoch:state.preferenceEpoch,games:allGames()});
   catalogue?.setContext({games:allGames(),favorites:new Set(state.favorites),userRatings:new Map(state.userRatings),
     ratingSummary:new Map(state.ratingSummary),userReports:new Set(state.userReports),brokenSummary:new Map(state.brokenSummary),
     reportByUrl:new Map(state.reportByUrl),backendMode:state.backendMode,isAdmin:isAdmin(),epoch:state.preferenceEpoch,loading:state.isPartialLoad,error:state.catalogueError});
@@ -237,13 +226,6 @@ function applyStaticTranslations() {
 }
 
 function wireEvents() {
-  if (submitCancelBtn) submitCancelBtn.addEventListener("click", () => submitDialog?.close());
-  if (submitDialog) {
-    submitDialog.addEventListener("click", (e) => {
-      if (e.target === submitDialog) submitDialog.close();
-    });
-  }
-  if (submitForm) submitForm.addEventListener("submit", handleSubmitForm);
   document.querySelectorAll(".btn-lang").forEach((btn) => {
     btn.addEventListener("click", () => {
       setLang(btn.dataset.lang);
@@ -253,59 +235,5 @@ function wireEvents() {
       render();
     });
   });
-}
-
-// --- Submit dialog ---
-
-function openSubmitDialog() {
-  if (!submitDialog) return;
-  const games = allGames();
-  clearSelect(submitAreaSelect);
-  fillSelect(submitAreaSelect, uniqueValues(games, "area"), areaLabel);
-  clearSelect(submitLanguageSelect);
-  fillSelect(submitLanguageSelect, uniqueLanguageValues(games), languageLabel);
-  submitForm?.reset();
-  if (submitFeedback) {
-    submitFeedback.className = "submit-feedback hidden";
-    submitFeedback.textContent = "";
-  }
-  submitDialog.showModal();
-}
-
-async function handleSubmitForm(e) {
-  e.preventDefault();
-  if (state.backendMode !== "remote") return;
-
-  const title = submitTitleInput?.value.trim() || "";
-  const url = submitUrlInput?.value.trim() || "";
-  const notes = submitNotesInput?.value.trim() || "";
-  const area = submitAreaSelect?.value || "General";
-  const language = submitLanguageSelect?.value || "";
-  const name = submitNameInput?.value.trim() || "";
-
-  if (!title || !url) return;
-
-  if (submitSendBtn) submitSendBtn.disabled = true;
-  showSubmitFeedback(i18n("submit_loading"), "");
-
-  try {
-    await submitActivity({ title, url, notes, area, language, name });
-    showSubmitFeedback(i18n("submit_success"), "ok");
-    submitForm?.reset();
-    await loadSubmissions();
-    render();
-    setTimeout(() => submitDialog?.close(), 1800);
-  } catch (error) {
-    console.error("Error en enviar proposta", error);
-    showSubmitFeedback(i18n("submit_error"), "error");
-  } finally {
-    if (submitSendBtn) submitSendBtn.disabled = false;
-  }
-}
-
-function showSubmitFeedback(text, type) {
-  if (!submitFeedback) return;
-  submitFeedback.textContent = text;
-  submitFeedback.className = `submit-feedback${type ? ` ${type}` : ""}`;
 }
 
