@@ -14,6 +14,8 @@ const options=computed(()=>({level:uniqueLevelValues(context.value.games),langua
 function setContext(next) {context.value={...next,language:getLang()};if(!next.isAdmin){criteria.onlyBroken=false;criteria.onlyReported=false;}}
 function syncUrl() {
   const p=new URLSearchParams();
+  const uiLanguage=new URLSearchParams(location.search).get("ui_lang");
+  if(["es","ca","va","en"].includes(uiLanguage))p.set("ui_lang",uiLanguage);
   for(const [name,value] of Object.entries({q:criteria.term.trim(),level:criteria.selectedLevel,lang:criteria.selectedLanguage,area:criteria.selectedArea,format:criteria.selectedFormat,application:criteria.selectedApplication,rating:criteria.minRating||'',fav:criteria.onlyFavorites?'1':'',submissions:criteria.onlySubmissions?'1':''}))if(value)p.set(name,value);
   const url=location.pathname+(p.size?'?'+p:'')+location.hash;
   history.replaceState(null,'',url);

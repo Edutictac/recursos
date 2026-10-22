@@ -3120,7 +3120,13 @@ var Do = ["aria-busy"], Oo = [
 			}, e.isAdmin || (h.onlyBroken = !1, h.onlyReported = !1);
 		}
 		function te() {
-			let e = new URLSearchParams();
+			let e = new URLSearchParams(), t = new URLSearchParams(location.search).get("ui_lang");
+			[
+				"es",
+				"ca",
+				"va",
+				"en"
+			].includes(t) && e.set("ui_lang", t);
 			for (let [t, n] of Object.entries({
 				q: h.term.trim(),
 				level: h.selectedLevel,
@@ -3132,8 +3138,8 @@ var Do = ["aria-busy"], Oo = [
 				fav: h.onlyFavorites ? "1" : "",
 				submissions: h.onlySubmissions ? "1" : ""
 			})) n && e.set(t, n);
-			let t = location.pathname + (e.size ? "?" + e : "") + location.hash;
-			history.replaceState(null, "", t);
+			let n = location.pathname + (e.size ? "?" + e : "") + location.hash;
+			history.replaceState(null, "", n);
 		}
 		return $n(h, () => {
 			g.value = 48, te();

@@ -32,5 +32,5 @@ test('offline session requests never recover a previous cached identity',async()
 test('offline shell includes the compiled UI and its external module dependencies',async()=>{
   const {listeners,precached}=await worker();let done;
   listeners.install({waitUntil:p=>done=p});await done;
-  for(const path of ['./assets/ui/catalogue.js','./scripts/state.js','./scripts/filters.js','./scripts/flash.js','./scripts/jclic.js','./scripts/external.js'])assert.ok(precached.includes(path),path);
+  for(const path of ['./scripts/language-preference.js','./assets/ui/catalogue.js','./scripts/state.js','./scripts/filters.js','./scripts/flash.js','./scripts/jclic.js','./scripts/external.js'])assert.ok(precached.includes(path),path);
 });

@@ -1,4 +1,4 @@
-const CACHE_NAME = "recursos-v1.24.1";
+const CACHE_NAME = "recursos-v1.24.2";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -9,6 +9,7 @@ const APP_SHELL = [
   "./scripts/app.js",
   "./scripts/api.js",
   "./scripts/i18n.js",
+  "./scripts/language-preference.js",
   "./scripts/state.js",
   "./scripts/filters.js",
   "./scripts/url-state.js",

@@ -268,3 +268,16 @@ publicació, portada i enllaç de lectura amb «Històries compartides» de Llib
 La consulta pública no necessita sessió. Les retirades es reflectixen en tornar a
 carregar el catàleg; el service worker no guarda les rutes `/api/llibres/`.
 No executa projectes `.elpx`: l'editable opcional només es descarrega des del lector.
+
+## Idioma compartido con Commons
+
+La interfaz ofrece ES/CA/VA/EN y conserva la elección en la cookie funcional
+`edutictac_language` compartida entre subdominios de `edutictac.es`. No contiene
+identidad ni sustituye el acceso a la cuenta. En instalaciones independientes se
+usa el host actual y se conserva la preferencia local anterior.
+
+`?ui_lang=va` selecciona el idioma de la interfaz; `?lang=Castellano` sigue siendo
+el filtro del idioma de los recursos. Ambos parámetros pueden combinarse.
+Al volver de otra aplicación se actualizan los textos sin recargar el catálogo
+ni borrar los filtros. La copia local `scripts/language-preference.js` debe
+mantenerse idéntica al helper de Commons; se sirve también en modo sin conexión.

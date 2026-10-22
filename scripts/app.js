@@ -216,3 +216,15 @@ function wireEvents() {
   });
 }
 
+
+// Re-read only the saved preference on return; an old URL must not undo it.
+function syncLanguage() {
+  const lang = window.commonsLanguage?.stored();
+  if (!lang || lang === getLang()) return;
+  setLang(lang);
+  updateLangButtons();
+  applyStaticTranslations();
+  render();
+}
+window.addEventListener("pageshow", syncLanguage);
+window.addEventListener("focus", syncLanguage);

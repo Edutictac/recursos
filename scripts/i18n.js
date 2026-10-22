@@ -1,3 +1,4 @@
+import "./language-preference.js";
 const STORAGE_KEY = "recursos-lang";
 export const LANGS = ["es", "ca", "va", "en"];
 
@@ -592,7 +593,10 @@ function lookup(dicts, key) {
 }
 
 export function detectLang() {
-  const stored = localStorage.getItem(STORAGE_KEY);
+  const shared = window.commonsLanguage?.read({parameter: "ui_lang"});
+  if (shared) return shared;
+  let stored;
+  try { stored = localStorage.getItem(STORAGE_KEY); } catch {}
   if (stored && LANGS.includes(stored)) return stored;
   const candidates = navigator.languages && navigator.languages.length
     ? navigator.languages
@@ -610,7 +614,8 @@ export function detectLang() {
 export function setLang(lang) {
   if (!LANGS.includes(lang)) return;
   _lang = lang;
-  localStorage.setItem(STORAGE_KEY, lang);
+  try { localStorage.setItem(STORAGE_KEY, lang); } catch {}
+  window.commonsLanguage?.remember(lang, {parameter: "ui_lang"});
   document.documentElement.lang = lang === "va" ? "ca" : lang;
 }
 
