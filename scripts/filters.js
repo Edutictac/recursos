@@ -91,14 +91,14 @@ export function uniqueLanguageValues(items) {
   return [...new Set(all)].sort((a, b) => a.localeCompare(b));
 }
 
-export function getRatingForFilter(gameKeyValue) {
-  if (state.backendMode === "remote") {
-    return state.ratingSummary.get(gameKeyValue)?.avg || 0;
+export function getRatingForFilter(gameKeyValue, preferences = state) {
+  if (preferences.backendMode === "remote") {
+    return preferences.ratingSummary.get(gameKeyValue)?.avg || 0;
   }
-  return state.userRatings.get(gameKeyValue) || 0;
+  return preferences.userRatings.get(gameKeyValue) || 0;
 }
 
-export function computeFilteredGames(games, criteria) {
+export function computeFilteredGames(games, criteria, preferences = state) {
   const {
     term, selectedLevel, selectedLanguage, selectedArea, selectedFormat,
     onlyFavorites, onlySubmissions, onlyBroken, onlyReported, minRating,
@@ -107,10 +107,10 @@ export function computeFilteredGames(games, criteria) {
 
   return games.filter((game) => {
     const key = gameKey(game);
-    const filterRating = getRatingForFilter(key);
+    const filterRating = getRatingForFilter(key, preferences);
     const gameLevels = game.levels || (game.level ? [game.level] : []);
-    const brokenData = state.brokenSummary.get(key);
-    const reportItem = state.reportByUrl.get(normalizeUrl(game.url));
+    const brokenData = preferences.brokenSummary.get(key);
+    const reportItem = preferences.reportByUrl.get(normalizeUrl(game.url));
     const brokenByReport = isBrokenByReportItem(reportItem);
     const isBroken = (brokenData?.count || 0) >= REPORT_THRESHOLD
       || Boolean(brokenData?.adminReported)
@@ -136,7 +136,7 @@ export function computeFilteredGames(games, criteria) {
       if (!termWords.every((w) => fuzzyWordMatch(w, haystack))) return false;
     }
 
-    if (onlyFavorites && !state.favorites.has(key)) return false;
+    if (onlyFavorites && !preferences.favorites.has(key)) return false;
     if (onlySubmissions && !game._isSubmission) return false;
     if (minRating > 0 && filterRating < minRating) return false;
 

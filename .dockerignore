@@ -6,3 +6,7 @@ node_modules
 reports/auditoria-cataleg-*.md
 reports/language-audit.json
 *.log
+
+/test-results
+/playwright-report
+/tests

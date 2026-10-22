@@ -3,6 +3,10 @@ export const LANGS = ["es", "ca", "va", "en"];
 
 const strings = {
   es: {
+    catalogue_action_error: "No se ha podido guardar el cambio. Vuelve a intentarlo.",
+    catalogue_no_language: "Idioma no definido",
+    catalogue_loading: "Cargando catálogo…",
+    catalogue_load_error: "No se ha podido abrir el catálogo. Recarga la página.",
     subtitle: "Juegos educativos seleccionados para Infantil, Primaria y Secundaria, con filtros rápidos para encontrar la actividad perfecta en cada momento.",
     auth_title: "Cuenta",
     auth_loading: "Conectando cuenta...",
@@ -101,6 +105,10 @@ const strings = {
     footer_source: "Código fuente",
   },
   ca: {
+    catalogue_action_error: "No s’ha pogut desar el canvi. Torna-ho a provar.",
+    catalogue_no_language: "Idioma no definit",
+    catalogue_loading: "Carregant catàleg…",
+    catalogue_load_error: "No s’ha pogut obrir el catàleg. Torna a carregar la pàgina.",
     subtitle: "Jocs educatius seleccionats per a Infantil, Primària i Secundària, amb filtres ràpids per trobar l'activitat perfecta en cada moment.",
     auth_title: "Compte",
     auth_loading: "Connectant compte...",
@@ -199,6 +207,10 @@ const strings = {
     footer_source: "Codi font",
   },
   va: {
+    catalogue_action_error: "No s’ha pogut guardar el canvi. Torna-ho a provar.",
+    catalogue_no_language: "Idioma no definit",
+    catalogue_loading: "Carregant catàleg…",
+    catalogue_load_error: "No s’ha pogut obrir el catàleg. Torna a carregar la pàgina.",
     auth_signout: "Tancar sessió",
     logout_btn: "Eixir",
     student_logout_default: "Eixir alumnat",
@@ -211,6 +223,10 @@ const strings = {
     favorite_remove: "Traure de favorits",
   },
   en: {
+    catalogue_action_error: "Could not save the change. Try again.",
+    catalogue_no_language: "Language not defined",
+    catalogue_loading: "Loading catalogue…",
+    catalogue_load_error: "Could not open the catalogue. Reload the page.",
     subtitle: "Educational games selected for Preschool, Primary and Secondary, with quick filters to find the perfect activity at any time.",
     auth_title: "Account",
     auth_loading: "Connecting account...",

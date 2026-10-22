@@ -1,6 +1,6 @@
 # Banc de recursos
 
-Directori de jocs educatius per a Infantil, Primària i Secundària. Lloc estàtic (HTML + CSS + JS pur) amb sincronització via API autoalojada (FastAPI + SQLite).
+Directori de jocs educatius per a Infantil, Primària i Secundària. Lloc estàtic (HTML + CSS, catàleg Vue precompilat i mòduls JavaScript) amb sincronització via API autoalojada (FastAPI + SQLite).
 
 🌐 **Producció**: [recursos.edutictac.es](https://recursos.edutictac.es)
 
@@ -52,8 +52,14 @@ Directori de jocs educatius per a Infantil, Primària i Secundària. Lloc estàt
 ```bash
 git clone https://github.com/sasogu/recursos.git
 cd recursos
-npm install
+npm ci --ignore-scripts
+npm run build
+npm test
 ```
+
+Cal Node 22.12 o posterior per a compilar. El bundle versionat permet servir
+el lloc amb nginx sense Node en execució. El [pla Vue](docs/VUE_MIGRATION.md)
+recull l’arquitectura, les fases pendents i les comprovacions.
 
 ---
 

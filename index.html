@@ -108,85 +108,12 @@
         </div>
       </div>
 
-      <label>
-        <span data-i18n="search_label">Buscar</span>
-        <input id="searchInput" type="search" placeholder="Título, área o notas" data-i18n-placeholder="search_placeholder" />
-      </label>
-
-      <label>
-        <span data-i18n="level_label">Etapa</span>
-        <select id="levelFilter">
-          <option value="" data-i18n="level_all">Todas</option>
-        </select>
-      </label>
-
-      <label>
-        <span data-i18n="language_label">Idioma</span>
-        <select id="languageFilter">
-          <option value="" data-i18n="language_all">Todos</option>
-        </select>
-      </label>
-
-      <label>
-        <span data-i18n="area_label">Materia</span>
-        <select id="areaFilter">
-          <option value="" data-i18n="area_all">Todas</option>
-        </select>
-      </label>
-
-      <label>
-        <span data-i18n="format_label">Formato</span>
-        <select id="formatFilter">
-          <option value="" data-i18n="format_all">Todos</option>
-        </select>
-      </label>
-
-      <label>
-        <span data-i18n="rating_min_label">Valoracion minima</span>
-        <select id="ratingFilter">
-          <option value="0" data-i18n="rating_all_filter">Todas</option>
-          <option value="1">1★+</option>
-          <option value="2">2★+</option>
-          <option value="3">3★+</option>
-          <option value="4">4★+</option>
-          <option value="5">5★</option>
-        </select>
-      </label>
-
-      <label class="check-wrap">
-        <input id="favoritesOnly" type="checkbox" />
-        <span data-i18n="favorites_only">Solo mis favoritos</span>
-      </label>
-
-      <label class="check-wrap">
-        <input id="submissionsOnly" type="checkbox" />
-        <span data-i18n="submissions_only">Solo propuestas</span>
-      </label>
-
-      <label id="brokenOnlyLabel" class="check-wrap hidden">
-        <input id="brokenOnly" type="checkbox" />
-        <span data-i18n="broken_only">No funciona (admin)</span>
-      </label>
-
-      <label id="reportedOnlyLabel" class="check-wrap hidden">
-        <input id="reportedOnly" type="checkbox" />
-        <span data-i18n="reported_only">Reportades (admin)</span>
-      </label>
+      <div id="catalogueFilters"></div>
 
       <p id="personalPrefsNote" class="personal-note" data-i18n="personal_prefs_note_local">Favoritos y valoraciones se guardan solo en este navegador (localStorage).</p>
     </section>
 
-    <section>
-      <div class="results-head">
-        <h2 data-i18n="section_title">Juegos</h2>
-        <p id="resultCount"></p>
-      </div>
-      <div id="grid" class="grid" aria-live="polite"></div>
-      <div class="load-more-wrap">
-        <button id="loadMoreBtn" class="btn-load-more hidden"></button>
-      </div>
-      <p id="emptyState" class="empty hidden" data-i18n="empty">No hay resultados con los filtros actuales.</p>
-    </section>
+    <section id="catalogueApp"></section>
 
     <section id="sourcesPanel" class="sources-panel hidden" aria-live="polite">
       <h2 data-i18n="sources_title">Fuentes de recursos</h2>

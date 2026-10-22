@@ -1014,3 +1014,8 @@ code {
     grid-template-columns: 1fr;
   }
 }
+
+/* The Vue filters retain the existing controls grid. */
+#catalogueFilters { display: contents; }
+#catalogueApp, .card { min-width: 0; }
+.card h3, .card .note { overflow-wrap: anywhere; }

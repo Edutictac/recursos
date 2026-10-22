@@ -1,4 +1,4 @@
-const CACHE_NAME = "recursos-v1.19.5";
+const CACHE_NAME = "recursos-v1.20.0";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -9,6 +9,15 @@ const APP_SHELL = [
   "./scripts/app.js",
   "./scripts/api.js",
   "./scripts/i18n.js",
+  "./scripts/state.js",
+  "./scripts/filters.js",
+  "./scripts/render.js",
+  "./scripts/url-state.js",
+  "./scripts/sw-manager.js",
+  "./scripts/flash.js",
+  "./scripts/jclic.js",
+  "./scripts/external.js",
+  "./assets/ui/catalogue.js",
   "./data/games-home.json",
   "./data/games.json",
   "./reports/link-report.json",
@@ -77,8 +86,9 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
+  // Sessions and preferences must not survive as a cached response for another user.
   if (url.pathname.startsWith("/api/")) {
-    event.respondWith(networkFirst(request));
+    event.respondWith(fetch(request, {cache:"no-store"}));
     return;
   }
 

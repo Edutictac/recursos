@@ -5,3 +5,6 @@ assets/flash/
 data/archive-flash-state.json
 backups/
 assets/ruffle/
+
+/test-results/
+/playwright-report/

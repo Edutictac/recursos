@@ -56,16 +56,23 @@ async function api(path, { method = "GET", body } = {}) {
     body: body ? JSON.stringify(body) : undefined,
   });
   if (!res.ok) {
-    throw new Error(`API ${path} -> ${res.status}`);
+    const error = new Error(`API ${path} -> ${res.status}`);
+    error.status = res.status;
+    throw error;
   }
   return res.json();
 }
 
 export async function initPreferenceBackend() {
+  const epoch = ++state.preferenceEpoch;
+  state.isAdmin = false;
+  state.favorites = new Set(); state.userRatings = new Map();
+  state.userReports = new Set(); state.ratingSummary = new Map(); state.brokenSummary = new Map();
   loadLocalPreferences();
 
   try {
     const prefs = await api("/preferences");
+    if (epoch !== state.preferenceEpoch) return;
     state.isAdmin = Boolean(prefs.admin);
     state.favorites = new Set(Array.isArray(prefs.favorites) ? prefs.favorites : []);
     state.userRatings = new Map(
@@ -89,6 +96,7 @@ export async function initPreferenceBackend() {
     state.backendMode = "remote";
     state.authReady = true;
   } catch (error) {
+    if (epoch !== state.preferenceEpoch) return;
     console.warn("No se pudo conectar con la API, se mantiene modo local.", error);
     state.backendMode = "local";
     state.authReady = false;
@@ -96,8 +104,10 @@ export async function initPreferenceBackend() {
 }
 
 export async function loadSubmissions() {
+  const epoch = state.preferenceEpoch;
   if (state.backendMode !== "remote") return;
   const data = await api("/submissions");
+  if (epoch !== state.preferenceEpoch) return;
   state.submissions = (Array.isArray(data) ? data : []).map((d) => ({
     title: String(d.title || "").trim(),
     url: String(d.url || "").trim(),
@@ -111,6 +121,7 @@ export async function loadSubmissions() {
 }
 
 export async function toggleFavoritePreference(gameKeyValue) {
+  const epoch = state.preferenceEpoch;
   if (state.backendMode !== "remote") {
     if (state.favorites.has(gameKeyValue)) state.favorites.delete(gameKeyValue);
     else state.favorites.add(gameKeyValue);
@@ -118,12 +129,14 @@ export async function toggleFavoritePreference(gameKeyValue) {
     return state.favorites.has(gameKeyValue);
   }
   const res = await api("/favorites/toggle", { method: "POST", body: { game_key: gameKeyValue } });
+  if (epoch !== state.preferenceEpoch) throw new Error("preference_context_changed");
   if (res.favorite) state.favorites.add(gameKeyValue);
   else state.favorites.delete(gameKeyValue);
   return state.favorites.has(gameKeyValue);
 }
 
 export async function setRatingPreference(gameKeyValue, requestedRating) {
+  const epoch = state.preferenceEpoch;
   const clamped = Math.max(0, Math.min(5, Number(requestedRating) || 0));
   const current = state.userRatings.get(gameKeyValue) || 0;
 
@@ -136,6 +149,7 @@ export async function setRatingPreference(gameKeyValue, requestedRating) {
   }
 
   const res = await api("/ratings", { method: "POST", body: { game_key: gameKeyValue, value: clamped } });
+  if (epoch !== state.preferenceEpoch) throw new Error("preference_context_changed");
   const next = Number(res.value) || 0;
   if (next > 0) state.userRatings.set(gameKeyValue, next);
   else state.userRatings.delete(gameKeyValue);
@@ -149,8 +163,10 @@ export async function setRatingPreference(gameKeyValue, requestedRating) {
 }
 
 export async function reportBroken(gameKeyValue) {
+  const epoch = state.preferenceEpoch;
   if (state.backendMode !== "remote") return;
   const res = await api("/reports", { method: "POST", body: { game_key: gameKeyValue } });
+  if (epoch !== state.preferenceEpoch) throw new Error("preference_context_changed");
   state.userReports.add(gameKeyValue);
   state.brokenSummary.set(gameKeyValue, {
     count: Number(res.count) || 1,
@@ -159,8 +175,10 @@ export async function reportBroken(gameKeyValue) {
 }
 
 export async function hideResource(gameKeyValue) {
+  const epoch = state.preferenceEpoch;
   if (state.backendMode !== "remote" || !isAdmin()) return;
   const res = await api("/admin/resources/hide", { method: "POST", body: { game_key: gameKeyValue } });
+  if (epoch !== state.preferenceEpoch) throw new Error("preference_context_changed");
   state.brokenSummary.set(gameKeyValue, {
     count: Number(res.count) || 0,
     adminReported: Boolean(res.admin_reported),
@@ -168,8 +186,10 @@ export async function hideResource(gameKeyValue) {
 }
 
 export async function unhideResource(gameKeyValue) {
+  const epoch = state.preferenceEpoch;
   if (state.backendMode !== "remote" || !isAdmin()) return;
   const res = await api("/admin/resources/unhide", { method: "POST", body: { game_key: gameKeyValue } });
+  if (epoch !== state.preferenceEpoch) throw new Error("preference_context_changed");
   state.brokenSummary.set(gameKeyValue, { count: 0, adminReported: false });
   return res;
 }
@@ -185,6 +205,7 @@ export async function submitActivity({ title, url, notes, area, language, name }
 export async function loadSources() {
   if (!isAdmin()) return null;
   const data = await api("/admin/sources");
+  if (!isAdmin()) return null;
   return Array.isArray(data?.providers) ? data.providers : [];
 }
 

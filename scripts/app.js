@@ -1,12 +1,9 @@
 import { i18n, areaLabel, languageLabel, levelLabel, detectLang, setLang, getLang } from "./i18n.js";
 import { registerServiceWorker, updateSwVersionFromSource } from "./sw-manager.js";
-import { initOfflineBanner, readFiltersFromUrl, syncFiltersToUrl } from "./url-state.js";
+import { initOfflineBanner } from "./url-state.js";
 import { state } from "./state.js";
-import {
-  uniqueValues, uniqueLevelValues, uniqueLanguageValues,
-  computeFilteredGames, buildReportIndex,
-} from "./filters.js";
-import { clearSelect, fillSelect, updateSelectLabels, buildCard } from "./render.js";
+import {uniqueValues, uniqueLanguageValues, buildReportIndex} from './filters.js';
+import {clearSelect, fillSelect} from './render.js';
 import {
   initPreferenceBackend, loadSubmissions,
   toggleFavoritePreference, setRatingPreference, reportBroken,
@@ -17,25 +14,9 @@ import {
 const dataUrl = "./data/games.json";
 const homeDataUrl = "./data/games-home.json";
 const reportUrl = "./reports/link-report.json";
-const PAGE_SIZE = 48;
+let catalogue, federationSequence = 0;
 
 // DOM refs
-const searchInput = document.querySelector("#searchInput");
-const levelFilter = document.querySelector("#levelFilter");
-const languageFilter = document.querySelector("#languageFilter");
-const areaFilter = document.querySelector("#areaFilter");
-const formatFilter = document.querySelector("#formatFilter");
-const favoritesOnly = document.querySelector("#favoritesOnly");
-const submissionsOnly = document.querySelector("#submissionsOnly");
-const brokenOnly = document.querySelector("#brokenOnly");
-const brokenOnlyLabel = document.querySelector("#brokenOnlyLabel");
-const reportedOnly = document.querySelector("#reportedOnly");
-const reportedOnlyLabel = document.querySelector("#reportedOnlyLabel");
-const ratingFilter = document.querySelector("#ratingFilter");
-const grid = document.querySelector("#grid");
-const loadMoreBtn = document.querySelector("#loadMoreBtn");
-const resultCount = document.querySelector("#resultCount");
-const emptyState = document.querySelector("#emptyState");
 const offlineBanner = document.querySelector("#offlineBanner");
 const personalPrefsNote = document.querySelector("#personalPrefsNote");
 const authPanel = document.querySelector("#authPanel");
@@ -64,16 +45,6 @@ const submitCancelBtn = document.querySelector("#submitCancelBtn");
 const submitFeedback = document.querySelector("#submitFeedback");
 const submitSendBtn = document.querySelector("#submitSendBtn");
 
-const cardDeps = {
-  onFavoriteToggle: toggleFavoritePreference,
-  onRatingSet: setRatingPreference,
-  onReport: reportBroken,
-  onHide: hideResource,
-  onUnhide: unhideResource,
-  onRender: () => render(),
-  favoritesOnlyEl: favoritesOnly,
-};
-
 setLang(detectLang());
 registerServiceWorker();
 updateSwVersionFromSource();
@@ -90,30 +61,39 @@ state._onAuthChange = () => {
 
 boot().catch((error) => {
   console.error("No se pudo iniciar la aplicacion", error);
+  state.isPartialLoad = false; state.catalogueError = true; render();
 });
 
 async function boot() {
-  const homeGames = await fetchJson(homeDataUrl);
+  try {
+    const {mountCatalogue} = await import('/assets/ui/catalogue.js');
+    catalogue = mountCatalogue(document.querySelector('#catalogueApp'), {onAction: catalogueAction});
+  } catch {
+    const output=document.querySelector('#catalogueApp');
+    output.textContent=i18n('catalogue_load_error');
+    output.setAttribute('role','alert');
+    return;
+  }
+
+  const homeGames = await fetchJson(homeDataUrl, true) || await fetchJson(dataUrl);
   state.games = Array.isArray(homeGames) ? homeGames : [];
   state.isPartialLoad = true;
 
   await initPreferenceBackend();
   updateAuthUi();
   updateLoginBtn();
-  hydrateFilterOptions();
   applyStaticTranslations();
   updatePreferencesNote();
   updateLangButtons();
   wireEvents();
-  readFiltersFromUrl({ searchInput, levelFilter, languageFilter, areaFilter, ratingFilter, favoritesOnly });
   render();
   loadFederatedResources()
-    .then(() => { hydrateFilterOptions(); render(); })
+    .then(() => { render(); })
     .catch((error) => console.warn("No se pudo cargar EduHoot", error));
 
   if (state.backendMode === "remote") {
     loadSubmissions()
-      .then(() => { hydrateFilterOptions(); render(); })
+      .then(() => { render(); })
       .catch((err) => console.warn("Error en carregar propostes", err));
   }
 
@@ -129,13 +109,12 @@ async function boot() {
       state.reportSummary = report.summary || null;
     }
 
-    hydrateFilterOptions();
     render();
     return loadFederatedResources();
   }).then(() => {
-    hydrateFilterOptions();
     render();
   }).catch((error) => {
+    state.isPartialLoad = false; render();
     console.warn("Error en càrrega completa de dades", error);
   });
 }
@@ -163,6 +142,7 @@ function federatedGame(resource) {
 }
 
 async function loadFederatedResources() {
+  const sequence = ++federationSequence, epoch = state.preferenceEpoch;
   const results = await Promise.allSettled([
     fetch("/api/resources?provider=eduhoot&limit=200", {credentials:"same-origin"}).then(async r => {
       if (!r.ok) throw new Error("EduHoot unavailable");
@@ -179,11 +159,11 @@ async function loadFederatedResources() {
       return books;
     })(),
   ]);
+  if (sequence !== federationSequence || epoch !== state.preferenceEpoch) return;
   const resources=results.flatMap(r => r.status==="fulfilled" ? r.value : []);
   const federated=resources.map(r => ({...federatedGame(r),
     url:r.play_url || r.source_url || "", download_url:r.download_url || ""}));
   state.games=state.games.filter(g => !g._isFederated && g.provider!=="edutictac-llibres" && g.source!=="edutictac-llibres").concat(federated);
-  state.isPartialLoad=false;
 }
 
 async function fetchJson(url, optional = false) {
@@ -204,61 +184,17 @@ function allGames() {
   return state.submissions.length > 0 ? [...state.games, ...state.submissions] : state.games;
 }
 
-function hydrateFilterOptions() {
-  const games = allGames();
-  const saved = { level: levelFilter.value, language: languageFilter.value, area: areaFilter.value, format: formatFilter.value };
-  clearSelect(levelFilter);
-  clearSelect(languageFilter);
-  clearSelect(areaFilter);
-  clearSelect(formatFilter);
-  fillSelect(levelFilter, uniqueLevelValues(games), levelLabel);
-  fillSelect(languageFilter, uniqueLanguageValues(games), languageLabel);
-  fillSelect(areaFilter, uniqueValues(games, "area"), areaLabel);
-  fillSelect(formatFilter, uniqueValues(games, "format"));
-  levelFilter.value = saved.level;
-  languageFilter.value = saved.language;
-  areaFilter.value = saved.area;
-  formatFilter.value = saved.format;
-}
-
-function updateDynamicFilterLabels() {
-  updateSelectLabels(levelFilter, levelLabel);
-  updateSelectLabels(languageFilter, languageLabel);
-  updateSelectLabels(areaFilter, areaLabel);
-}
-
 function render() {
-  const criteria = {
-    term: searchInput.value.trim(),
-    selectedLevel: levelFilter.value,
-    selectedLanguage: languageFilter.value,
-    selectedArea: areaFilter.value,
-    selectedFormat: formatFilter.value,
-    onlyFavorites: favoritesOnly.checked,
-    onlySubmissions: submissionsOnly?.checked,
-    onlyBroken: brokenOnly?.checked,
-    onlyReported: reportedOnly?.checked,
-    minRating: Number(ratingFilter.value || 0),
-  };
-  const games = allGames();
-  state.filtered = computeFilteredGames(games, criteria);
-  state.visibleCount = 0;
-  grid.innerHTML = "";
-  showMore();
-  resultCount.textContent = i18n("result_count", state.filtered.length, games.length);
-  emptyState.classList.toggle("hidden", state.filtered.length > 0);
-  syncFiltersToUrl({ searchInput, levelFilter, languageFilter, areaFilter, ratingFilter, favoritesOnly });
+  catalogue?.setContext({games:allGames(),favorites:new Set(state.favorites),userRatings:new Map(state.userRatings),
+    ratingSummary:new Map(state.ratingSummary),userReports:new Set(state.userReports),brokenSummary:new Map(state.brokenSummary),
+    reportByUrl:new Map(state.reportByUrl),backendMode:state.backendMode,isAdmin:isAdmin(),epoch:state.preferenceEpoch,loading:state.isPartialLoad,error:state.catalogueError});
 }
 
-function showMore() {
-  const batch = state.filtered.slice(state.visibleCount, state.visibleCount + PAGE_SIZE);
-  for (const game of batch) {
-    grid.append(buildCard(game, cardDeps));
-  }
-  state.visibleCount += batch.length;
-  const remaining = state.filtered.length - state.visibleCount;
-  loadMoreBtn.classList.toggle("hidden", remaining <= 0);
-  if (remaining > 0) loadMoreBtn.textContent = i18n("load_more", remaining);
+async function catalogueAction(type,key,value,epoch) {
+  if (epoch !== state.preferenceEpoch) { render(); throw new Error("preference_context_changed"); }
+  const actions={favorite:()=>toggleFavoritePreference(key),rating:()=>setRatingPreference(key,value),report:()=>reportBroken(key),hide:()=>hideResource(key),unhide:()=>unhideResource(key)};
+  if(!actions[type])return;
+  await actions[type](); render();
 }
 
 function updateAuthUi() {
@@ -272,8 +208,6 @@ function updateAuthUi() {
 
   authPanel.classList.remove("hidden");
   if (submitActivityBtn) submitActivityBtn.classList.remove("hidden");
-  if (brokenOnlyLabel) brokenOnlyLabel.classList.toggle("hidden", !isAdmin());
-  if (reportedOnlyLabel) reportedOnlyLabel.classList.toggle("hidden", !isAdmin());
 
   if (sourcesPanel) {
     sourcesPanel.classList.toggle("hidden", !isAdmin());
@@ -357,18 +291,6 @@ function updatePreferencesNote() {
 }
 
 function wireEvents() {
-  searchInput.addEventListener("input", render);
-  levelFilter.addEventListener("change", render);
-  languageFilter.addEventListener("change", render);
-  areaFilter.addEventListener("change", render);
-  formatFilter.addEventListener("change", render);
-  favoritesOnly.addEventListener("change", render);
-  if (submissionsOnly) submissionsOnly.addEventListener("change", render);
-  if (brokenOnly) brokenOnly.addEventListener("change", render);
-  if (reportedOnly) reportedOnly.addEventListener("change", render);
-  ratingFilter.addEventListener("change", render);
-  loadMoreBtn.addEventListener("click", showMore);
-
   if (submitActivityBtn) submitActivityBtn.addEventListener("click", openSubmitDialog);
   if (submitCancelBtn) submitCancelBtn.addEventListener("click", () => submitDialog?.close());
   if (submitDialog) {
@@ -392,7 +314,6 @@ function wireEvents() {
       setLang(btn.dataset.lang);
       updateLangButtons();
       applyStaticTranslations();
-      updateDynamicFilterLabels();
       updatePreferencesNote();
       updateAuthUi();
       updateLoginBtn();
@@ -439,7 +360,6 @@ async function handleSubmitForm(e) {
     showSubmitFeedback(i18n("submit_success"), "ok");
     submitForm?.reset();
     await loadSubmissions();
-    hydrateFilterOptions();
     render();
     setTimeout(() => submitDialog?.close(), 1800);
   } catch (error) {

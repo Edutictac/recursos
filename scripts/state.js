@@ -7,8 +7,6 @@ export const DEFAULT_GAME_IMAGE = "./assets/game-images/generic-game.svg";
 export const state = {
   games: [],
   submissions: [],
-  filtered: [],
-  visibleCount: 0,
   isPartialLoad: false,
   reportByUrl: new Map(),
   reportSummary: null,
@@ -22,4 +20,5 @@ export const state = {
   isTeacher: false,
   backendMode: "local",
   authReady: false,
+  preferenceEpoch: 0,
 };
