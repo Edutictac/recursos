@@ -10,3 +10,11 @@ reports/language-audit.json
 /test-results
 /playwright-report
 /tests
+
+**/.recall
+
+**/.git
+
+**/.env
+
+**/.env.*
