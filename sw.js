@@ -1,4 +1,4 @@
-const CACHE_NAME = "recursos-v1.25.0";
+const CACHE_NAME = "recursos-v1.25.1";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -6,6 +6,7 @@ const APP_SHELL = [
   "./robots.txt",
   "./sitemap.xml",
   "./styles/site.css",
+  "./styles/edutictac-footer.css",
   "./scripts/app.js",
   "./scripts/api.js",
   "./scripts/i18n.js",

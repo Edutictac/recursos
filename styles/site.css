@@ -57,8 +57,7 @@ body {
 }
 
 .hero,
-.container,
-.footer {
+.container {
   position: relative;
   z-index: 1;
 }
@@ -949,30 +948,6 @@ select:focus {
 .empty {
   color: var(--ink-soft);
   font-weight: 600;
-}
-
-.footer {
-  max-width: 1120px;
-  margin: 0 auto;
-  padding: 0 1rem 2rem;
-  color: var(--ink-soft);
-  font-size: 0.9rem;
-  text-align: center;
-}
-
-.edutictac-footer-logo {
-  display: inline-block;
-  margin: 0 auto 1rem;
-}
-
-.edutictac-footer-logo img {
-  display: block;
-  width: 129px;
-  height: 55px;
-}
-
-.footer-meta {
-  margin: 0;
 }
 
 code {

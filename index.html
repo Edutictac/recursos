@@ -29,6 +29,7 @@
   <link rel="modulepreload" href="./scripts/i18n.js" />
   <link rel="modulepreload" href="./scripts/app.js" />
   <link rel="stylesheet" href="./styles/site.css" />
+  <link rel="stylesheet" href="./styles/edutictac-footer.css" />
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -111,18 +112,21 @@
     <section id="catalogueApp"></section>
 
     <div id="sourcesApp"></div>
-  </main>
 
-  <footer class="footer">
-    <a class="edutictac-footer-logo" href="https://edutictac.es" title="edutictac.es">
-      <img src="./assets/brand/edutictac-logo.png" width="129" height="55" alt="edutictac.es" />
-    </a>
-    <p class="footer-meta">
-      <a href="https://edutictac.es/privacitat.html" data-i18n="footer_privacy">Privacitat</a> ·
-      <a href="https://git.edutictac.es/Edutictac/recursos" target="_blank" rel="noopener" data-i18n="footer_source">Codi font</a> ·
-      AGPL-3.0
-    </p>
-  </footer>
+    <footer class="ett-footer">
+      <p class="ett-footer__id">
+        <span class="ett-footer__brand">EduTicTac</span>
+        <span aria-hidden="true">·</span>
+        <span class="ett-footer__service">Banc de recursos</span>
+      </p>
+      <div class="ett-footer__links">
+        <a href="https://edutictac.es/" data-i18n="footer_home">Inici</a>
+        <a href="https://edutictac.es/privacitat.html" data-i18n="footer_privacy">Privacitat</a>
+        <a href="https://git.edutictac.es/Edutictac/recursos" data-i18n="footer_source">Codi font</a>
+        <a href="https://git.edutictac.es/Edutictac/recursos/src/branch/main/LICENSE">AGPL-3.0</a>
+      </div>
+    </footer>
+  </main>
 
   <dialog id="flashDialog" class="flash-dialog" data-i18n-aria-label="flash_player_label" aria-label="Reproductor Flash">
     <div class="flash-header">

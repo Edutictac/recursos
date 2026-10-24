@@ -37,3 +37,17 @@ test('si Commons no respon, el selector d’idioma propi es queda',async({page})
  await bank(page);
  await expect(page.locator('.lang-switcher')).toBeVisible();
 });
+
+test('el peu comú no duplica el xip i té els enllaços del Banc',async({page})=>{
+ await bank(page,{commons:COMMONS});
+ const footer=page.locator('footer.ett-footer');
+ await expect(footer).toHaveCount(1);
+ await expect(footer.locator('.ett-footer__brand')).toHaveText('EduTicTac');
+ await expect(footer.locator('.ett-footer__service')).toHaveText('Banc de recursos');
+ await expect(footer.locator('.ett-footer__links a')).toHaveCount(4);
+ await expect(footer.locator('a[href="https://edutictac.es/"]')).toHaveCount(1);
+ await expect(footer.locator('a[href="https://edutictac.es/privacitat.html"]')).toHaveCount(1);
+ await expect(footer.locator('a[href="https://git.edutictac.es/Edutictac/recursos"]')).toHaveCount(1);
+ await expect(footer.locator('a', {hasText:'AGPL-3.0'})).toHaveCount(1);
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+});
