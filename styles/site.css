@@ -1026,3 +1026,12 @@ code {
 #authMount, #prefsMount { display: contents; }
 
 fieldset.submit-fields { margin: 0; padding: 0; border: 0; min-width: 0; }
+
+/* Xip de compte de Commons (chip verd, clar: el Banc encara no té tema fosc). */
+/* Per damunt del contingut: si no, el menú del xip quedaria davall (l’animació crea una capa pròpia). */
+.hero { position: relative; z-index: 20; }
+.banc-account { position: absolute; top: 1rem; right: 1rem; width: max-content; }
+.has-account-chip .lang-switcher { display: none; }
+@media (max-width: 640px) {
+  .banc-account { position: static; display: flex; justify-content: flex-end; margin: 0 0 .5rem auto; }
+}

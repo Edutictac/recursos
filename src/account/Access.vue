@@ -56,9 +56,10 @@ defineExpose({setContext});
   <Teleport to="#authMount">
     <div v-if="context.backendMode==='remote'" id="authPanel" class="auth-panel" aria-live="polite">
       <div class="auth-actions">
-        <a v-if="!checking" id="loginBtn" class="btn-auth secondary" @click="event=>{if(busy)event.preventDefault();}" :aria-disabled="busy" :href="identity.logged_in?'/api/auth/logout':'/api/auth/login'">{{t(identity.logged_in?'logout_btn':'login_btn')}}</a>
-        <button v-if="!identity.student_logged_in" id="studentLoginBtn" class="btn-auth secondary" :disabled="busy||checking" @click="open">{{t('student_login_btn')}}</button>
-        <button v-else id="studentLogoutBtn" class="btn-auth secondary" :disabled="busy||checking" @click="logout">{{t('student_logout_btn',identity.student_code||'')}}</button>
+        <!-- Amb la sessió central, entrar i eixir (docents i alumnat) es fa des del xip de Commons. -->
+        <a v-if="!checking && !identity.central" id="loginBtn" class="btn-auth secondary" @click="event=>{if(busy)event.preventDefault();}" :aria-disabled="busy" :href="identity.logged_in?'/api/auth/logout':'/api/auth/login'">{{t(identity.logged_in?'logout_btn':'login_btn')}}</a>
+        <button v-if="!identity.central && !identity.student_logged_in" id="studentLoginBtn" class="btn-auth secondary" :disabled="busy||checking" @click="open">{{t('student_login_btn')}}</button>
+        <button v-else-if="!identity.central" id="studentLogoutBtn" class="btn-auth secondary" :disabled="busy||checking" @click="logout">{{t('student_logout_btn',identity.student_code||'')}}</button>
         <button id="submitActivityBtn" class="btn-auth secondary" :disabled="busy||checking" @click="props.onPropose()">{{t('submit_btn')}}</button>
       </div>
       <p v-if="feedback==='session_error'" role="alert">{{t(feedback)}}</p>

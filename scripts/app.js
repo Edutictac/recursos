@@ -17,6 +17,32 @@ let catalogue, access, proposal, sources, federationSequence = 0, sessionSequenc
 // DOM refs
 const offlineBanner = document.querySelector("#offlineBanner");
 setLang(detectLang());
+
+// Xip de compte d'EduTicTac (Commons): tria l'idioma de la interfície amb les funcions del Banc
+// (no toca el filtre d'idioma dels continguts) i avisa quan la sessió canvia.
+window.edutictacLanguage = {
+  languages: ["ca", "va", "es", "en"],
+  get: () => getLang(),
+  set: (lang) => {
+    setLang(lang);
+    updateLangButtons();
+    applyStaticTranslations();
+    render();
+  },
+};
+window.addEventListener("edutictac:sessionchange", () => { void refreshSession(); });
+// El selector propi d'idioma només s'amaga quan el xip ja s'ha pintat; si Commons no
+// respon, continua disponible.
+window.customElements?.whenDefined("edutictac-account").then(() => {
+  let tries = 0;
+  (function ready() {
+    if (document.querySelector("edutictac-account .eta-home, edutictac-account summary")) {
+      document.documentElement.classList.add("has-account-chip");
+    } else if (++tries < 50) {
+      window.setTimeout(ready, 100);
+    }
+  })();
+});
 registerServiceWorker();
 updateSwVersionFromSource();
 initOfflineBanner(offlineBanner, i18n);
