@@ -30,6 +30,14 @@ test('offline session requests never recover a previous cached identity',async()
   await assert.rejects(response,/offline/);
 });
 
+test('the installation account origin is never recovered from the offline cache',async()=>{
+  const {listeners,stored}=await worker(true);
+  let response;
+  listeners.fetch({request:new Request('http://bank.test/scripts/commons-config.js'),respondWith:p=>response=p});
+  await assert.rejects(response,/offline/);
+  assert.deepEqual(stored,[]);
+});
+
 test('offline shell includes the compiled UI and its external module dependencies',async()=>{
   const {listeners,precached}=await worker();let done;
   listeners.install({waitUntil:p=>done=p});await done;
