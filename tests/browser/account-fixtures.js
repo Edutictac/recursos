@@ -1,11 +1,12 @@
 import {expect} from '@playwright/test';
 // commons: carpeta amb els fitxers del xip de Commons (simula https://commons.edutictac.es);
 // central: l'API respon com amb RECURSOS_CENTRAL_SESSION=1.
-export async function bank(page,{admin=false,teacher=false,remote=true,commons=null,central=false,session=null}={}){
+export async function bank(page,{admin=false,teacher=false,remote=true,commons=null,central=false,session=null,commonsBase="https://commons.edutictac.es"}={}){
  const model={student:false,admin,teacher,calls:[],submissions:[],providers:[]};
  await page.addInitScript(()=>{if(window.top===window)localStorage.setItem('recursos-lang','va');});
  await page.route('**/*',route=>new URL(route.request().url()).hostname==='127.0.0.1'?route.continue():route.abort());
- if(commons)await page.route('https://commons.edutictac.es/**',route=>{
+ if(commonsBase!=='https://commons.edutictac.es')await page.route('**/scripts/commons-config.js',route=>route.fulfill({contentType:'application/javascript',body:`window.EDUTICTAC_COMMONS_LOCAL=true;window.EDUTICTAC_COMMONS_URL=${JSON.stringify(commonsBase)};`}));
+ if(commons)await page.route(commonsBase+'/**',route=>{
   const url=new URL(route.request().url());
   if(url.pathname.startsWith('/assets/'))return route.fulfill({path:commons+'/'+url.pathname.split('/').pop()});
   if(url.pathname==='/api/auth/session')return route.fulfill({json:session||{authenticated:false,kind:'anonymous',login_available:true,links:{login:'/api/auth/oidc/login?next=x',teacher:'/teacher.html',student:'/student.html',logout:'/api/auth/session/logout'}},headers:{'Access-Control-Allow-Origin':'http://127.0.0.1:18086','Access-Control-Allow-Credentials':'true'}});
@@ -15,7 +16,7 @@ export async function bank(page,{admin=false,teacher=false,remote=true,commons=n
  await page.route('**/reports/link-report.json',route=>route.fulfill({json:{results:[]}}));
  await page.route('**/api/**',route=>{
   const path=new URL(route.request().url()).pathname,method=route.request().method();
-  if(new URL(route.request().url()).hostname!=='127.0.0.1')return route.fallback();
+  if(new URL(route.request().url()).origin!=='http://127.0.0.1:18086')return route.fallback();
   if(method==='POST')model.calls.push({path,body:route.request().postDataJSON()});
   if(path==='/api/preferences')return route.fulfill({status:remote?200:503,json:{admin:model.admin,favorites:model.student?['https://games.example.test/a']:[],ratings:{},reports:[],rating_summary:{},broken_reports:{}}});
   if(path==='/api/auth/me')return route.fulfill({json:{logged_in:model.teacher,student_logged_in:model.student,student_code:model.student?'TEST01':'',admin:model.admin,central}});

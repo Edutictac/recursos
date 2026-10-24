@@ -90,7 +90,7 @@
     </h1>
     <p class="subtitle" data-i18n="subtitle">Juegos educativos seleccionados para Infantil y Primaria, con filtros rápidos para encontrar la actividad perfecta en cada momento.</p>
     <!-- Xip de compte comú d'EduTicTac: «Inici», sessió de Commons i idioma de la interfície. -->
-    <edutictac-account class="banc-account" data-base="https://commons.edutictac.es"></edutictac-account>
+    <edutictac-account class="banc-account"></edutictac-account>
     <div class="lang-switcher" role="group" aria-label="Idioma de la interfaz / Idioma de la interfície">
       <button class="btn-lang" data-lang="es" title="Español">ES</button>
       <button class="btn-lang" data-lang="ca" title="Català">CA</button>
@@ -162,6 +162,7 @@
 
   <script type="module" src="./scripts/app.js"></script>
   <!-- Després d'app.js, que registra el ganxo d'idioma. Porta el seu CSS i no bloqueja la pàgina. -->
-  <script src="https://commons.edutictac.es/assets/account-widget.js" defer></script>
+  <script src="./scripts/commons-config.js"></script>
+  <script src="./scripts/commons-account.js" defer></script>
 </body>
 </html>

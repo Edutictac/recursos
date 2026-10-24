@@ -1,4 +1,4 @@
-const CACHE_NAME = "recursos-v1.25.0";
+const CACHE_NAME = "recursos-v1.25.1";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -7,6 +7,7 @@ const APP_SHELL = [
   "./sitemap.xml",
   "./styles/site.css",
   "./scripts/app.js",
+  "./scripts/commons-account.js",
   "./scripts/api.js",
   "./scripts/i18n.js",
   "./scripts/language-preference.js",
@@ -74,6 +75,12 @@ self.addEventListener("fetch", (event) => {
 
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) {
+    return;
+  }
+
+  // La configuració depén de la instal·lació i del port actual de Commons.
+  if (url.pathname.endsWith('/scripts/commons-config.js')) {
+    event.respondWith(fetch(request, {cache: "no-store"}));
     return;
   }
 

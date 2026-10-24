@@ -11,6 +11,8 @@ RUN node scripts/fetch-ruffle.mjs
 
 FROM nginx:1.27-alpine
 
+ENV COMMONS_PORT=8082
+
 COPY . /usr/share/nginx/html
 COPY --from=ruffle /build/assets/ruffle /usr/share/nginx/html/assets/ruffle
-COPY nginx.local.conf /etc/nginx/conf.d/default.conf
+COPY nginx.local.conf /etc/nginx/templates/default.conf.template

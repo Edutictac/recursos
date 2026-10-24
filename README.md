@@ -271,6 +271,17 @@ No executa projectes `.elpx`: l'editable opcional només es descarrega des del l
 
 ## Idioma compartido con Commons
 
+El xip de compte es carrega des de Commons. En la web pública, l’origen es
+definix en `scripts/commons-config.js`. En Docker, nginx genera eixa resposta
+amb el mateix nom/IP usat pel navegador i el port `COMMONS_PORT` (8082 per
+defecte); Commons proporciona el seu `PORTAL_PORT`. Així també funciona amb
+IP, mDNS i Tailnet sense consultar el compte públic. El botó Inici torna al
+portal local. Esta configuració no es guarda en el service worker.
+
+Per compartir també la identitat i els favorits, l’API ha d’activar
+`RECURSOS_CENTRAL_SESSION=1` i configurar `RECURSOS_COMMONS_URL` amb l’adreça
+del portal. El valor `0` conserva l’accés independent del Banc.
+
 La interfaz ofrece ES/CA/VA/EN y conserva la elección en la cookie funcional
 `edutictac_language` compartida entre subdominios de `edutictac.es`. No contiene
 identidad ni sustituye el acceso a la cuenta. En instalaciones independientes se

@@ -37,3 +37,14 @@ test('si Commons no respon, el selector d’idioma propi es queda',async({page})
  await bank(page);
  await expect(page.locator('.lang-switcher')).toBeVisible();
 });
+
+test('el contenidor local usa el seu portal i torna a l’inici local',async({page})=>{
+ const local='http://127.0.0.1:18082';
+ const external=[];
+ page.on('request',request=>{if(new URL(request.url()).hostname==='commons.edutictac.es')external.push(request.url());});
+ await bank(page,{central:true,commons:COMMONS,commonsBase:local,session:teacher});
+ const widget=page.locator('edutictac-account');
+ await expect(widget.locator('summary')).toHaveAttribute('aria-label',/Laia Ferrer/);
+ await expect(widget.locator('.eta-home')).toHaveAttribute('href',local+'/');
+ expect(external).toEqual([]);
+});
