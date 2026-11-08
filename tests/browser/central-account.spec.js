@@ -44,9 +44,10 @@ test('el peu comú no duplica el xip i té els enllaços del Banc',async({page})
  await expect(footer).toHaveCount(1);
  await expect(footer.locator('.ett-footer__brand')).toHaveText('EduTicTac');
  await expect(footer.locator('.ett-footer__service')).toHaveText('Banc de recursos');
- await expect(footer.locator('.ett-footer__links a')).toHaveCount(4);
+ await expect(footer.locator('.ett-footer__links a')).toHaveCount(6);
  await expect(footer.locator('a[href="https://edutictac.es/"]')).toHaveCount(1);
  await expect(footer.locator('a[href="https://edutictac.es/privacitat.html"]')).toHaveCount(1);
+ await expect(footer.locator('a[href="https://edutictac.es/termes.html"]')).toHaveCount(1);
  await expect(footer.locator('a[href="https://git.edutictac.es/Edutictac/recursos"]')).toHaveCount(1);
  await expect(footer.locator('a', {hasText:'AGPL-3.0'})).toHaveCount(1);
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);

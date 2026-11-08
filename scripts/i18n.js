@@ -118,6 +118,7 @@ const strings = {
     footer_home: "Inicio",
     footer_privacy: "Privacidad",
     footer_cookies: "Cookies",
+    footer_terms: "Términos",
     footer_source: "Código fuente",
   },
   ca: {
@@ -235,6 +236,7 @@ const strings = {
     footer_home: "Inici",
     footer_privacy: "Privacitat",
     footer_cookies: "Galetes",
+    footer_terms: "Termes",
     footer_source: "Codi font",
   },
   va: {
@@ -370,6 +372,7 @@ const strings = {
     footer_home: "Home",
     footer_privacy: "Privacy",
     footer_cookies: "Cookies",
+    footer_terms: "Terms",
     footer_source: "Source code",
   },
 };
