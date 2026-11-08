@@ -117,6 +117,7 @@ const strings = {
     iframe_player_label: "Reproductor extern",
     footer_home: "Inicio",
     footer_privacy: "Privacidad",
+    footer_cookies: "Cookies",
     footer_source: "Código fuente",
   },
   ca: {
@@ -233,6 +234,7 @@ const strings = {
     iframe_player_label: "Reproductor extern",
     footer_home: "Inici",
     footer_privacy: "Privacitat",
+    footer_cookies: "Galetes",
     footer_source: "Codi font",
   },
   va: {
@@ -367,6 +369,7 @@ const strings = {
     iframe_player_label: "External player",
     footer_home: "Home",
     footer_privacy: "Privacy",
+    footer_cookies: "Cookies",
     footer_source: "Source code",
   },
 };
