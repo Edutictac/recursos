@@ -81,6 +81,7 @@ export function applicationLabel(game) {
   const provider = game.provider || game.source;
   if (provider === "edutictac-play") return "Play";
   if (provider === "edutictac-llibres" || game.format === "llibres") return "Llibres";
+  if (provider === "edutictac-educrea" || game.format === "educrea") return "EduCrea";
   if (provider === "eduhoot" || game.format === "eduhoot") return "EduHoot";
   return "";
 }

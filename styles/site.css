@@ -1010,3 +1010,15 @@ fieldset.submit-fields { margin: 0; padding: 0; border: 0; min-width: 0; }
 @media (max-width: 640px) {
   .banc-account { position: static; display: flex; justify-content: flex-end; margin: 0 0 .5rem auto; }
 }
+
+.review-toolbar,
+.review-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+  margin: 0.4rem 0;
+}
+
+.review-row { gap: 0.35rem; }
+.review-feedback { color: #a33; font-size: 0.85rem; margin: 0.2rem 0 0; }

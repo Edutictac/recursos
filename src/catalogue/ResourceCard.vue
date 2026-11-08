@@ -22,7 +22,7 @@ const healthText=computed(()=> !health.value ? i18n('not_checked') : health.valu
 const image=computed(()=>safeUrl(props.game.image)||DEFAULT_GAME_IMAGE);
 const url=computed(()=>safeUrl(props.game.url));
 function safeUrl(raw) { if(!raw)return '';try{const u=new URL(raw,window.location.href);return ['http:','https:'].includes(u.protocol)&&!u.username&&!u.password?u.href:'';}catch{return '';}}
-const embedded=computed(()=>props.game.flash||['jclic','eduhoot','llibres'].includes(props.game.format));
+const embedded=computed(()=>props.game.flash||['jclic','eduhoot','llibres','educrea'].includes(props.game.format));
 function open() {
   if(!url.value)return;
   if(props.game.flash)openFlashDialog(url.value,props.game.title);
@@ -55,7 +55,7 @@ async function action(type,value) {
       <span class="tag">{{ areaLabel(game.area||'General') }}</span>
       <span v-for="level in game.levels||(game.level?[game.level]:[i18n('no_level')])" :key="level" class="tag">{{ levelLabel(level) }}</span>
       <span class="tag lang">{{ gameLanguageText(game)||i18n('catalogue_no_language') }}</span>
-      <span v-if="['jclic','h5p','eduhoot','scorm','llibres'].includes(game.format)" class="tag format">{{ game.format.toUpperCase() }}</span>
+      <span v-if="['jclic','h5p','eduhoot','scorm','llibres','educrea'].includes(game.format)" class="tag format">{{ game.format.toUpperCase() }}</span>
       <span v-if="applicationLabel(game)" class="tag application">{{ applicationLabel(game) }}</span>
       <span v-if="game.flash" class="tag flash">Flash</span>
     </div>

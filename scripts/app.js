@@ -12,7 +12,7 @@ import {
 const dataUrl = "./data/games.json";
 const homeDataUrl = "./data/games-home.json";
 const reportUrl = "./reports/link-report.json";
-let catalogue, access, proposal, sources, federationSequence = 0, sessionSequence = 0;
+let catalogue, access, proposal, sources, reviews, federationSequence = 0, sessionSequence = 0;
 
 // DOM refs
 const offlineBanner = document.querySelector("#offlineBanner");
@@ -54,9 +54,10 @@ boot().catch((error) => {
 
 async function boot() {
   try {
-    const {mountCatalogue, mountAccess, mountProposal, mountSources} = await import('/assets/ui/catalogue.js');
+    const {mountCatalogue, mountAccess, mountProposal, mountSources, mountReviews} = await import('/assets/ui/catalogue.js');
     catalogue = mountCatalogue(document.querySelector('#catalogueApp'), {onAction: catalogueAction});
     sources = mountSources(document.querySelector('#sourcesApp'));
+    reviews = mountReviews(document.querySelector('#reviewsApp'));
     proposal = mountProposal(document.querySelector('#proposalApp'), {onSubmitted:async()=>{await loadSubmissions();render();}});
     access = mountAccess(document.querySelector('#accessApp'), {onSessionChange:refreshSession,onPropose:()=>proposal?.open(),onBusy:value=>{state.sessionChanging=value;render();}});
   } catch {
@@ -156,12 +157,22 @@ async function loadFederatedResources() {
       }
       return books;
     })(),
+    (async () => {
+      const activities=[];
+      for (let offset=0; offset<10000; offset+=200) {
+        const r=await fetch("/api/resources?provider=edutictac-educrea&limit=200&offset="+offset,{cache:"no-store",credentials:"same-origin"});
+        if (!r.ok) throw new Error("EduCrea unavailable");
+        const data=await r.json(); const items=data.items || []; activities.push(...items);
+        if (items.length<200 || (Number.isFinite(data.total) && activities.length>=data.total)) break;
+      }
+      return activities;
+    })(),
   ]);
   if (sequence !== federationSequence || epoch !== state.preferenceEpoch) return;
   const resources=results.flatMap(r => r.status==="fulfilled" ? r.value : []);
   const federated=resources.map(r => ({...federatedGame(r),
     url:r.play_url || r.source_url || "", download_url:r.download_url || ""}));
-  state.games=state.games.filter(g => !g._isFederated && g.provider!=="edutictac-play" && g.source!=="edutictac-play" && g.provider!=="edutictac-llibres" && g.source!=="edutictac-llibres").concat(federated);
+  state.games=state.games.filter(g => !g._isFederated && g.provider!=="edutictac-play" && g.source!=="edutictac-play" && g.provider!=="edutictac-llibres" && g.source!=="edutictac-llibres" && g.provider!=="edutictac-educrea" && g.source!=="edutictac-educrea").concat(federated);
 }
 
 async function fetchJson(url, optional = false) {
@@ -184,6 +195,7 @@ function allGames() {
 
 function render() {
   sources?.setContext({backendMode:state.backendMode,isAdmin:isAdmin(),epoch:state.preferenceEpoch,sessionChanging:state.sessionChanging});
+  reviews?.setContext({backendMode:state.backendMode,isAdmin:isAdmin(),epoch:state.preferenceEpoch,sessionChanging:state.sessionChanging});
   access?.setContext({backendMode:state.backendMode,epoch:state.preferenceEpoch});
   proposal?.setContext({backendMode:state.backendMode,epoch:state.preferenceEpoch,games:allGames()});
   catalogue?.setContext({games:allGames(),favorites:new Set(state.favorites),userRatings:new Map(state.userRatings),

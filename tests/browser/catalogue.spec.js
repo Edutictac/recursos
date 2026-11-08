@@ -1,6 +1,6 @@
 import {test,expect} from '@playwright/test';
 const games=Array.from({length:55},(_,i)=>({id:'game-'+i,title:'Game '+i,title_ca:'Joc '+i,title_en:'Game EN '+i,url:'https://games.example.test/'+i,area:i%2?'Musica':'Matematicas',language:i%2?'Castellano':'Català/Valencià',levels:['Primaria'],format:i%2?'h5p':'html',notes:'Geometry numbers'}));
-async function bank(page,{remote=false,admin=false,items=games,books=[],play=[]}={}){
+async function bank(page,{remote=false,admin=false,items=games,books=[],play=[],educrea=[]}={}){
  const prefs={admin,favorites:[],ratings:{},reports:[],rating_summary:{},broken_reports:{}};const calls=[];
  await page.addInitScript(()=>localStorage.setItem('recursos-lang','va'));
  await page.route('**/*',route=>{const url=new URL(route.request().url());if(url.hostname!=='127.0.0.1')return route.abort();return route.continue();});
@@ -9,7 +9,7 @@ async function bank(page,{remote=false,admin=false,items=games,books=[],play=[]}
  await page.route('**/api/**',route=>{
   const path=new URL(route.request().url()).pathname,method=route.request().method();
   if(path==='/api/llibres/books')return route.fulfill({json:{items:books,more:false}});
-  if(path==='/api/resources'){const url=new URL(route.request().url());const offset=Number(url.searchParams.get('offset'))||0;return route.fulfill({json:{items:url.searchParams.get('provider')==='edutictac-play'?play.slice(offset,offset+200):[],total:play.length}});}
+  if(path==='/api/resources'){const url=new URL(route.request().url());const offset=Number(url.searchParams.get('offset'))||0;const provider=url.searchParams.get('provider');const source=provider==='edutictac-play'?play:provider==='edutictac-educrea'?educrea:[];return route.fulfill({json:{items:source.slice(offset,offset+200),total:source.length}});}
   if(path==='/api/preferences'&&remote)return route.fulfill({json:prefs});
   if(path==='/api/auth/me')return route.fulfill({json:{logged_in:remote,admin,student_logged_in:false}});
   if(path==='/api/submissions')return route.fulfill({json:[]});
@@ -214,4 +214,19 @@ test('Play té etiqueta pròpia, conserva H5P i filtra per aplicació amb enlla�
   await page.locator('[data-lang='+lang+']').click();
   await expect(page.locator('label').filter({has:page.locator('#applicationFilter')})).toContainText(label);
  }
+});
+
+
+test('les activitats aprovades d’EduCrea apareixen al catàleg i s’obrin al reproductor',async({page})=>{
+ const activity={provider:'edutictac-educrea',external_id:'educrea-1',title:'Bateria de proves',format:'educrea',play_url:'/educrea/activity',subject:'General',language:['Català/Valencià'],educational_stage:'Primària'};
+ await bank(page,{items:[],educrea:[activity]});
+ await expect(page.locator('#grid article')).toHaveCount(1);
+ await expect(page.locator('#grid h3')).toHaveText('Bateria de proves');
+ await expect(page.locator('#grid .tag.application')).toHaveText('EduCrea');
+ await expect(page.locator('#grid .tag.format')).toHaveText('EDUCREA');
+ await page.route('**/educrea/activity',route=>route.fulfill({contentType:'text/html',body:'<h1>Bateria</h1>'}));
+ await page.locator('#grid .card-image-link').click();
+ await expect(page.locator('#iframeDialog')).toBeVisible();
+ await expect(page.locator('#iframeContainer iframe')).toHaveAttribute('title','Bateria de proves');
+ await page.locator('#iframeClose').click();
 });
