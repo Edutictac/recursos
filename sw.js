@@ -1,4 +1,4 @@
-const CACHE_NAME = "recursos-v1.26.1-educrea-reviews";
+const CACHE_NAME = "recursos-v1.27.0-mine-filter";
 const APP_SHELL = [
   "./",
   "./index.html",
