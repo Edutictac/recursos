@@ -1,4 +1,4 @@
-const CACHE_NAME = "recursos-v1.27.1-jclic-reload";
+const CACHE_NAME = "recursos-v1.27.2-thumbnails";
 const APP_SHELL = [
   "./",
   "./index.html",
