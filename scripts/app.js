@@ -126,6 +126,7 @@ function federatedGame(resource) {
     image: resource.thumbnail_url || "",
     provider: resource.provider,
     external_id: resource.external_id,
+    owned: resource.owned === true,
     _isFederated: true,
   };
 }
@@ -201,7 +202,7 @@ function render() {
   proposal?.setContext({backendMode:state.backendMode,epoch:state.preferenceEpoch,games:allGames()});
   catalogue?.setContext({games:allGames(),favorites:new Set(state.favorites),userRatings:new Map(state.userRatings),
     ratingSummary:new Map(state.ratingSummary),userReports:new Set(state.userReports),brokenSummary:new Map(state.brokenSummary),
-    reportByUrl:new Map(state.reportByUrl),backendMode:state.backendMode,isAdmin:isAdmin(),epoch:state.preferenceEpoch,sessionChanging:state.sessionChanging,loading:state.isPartialLoad,error:state.catalogueError});
+    reportByUrl:new Map(state.reportByUrl),backendMode:state.backendMode,isAdmin:isAdmin(),isTeacher:state.isTeacher,epoch:state.preferenceEpoch,sessionChanging:state.sessionChanging,loading:state.isPartialLoad,error:state.catalogueError});
 }
 
 async function catalogueAction(type,key,value,epoch) {

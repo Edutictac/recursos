@@ -230,3 +230,18 @@ test('les activitats aprovades d’EduCrea apareixen al catàleg i s’obrin al 
  await expect(page.locator('#iframeContainer iframe')).toHaveAttribute('title','Bateria de proves');
  await page.locator('#iframeClose').click();
 });
+
+test('el filtre de publicacions pròpies només mostra les de l’usuari',async({page})=>{
+ const mine={provider:'edutictac-educrea',external_id:'educrea-mine',title:'Sopa pròpia',format:'educrea',play_url:'/educrea/mine',subject:'Artes',language:['va'],educational_stage:'Primaria',owned:true};
+ const other={...mine,external_id:'educrea-other',title:'Sopa aliena',play_url:'/educrea/other',owned:false};
+ await bank(page,{remote:true,items:[],educrea:[mine,other]});
+ await expect(page.locator('#grid article')).toHaveCount(2);
+ await expect(page.locator('#mineOnly')).toBeVisible();
+ await page.locator('#mineOnly').check();
+ await expect(page.locator('#grid article')).toHaveCount(1);
+ await expect(page.locator('#grid h3')).toHaveText('Sopa pròpia');
+ expect(new URL(page.url()).searchParams.get('mine')).toBe('1');
+ await page.reload();
+ await expect(page.locator('#mineOnly')).toBeChecked();
+ await expect(page.locator('#grid article')).toHaveCount(1);
+});

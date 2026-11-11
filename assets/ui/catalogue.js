@@ -3064,23 +3064,27 @@ var Do = ["aria-busy"], Oo = [
 	}
 }, ts = ["placeholder"], ns = ["id", "onUpdate:modelValue"], rs = { value: "" }, is = ["value"], as = { value: 0 }, os = ["value"], ss = { class: "check-wrap" }, cs = { class: "check-wrap" }, ls = {
 	key: 0,
-	id: "brokenOnlyLabel",
+	id: "mineOnlyLabel",
 	class: "check-wrap"
 }, us = {
 	key: 1,
+	id: "brokenOnlyLabel",
+	class: "check-wrap"
+}, ds = {
+	key: 2,
 	id: "reportedOnlyLabel",
 	class: "check-wrap"
-}, ds = { class: "results-head" }, fs = { id: "resultCount" }, ps = {
+}, fs = { class: "results-head" }, ps = { id: "resultCount" }, ms = {
 	key: 0,
 	role: "alert"
-}, ms = {
+}, hs = {
 	key: 1,
 	role: "status"
-}, hs = ["aria-busy"], gs = { class: "load-more-wrap" }, _s = {
+}, gs = ["aria-busy"], _s = { class: "load-more-wrap" }, vs = {
 	key: 2,
 	id: "emptyState",
 	class: "empty"
-}, vs = {
+}, ys = {
 	__name: "Catalogue",
 	props: { onAction: Function },
 	setup(c, { expose: l }) {
@@ -3094,6 +3098,7 @@ var Do = ["aria-busy"], Oo = [
 			reportByUrl: /* @__PURE__ */ new Map(),
 			backendMode: "local",
 			isAdmin: !1,
+			isTeacher: !1,
 			epoch: 0,
 			loading: !0
 		}), m = new URLSearchParams(location.search), h = /* @__PURE__ */ $t({
@@ -3106,9 +3111,13 @@ var Do = ["aria-busy"], Oo = [
 			minRating: Number(m.get("rating")) || 0,
 			onlyFavorites: m.get("fav") === "1",
 			onlySubmissions: m.get("submissions") === "1",
+			onlyMine: m.get("mine") === "1",
 			onlyBroken: !1,
 			onlyReported: !1
-		}), g = /* @__PURE__ */ H(48), _ = $(() => o(p.value.games, h, p.value)), v = $(() => _.value.slice(0, g.value)), y = $(() => ({
+		}), g = /* @__PURE__ */ H(48), _ = $(() => o(p.value.games, {
+			...h,
+			onlyMine: h.onlyMine && p.value.isTeacher
+		}, p.value)), v = $(() => _.value.slice(0, g.value)), y = $(() => ({
 			level: d(p.value.games),
 			language: u(p.value.games),
 			area: f(p.value.games, "area"),
@@ -3138,7 +3147,8 @@ var Do = ["aria-busy"], Oo = [
 				application: h.selectedApplication,
 				rating: h.minRating || "",
 				fav: h.onlyFavorites ? "1" : "",
-				submissions: h.onlySubmissions ? "1" : ""
+				submissions: h.onlySubmissions ? "1" : "",
+				mine: h.onlyMine ? "1" : ""
 			})) n && e.set(t, n);
 			let n = location.pathname + (e.size ? "?" + e : "") + location.hash;
 			history.replaceState(null, "", n);
@@ -3218,20 +3228,25 @@ var Do = ["aria-busy"], Oo = [
 					"onUpdate:modelValue": a[3] ||= (e) => h.onlySubmissions = e,
 					type: "checkbox"
 				}, null, 512), [[uo, h.onlySubmissions]]), Z("span", null, I(U(n)("submissions_only")), 1)]),
-				p.value.isAdmin ? (Y(), X("label", ls, [G(Z("input", {
+				p.value.isTeacher ? (Y(), X("label", ls, [G(Z("input", {
+					id: "mineOnly",
+					"onUpdate:modelValue": a[4] ||= (e) => h.onlyMine = e,
+					type: "checkbox"
+				}, null, 512), [[uo, h.onlyMine]]), Z("span", null, I(U(n)("mine_only")), 1)])) : Q("", !0),
+				p.value.isAdmin ? (Y(), X("label", us, [G(Z("input", {
 					id: "brokenOnly",
-					"onUpdate:modelValue": a[4] ||= (e) => h.onlyBroken = e,
+					"onUpdate:modelValue": a[5] ||= (e) => h.onlyBroken = e,
 					type: "checkbox"
 				}, null, 512), [[uo, h.onlyBroken]]), Z("span", null, I(U(n)("broken_only")), 1)])) : Q("", !0),
-				p.value.isAdmin ? (Y(), X("label", us, [G(Z("input", {
+				p.value.isAdmin ? (Y(), X("label", ds, [G(Z("input", {
 					id: "reportedOnly",
-					"onUpdate:modelValue": a[5] ||= (e) => h.onlyReported = e,
+					"onUpdate:modelValue": a[6] ||= (e) => h.onlyReported = e,
 					type: "checkbox"
 				}, null, 512), [[uo, h.onlyReported]]), Z("span", null, I(U(n)("reported_only")), 1)])) : Q("", !0)
 			])),
-			Z("div", ds, [Z("h2", null, I(U(n)("section_title")), 1), Z("p", fs, I(U(n)("result_count", _.value.length, p.value.games.length)), 1)]),
-			p.value.error ? (Y(), X("p", ps, I(U(n)("catalogue_load_error")), 1)) : Q("", !0),
-			p.value.loading ? (Y(), X("p", ms, I(U(n)("catalogue_loading")), 1)) : Q("", !0),
+			Z("div", fs, [Z("h2", null, I(U(n)("section_title")), 1), Z("p", ps, I(U(n)("result_count", _.value.length, p.value.games.length)), 1)]),
+			p.value.error ? (Y(), X("p", ms, I(U(n)("catalogue_load_error")), 1)) : Q("", !0),
+			p.value.loading ? (Y(), X("p", hs, I(U(n)("catalogue_loading")), 1)) : Q("", !0),
 			Z("div", {
 				id: "grid",
 				class: "grid",
@@ -3246,29 +3261,29 @@ var Do = ["aria-busy"], Oo = [
 				"game",
 				"context",
 				"on-action"
-			]))), 128))], 8, hs),
-			Z("div", gs, [_.value.length > v.value.length ? (Y(), X("button", {
+			]))), 128))], 8, gs),
+			Z("div", _s, [_.value.length > v.value.length ? (Y(), X("button", {
 				key: 0,
 				id: "loadMoreBtn",
 				class: "btn-load-more",
 				type: "button",
-				onClick: a[6] ||= (e) => g.value += 48
+				onClick: a[7] ||= (e) => g.value += 48
 			}, I(U(n)("load_more", _.value.length - v.value.length)), 1)) : Q("", !0)]),
-			!_.value.length && !p.value.loading ? (Y(), X("p", _s, I(U(n)("empty")), 1)) : Q("", !0)
+			!_.value.length && !p.value.loading ? (Y(), X("p", vs, I(U(n)("empty")), 1)) : Q("", !0)
 		], 64));
 	}
-}, ys = {
+}, bs = {
 	key: 0,
 	id: "authPanel",
 	class: "auth-panel",
 	"aria-live": "polite"
-}, bs = { class: "auth-actions" }, xs = ["aria-disabled", "href"], Ss = ["disabled"], Cs = ["disabled"], ws = ["disabled"], Ts = {
+}, xs = { class: "auth-actions" }, Ss = ["aria-disabled", "href"], Cs = ["disabled"], ws = ["disabled"], Ts = ["disabled"], Es = {
 	key: 0,
 	role: "alert"
-}, Es = {
+}, Ds = {
 	id: "studentDialogTitle",
 	class: "submit-dialog-title"
-}, Ds = { class: "submit-fields" }, Os = ["disabled"], ks = ["disabled"], As = ["role"], js = { class: "submit-actions" }, Ms = ["disabled"], Ns = {
+}, Os = { class: "submit-fields" }, ks = ["disabled"], As = ["disabled"], js = ["role"], Ms = { class: "submit-actions" }, Ns = ["disabled"], Ps = {
 	__name: "Access",
 	props: {
 		onSessionChange: Function,
@@ -3351,7 +3366,7 @@ var Do = ["aria-busy"], Oo = [
 		}), Ar(() => {
 			te(), window.removeEventListener("pagehide", te), window.removeEventListener("pageshow", O);
 		}), r({ setContext: T }), (e, t) => (Y(), X(q, null, [
-			(Y(), Ii(fr, { to: "#authMount" }, [a.value.backendMode === "remote" ? (Y(), X("div", ys, [Z("div", bs, [
+			(Y(), Ii(fr, { to: "#authMount" }, [a.value.backendMode === "remote" ? (Y(), X("div", bs, [Z("div", xs, [
 				!c.value && !o.value.central ? (Y(), X("a", {
 					key: 0,
 					id: "loginBtn",
@@ -3361,27 +3376,27 @@ var Do = ["aria-busy"], Oo = [
 					},
 					"aria-disabled": s.value,
 					href: o.value.logged_in ? "/api/auth/logout" : "/api/auth/login"
-				}, I(y(o.value.logged_in ? "logout_btn" : "login_btn")), 9, xs)) : Q("", !0),
+				}, I(y(o.value.logged_in ? "logout_btn" : "login_btn")), 9, Ss)) : Q("", !0),
 				!o.value.central && !o.value.student_logged_in ? (Y(), X("button", {
 					key: 1,
 					id: "studentLoginBtn",
 					class: "btn-auth secondary",
 					disabled: s.value || c.value,
 					onClick: E
-				}, I(y("student_login_btn")), 9, Ss)) : o.value.central ? Q("", !0) : (Y(), X("button", {
+				}, I(y("student_login_btn")), 9, Cs)) : o.value.central ? Q("", !0) : (Y(), X("button", {
 					key: 2,
 					id: "studentLogoutBtn",
 					class: "btn-auth secondary",
 					disabled: s.value || c.value,
 					onClick: ee
-				}, I(y("student_logout_btn", o.value.student_code || "")), 9, Cs)),
+				}, I(y("student_logout_btn", o.value.student_code || "")), 9, ws)),
 				Z("button", {
 					id: "submitActivityBtn",
 					class: "btn-auth secondary",
 					disabled: s.value || c.value,
 					onClick: t[1] ||= (e) => i.onPropose()
-				}, I(y("submit_btn")), 9, ws)
-			]), l.value === "session_error" ? (Y(), X("p", Ts, I(y(l.value)), 1)) : Q("", !0)])) : Q("", !0)])),
+				}, I(y("submit_btn")), 9, Ts)
+			]), l.value === "session_error" ? (Y(), X("p", Es, I(y(l.value)), 1)) : Q("", !0)])) : Q("", !0)])),
 			(Y(), Ii(fr, { to: "#prefsMount" }, [Z("p", {
 				id: "personalPrefsNote",
 				class: je(["personal-note", { remote: a.value.backendMode === "remote" }])
@@ -3397,11 +3412,11 @@ var Do = ["aria-busy"], Oo = [
 				onClick: t[4] ||= (e) => {
 					e.target === d.value && C();
 				}
-			}, [Z("h2", Es, I(y("student_dialog_title")), 1), Z("form", {
+			}, [Z("h2", Ds, I(y("student_dialog_title")), 1), Z("form", {
 				id: "studentForm",
 				onSubmit: bo(D, ["prevent"])
 			}, [
-				Z("div", Ds, [Z("label", null, [Z("span", null, I(y("student_code_label")), 1), G(Z("input", {
+				Z("div", Os, [Z("label", null, [Z("span", null, I(y("student_code_label")), 1), G(Z("input", {
 					ref_key: "codeInput",
 					ref: f,
 					id: "studentCode",
@@ -3411,7 +3426,7 @@ var Do = ["aria-busy"], Oo = [
 					autocomplete: "off",
 					maxlength: "12",
 					disabled: s.value
-				}, null, 8, Os), [[lo, p.value]])]), Z("label", null, [Z("span", null, I(y("student_pin_label")), 1), G(Z("input", {
+				}, null, 8, ks), [[lo, p.value]])]), Z("label", null, [Z("span", null, I(y("student_pin_label")), 1), G(Z("input", {
 					id: "studentPin",
 					"onUpdate:modelValue": t[3] ||= (e) => h.value = e,
 					type: "password",
@@ -3419,14 +3434,14 @@ var Do = ["aria-busy"], Oo = [
 					inputmode: "numeric",
 					autocomplete: "off",
 					disabled: s.value
-				}, null, 8, ks), [[lo, h.value]])])]),
+				}, null, 8, As), [[lo, h.value]])])]),
 				l.value ? (Y(), X("p", {
 					key: 0,
 					id: "studentFeedback",
 					class: je(["submit-feedback", { error: u.value }]),
 					role: u.value ? "alert" : "status"
-				}, I(y(l.value)), 11, As)) : Q("", !0),
-				Z("div", js, [Z("button", {
+				}, I(y(l.value)), 11, js)) : Q("", !0),
+				Z("div", Ms, [Z("button", {
 					id: "studentCancelBtn",
 					type: "button",
 					class: "btn-auth secondary",
@@ -3435,14 +3450,14 @@ var Do = ["aria-busy"], Oo = [
 					id: "studentSendBtn",
 					class: "btn-auth",
 					disabled: s.value
-				}, I(y("student_send")), 9, Ms)])
+				}, I(y("student_send")), 9, Ns)])
 			], 32)], 544)
 		], 64));
 	}
-}, Ps = {
+}, Fs = {
 	id: "submitDialogTitle",
 	class: "submit-dialog-title"
-}, Fs = ["disabled"], Is = ["value"], Ls = ["value"], Rs = ["role"], zs = { class: "submit-actions" }, Bs = ["disabled"], Vs = {
+}, Is = ["disabled"], Ls = ["value"], Rs = ["value"], zs = ["role"], Bs = { class: "submit-actions" }, Vs = ["disabled"], Hs = {
 	__name: "Proposal",
 	props: { onSubmitted: Function },
 	setup(i, { expose: a }) {
@@ -3532,7 +3547,7 @@ var Do = ["aria-busy"], Oo = [
 			onClick: n[6] ||= (e) => {
 				e.target === c.value && T();
 			}
-		}, [Z("h2", Ps, I(C("submit_dialog_title")), 1), Z("form", {
+		}, [Z("h2", Fs, I(C("submit_dialog_title")), 1), Z("form", {
 			id: "submitForm",
 			onSubmit: bo(te, ["prevent"])
 		}, [
@@ -3561,14 +3576,14 @@ var Do = ["aria-busy"], Oo = [
 				}, [n[7] ||= Z("option", { value: "" }, "—", -1), (Y(!0), X(q, null, Mr(b.value, (t) => (Y(), X("option", {
 					key: t,
 					value: t
-				}, I(U(e)(t)), 9, Is))), 128))], 512), [[po, _.area]])]),
+				}, I(U(e)(t)), 9, Ls))), 128))], 512), [[po, _.area]])]),
 				Z("label", null, [Z("span", null, I(C("language_label")), 1), G(Z("select", {
 					id: "submitLanguage",
 					"onUpdate:modelValue": n[3] ||= (e) => _.language = e
 				}, [n[8] ||= Z("option", { value: "" }, "—", -1), (Y(!0), X(q, null, Mr(x.value, (e) => (Y(), X("option", {
 					key: e,
 					value: e
-				}, I(U(r)(e)), 9, Ls))), 128))], 512), [[po, _.language]])]),
+				}, I(U(r)(e)), 9, Rs))), 128))], 512), [[po, _.language]])]),
 				Z("label", null, [Z("span", null, I(C("submit_field_notes")), 1), G(Z("textarea", {
 					id: "submitNotes",
 					"onUpdate:modelValue": n[4] ||= (e) => _.notes = e,
@@ -3579,7 +3594,7 @@ var Do = ["aria-busy"], Oo = [
 					"onUpdate:modelValue": n[5] ||= (e) => _.name = e,
 					autocomplete: "off"
 				}, null, 512), [[lo, _.name]])])
-			], 8, Fs),
+			], 8, Is),
 			h.value ? (Y(), X("p", {
 				key: 0,
 				id: "submitFeedback",
@@ -3588,8 +3603,8 @@ var Do = ["aria-busy"], Oo = [
 					ok: p.value
 				}]),
 				role: g.value ? "alert" : "status"
-			}, I(C(h.value)), 11, Rs)) : Q("", !0),
-			Z("div", zs, [Z("button", {
+			}, I(C(h.value)), 11, zs)) : Q("", !0),
+			Z("div", Bs, [Z("button", {
 				id: "submitCancelBtn",
 				type: "button",
 				class: "btn-auth secondary",
@@ -3598,22 +3613,22 @@ var Do = ["aria-busy"], Oo = [
 				id: "submitSendBtn",
 				class: "btn-auth",
 				disabled: d.value || p.value
-			}, I(C("submit_send")), 9, Bs)])
+			}, I(C("submit_send")), 9, Vs)])
 		], 32)], 544));
 	}
-}, Hs = ["aria-busy"], Us = { id: "sourcesTitle" }, Ws = ["disabled"], Gs = {
+}, Us = ["aria-busy"], Ws = { id: "sourcesTitle" }, Gs = ["disabled"], Ks = {
 	key: 0,
 	role: "status"
-}, Ks = {
+}, qs = {
 	key: 1,
 	role: "alert"
-}, qs = {
+}, Js = {
 	key: 2,
 	role: "status"
-}, Js = {
+}, Ys = {
 	id: "sourcesList",
 	class: "sources-list"
-}, Ys = {
+}, Xs = {
 	__name: "Sources",
 	setup(e, { expose: r }) {
 		let i = /* @__PURE__ */ dn({
@@ -3670,15 +3685,15 @@ var Do = ["aria-busy"], Oo = [
 			"aria-labelledby": "sourcesTitle",
 			"aria-busy": o.value
 		}, [
-			Z("h2", Us, I(d("sources_title")), 1),
+			Z("h2", Ws, I(d("sources_title")), 1),
 			Z("button", {
 				id: "sourcesRefresh",
 				class: "btn-auth secondary",
 				disabled: o.value,
 				onClick: p
-			}, I(d("sources_refresh")), 9, Ws),
-			o.value ? (Y(), X("p", Gs, I(d("sources_loading")), 1)) : s.value ? (Y(), X("p", Ks, I(d("sources_error")), 1)) : a.value.length ? Q("", !0) : (Y(), X("p", qs, I(d("sources_empty")), 1)),
-			Z("div", Js, [(Y(!0), X(q, null, Mr(a.value, (e, t) => (Y(), X("div", {
+			}, I(d("sources_refresh")), 9, Gs),
+			o.value ? (Y(), X("p", Ks, I(d("sources_loading")), 1)) : s.value ? (Y(), X("p", qs, I(d("sources_error")), 1)) : a.value.length ? Q("", !0) : (Y(), X("p", Js, I(d("sources_empty")), 1)),
+			Z("div", Ys, [(Y(!0), X(q, null, Mr(a.value, (e, t) => (Y(), X("div", {
 				key: e.provider + ":" + t,
 				class: "source-row"
 			}, [
@@ -3686,25 +3701,25 @@ var Do = ["aria-busy"], Oo = [
 				Z("span", null, I(d("sources_summary", e.resources ?? 0, e.last_sync?.status || "—", f(e.last_sync?.finished_at))), 1),
 				Z("span", null, I(d("sources_counts", e.last_sync?.fetched ?? "—", e.last_sync?.created ?? "—", e.last_sync?.updated ?? "—", e.last_sync?.errors ?? "—")), 1)
 			]))), 128))])
-		], 8, Hs)) : Q("", !0);
+		], 8, Us)) : Q("", !0);
 	}
-}, Xs = ["aria-busy"], Zs = { class: "review-toolbar" }, Qs = ["aria-label"], $s = { value: "pending" }, ec = { value: "approved" }, tc = { value: "returned" }, nc = ["disabled"], rc = {
+}, Zs = ["aria-busy"], Qs = { class: "review-toolbar" }, $s = ["aria-label"], ec = { value: "pending" }, tc = { value: "approved" }, nc = { value: "returned" }, rc = ["disabled"], ic = {
 	key: 0,
 	role: "status"
-}, ic = {
+}, ac = {
 	key: 1,
 	role: "alert"
-}, ac = {
+}, oc = {
 	key: 2,
 	role: "status"
-}, oc = {
+}, sc = {
 	key: 3,
 	role: "status"
-}, sc = { class: "sources-list" }, cc = { class: "review-actions" }, lc = ["href"], uc = ["disabled", "onClick"], dc = ["onUpdate:modelValue", "placeholder"], fc = ["disabled", "onClick"], pc = {
+}, cc = { class: "sources-list" }, lc = { class: "review-actions" }, uc = ["href"], dc = ["disabled", "onClick"], fc = ["onUpdate:modelValue", "placeholder"], pc = ["disabled", "onClick"], mc = {
 	key: 0,
 	class: "review-feedback",
 	role: "alert"
-}, mc = {
+}, hc = {
 	__name: "Reviews",
 	setup(e, { expose: r }) {
 		let i = /* @__PURE__ */ dn({
@@ -3791,71 +3806,71 @@ var Do = ["aria-busy"], Oo = [
 			"aria-busy": s.value
 		}, [
 			Z("h2", null, I(g("reviews_title")), 1),
-			Z("div", Zs, [G(Z("select", {
+			Z("div", Qs, [G(Z("select", {
 				"onUpdate:modelValue": t[0] ||= (e) => a.value = e,
 				"aria-label": g("reviews_status"),
 				onChange: _
 			}, [
-				Z("option", $s, I(g("reviews_pending")), 1),
-				Z("option", ec, I(g("reviews_approved")), 1),
-				Z("option", tc, I(g("reviews_returned")), 1)
-			], 40, Qs), [[po, a.value]]), Z("button", {
+				Z("option", ec, I(g("reviews_pending")), 1),
+				Z("option", tc, I(g("reviews_approved")), 1),
+				Z("option", nc, I(g("reviews_returned")), 1)
+			], 40, $s), [[po, a.value]]), Z("button", {
 				class: "btn-auth secondary",
 				disabled: s.value,
 				onClick: _
-			}, I(g("sources_refresh")), 9, nc)]),
-			s.value ? (Y(), X("p", rc, I(g("reviews_loading")), 1)) : c.value ? (Y(), X("p", ic, I(g("reviews_error")), 1)) : o.value.length ? Q("", !0) : (Y(), X("p", ac, I(g("reviews_empty")), 1)),
-			l.value ? (Y(), X("p", oc, I(l.value), 1)) : Q("", !0),
-			Z("div", sc, [(Y(!0), X(q, null, Mr(o.value, (e) => (Y(), X("article", {
+			}, I(g("sources_refresh")), 9, rc)]),
+			s.value ? (Y(), X("p", ic, I(g("reviews_loading")), 1)) : c.value ? (Y(), X("p", ac, I(g("reviews_error")), 1)) : o.value.length ? Q("", !0) : (Y(), X("p", oc, I(g("reviews_empty")), 1)),
+			l.value ? (Y(), X("p", sc, I(l.value), 1)) : Q("", !0),
+			Z("div", cc, [(Y(!0), X(q, null, Mr(o.value, (e) => (Y(), X("article", {
 				key: e.id,
 				class: "source-row review-row"
 			}, [
 				Z("strong", null, I(e.title), 1),
 				Z("span", null, I(e.author) + " · " + I(e.license) + " · " + I(e.template) + " · r" + I(e.revision), 1),
 				Z("span", null, [Gi(I(g("reviews_status")) + ": " + I(e.status), 1), e.feedback ? (Y(), X(q, { key: 0 }, [Gi(" · " + I(e.feedback), 1)], 64)) : Q("", !0)]),
-				Z("div", cc, [Z("a", {
+				Z("div", lc, [Z("a", {
 					class: "btn-auth secondary",
 					href: "/api/admin/educrea/reviews/" + encodeURIComponent(e.id) + "/preview",
 					target: "_blank",
 					rel: "noopener"
-				}, I(g("reviews_preview")), 9, lc), e.status === "pending" ? (Y(), X(q, { key: 0 }, [
+				}, I(g("reviews_preview")), 9, uc), e.status === "pending" ? (Y(), X(q, { key: 0 }, [
 					Z("button", {
 						class: "btn-auth",
 						type: "button",
 						disabled: d.value === e.id,
 						onClick: (t) => v(e, "approve")
-					}, I(g("reviews_approve")), 9, uc),
+					}, I(g("reviews_approve")), 9, dc),
 					G(Z("input", {
 						"onUpdate:modelValue": (t) => u.value[e.id] = t,
 						placeholder: g("reviews_feedback"),
 						maxlength: "1000"
-					}, null, 8, dc), [[lo, u.value[e.id]]]),
+					}, null, 8, fc), [[lo, u.value[e.id]]]),
 					Z("button", {
 						class: "btn-auth secondary",
 						type: "button",
 						disabled: d.value === e.id,
 						onClick: (t) => v(e, "return")
-					}, I(g("reviews_return")), 9, fc)
+					}, I(g("reviews_return")), 9, pc)
 				], 64)) : Q("", !0)]),
-				e.feedbackRequired ? (Y(), X("p", pc, I(g("reviews_feedback_required")), 1)) : Q("", !0)
+				e.feedbackRequired ? (Y(), X("p", mc, I(g("reviews_feedback_required")), 1)) : Q("", !0)
 			]))), 128))])
-		], 8, Xs)) : Q("", !0);
+		], 8, Zs)) : Q("", !0);
 	}
 };
 // src/catalogue/main.js
-function hc(e, t) {
-	return wo(vs, t).mount(e);
-}
 function gc(e, t) {
-	return wo(Ns, t).mount(e);
+	return wo(ys, t).mount(e);
 }
 function _c(e, t) {
-	return wo(Vs, t).mount(e);
+	return wo(Ps, t).mount(e);
 }
 function vc(e, t) {
-	return wo(Ys, t).mount(e);
+	return wo(Hs, t).mount(e);
 }
 function yc(e, t) {
-	return wo(mc, t).mount(e);
+	return wo(Xs, t).mount(e);
 }
-export { gc as mountAccess, hc as mountCatalogue, _c as mountProposal, yc as mountReviews, vc as mountSources };
+function bc(e, t) {
+	return wo(hc, t).mount(e);
+}
+export { _c as mountAccess, gc as mountCatalogue, vc as mountProposal, bc as mountReviews, yc as mountSources };

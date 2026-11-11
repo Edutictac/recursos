@@ -110,7 +110,7 @@ export function getRatingForFilter(gameKeyValue, preferences = state) {
 export function computeFilteredGames(games, criteria, preferences = state) {
   const {
     term, selectedLevel, selectedLanguage, selectedArea, selectedFormat, selectedApplication,
-    onlyFavorites, onlySubmissions, onlyBroken, onlyReported, minRating,
+    onlyFavorites, onlySubmissions, onlyMine, onlyBroken, onlyReported, minRating,
   } = criteria;
   const termWords = normalizeSearch(term).split(/\s+/).filter(Boolean);
 
@@ -148,6 +148,7 @@ export function computeFilteredGames(games, criteria, preferences = state) {
 
     if (onlyFavorites && !preferences.favorites.has(key)) return false;
     if (onlySubmissions && !game._isSubmission) return false;
+    if (onlyMine && !game.owned) return false;
     if (minRating > 0 && filterRating < minRating) return false;
 
     return true;

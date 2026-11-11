@@ -4,11 +4,11 @@ import {i18n, areaLabel, languageLabel, levelLabel, getLang} from '/scripts/i18n
 import {applicationLabel, computeFilteredGames, gameKey, uniqueValues, uniqueLevelValues, uniqueLanguageValues} from '/scripts/filters.js';
 import ResourceCard from './ResourceCard.vue';
 const props=defineProps({onAction:Function});
-const context=shallowRef({games:[],favorites:new Set(),userRatings:new Map(),ratingSummary:new Map(),userReports:new Set(),brokenSummary:new Map(),reportByUrl:new Map(),backendMode:'local',isAdmin:false,epoch:0,loading:true});
+const context=shallowRef({games:[],favorites:new Set(),userRatings:new Map(),ratingSummary:new Map(),userReports:new Set(),brokenSummary:new Map(),reportByUrl:new Map(),backendMode:'local',isAdmin:false,isTeacher:false,epoch:0,loading:true});
 const params=new URLSearchParams(location.search);
-const criteria=reactive({term:params.get('q')||'',selectedLevel:params.get('level')||'',selectedLanguage:params.get('lang')||'',selectedArea:params.get('area')||'',selectedFormat:params.get('format')||'',selectedApplication:params.get('application')||'',minRating:Number(params.get('rating'))||0,onlyFavorites:params.get('fav')==='1',onlySubmissions:params.get('submissions')==='1',onlyBroken:false,onlyReported:false});
+const criteria=reactive({term:params.get('q')||'',selectedLevel:params.get('level')||'',selectedLanguage:params.get('lang')||'',selectedArea:params.get('area')||'',selectedFormat:params.get('format')||'',selectedApplication:params.get('application')||'',minRating:Number(params.get('rating'))||0,onlyFavorites:params.get('fav')==='1',onlySubmissions:params.get('submissions')==='1',onlyMine:params.get('mine')==='1',onlyBroken:false,onlyReported:false});
 const visibleCount=ref(48);
-const filtered=computed(()=>computeFilteredGames(context.value.games,criteria,context.value));
+const filtered=computed(()=>computeFilteredGames(context.value.games,{...criteria,onlyMine:criteria.onlyMine&&context.value.isTeacher},context.value));
 const visible=computed(()=>filtered.value.slice(0,visibleCount.value));
 const options=computed(()=>({level:uniqueLevelValues(context.value.games),language:uniqueLanguageValues(context.value.games),area:uniqueValues(context.value.games,'area'),format:uniqueValues(context.value.games,'format'),application:[...new Set(context.value.games.map(applicationLabel).filter(Boolean))].sort()}));
 function setContext(next) {context.value={...next,language:getLang()};if(!next.isAdmin){criteria.onlyBroken=false;criteria.onlyReported=false;}}
@@ -16,7 +16,7 @@ function syncUrl() {
   const p=new URLSearchParams();
   const uiLanguage=new URLSearchParams(location.search).get("ui_lang");
   if(["es","ca","va","en"].includes(uiLanguage))p.set("ui_lang",uiLanguage);
-  for(const [name,value] of Object.entries({q:criteria.term.trim(),level:criteria.selectedLevel,lang:criteria.selectedLanguage,area:criteria.selectedArea,format:criteria.selectedFormat,application:criteria.selectedApplication,rating:criteria.minRating||'',fav:criteria.onlyFavorites?'1':'',submissions:criteria.onlySubmissions?'1':''}))if(value)p.set(name,value);
+  for(const [name,value] of Object.entries({q:criteria.term.trim(),level:criteria.selectedLevel,lang:criteria.selectedLanguage,area:criteria.selectedArea,format:criteria.selectedFormat,application:criteria.selectedApplication,rating:criteria.minRating||'',fav:criteria.onlyFavorites?'1':'',submissions:criteria.onlySubmissions?'1':'',mine:criteria.onlyMine?'1':''}))if(value)p.set(name,value);
   const url=location.pathname+(p.size?'?'+p:'')+location.hash;
   history.replaceState(null,'',url);
 }
@@ -32,6 +32,7 @@ defineExpose({setContext});
     <label><span>{{ i18n('rating_min_label') }}</span><select id="ratingFilter" v-model.number="criteria.minRating"><option :value="0">{{ i18n('rating_all_filter') }}</option><option v-for="value in 5" :key="value" :value="value">{{ value }}★{{ value<5?'+':'' }}</option></select></label>
     <label class="check-wrap"><input id="favoritesOnly" v-model="criteria.onlyFavorites" type="checkbox"><span>{{ i18n('favorites_only') }}</span></label>
     <label class="check-wrap"><input id="submissionsOnly" v-model="criteria.onlySubmissions" type="checkbox"><span>{{ i18n('submissions_only') }}</span></label>
+    <label v-if="context.isTeacher" id="mineOnlyLabel" class="check-wrap"><input id="mineOnly" v-model="criteria.onlyMine" type="checkbox"><span>{{ i18n('mine_only') }}</span></label>
     <label v-if="context.isAdmin" id="brokenOnlyLabel" class="check-wrap"><input id="brokenOnly" v-model="criteria.onlyBroken" type="checkbox"><span>{{ i18n('broken_only') }}</span></label>
     <label v-if="context.isAdmin" id="reportedOnlyLabel" class="check-wrap"><input id="reportedOnly" v-model="criteria.onlyReported" type="checkbox"><span>{{ i18n('reported_only') }}</span></label>
   </Teleport>

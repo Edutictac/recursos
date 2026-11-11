@@ -68,6 +68,7 @@ const strings = {
     language_label: "Idioma",
     language_all: "Todos",
     favorites_only: "Solo mis favoritos",
+    mine_only: "Solo mis publicaciones",
     rating_min_label: "Valoración mínima",
     rating_all_filter: "Todas las valoraciones",
     personal_prefs_note_local: "Favoritos y valoraciones se guardan solo en este navegador (localStorage).",
@@ -201,6 +202,7 @@ const strings = {
     language_label: "Idioma",
     language_all: "Tots",
     favorites_only: "Només els meus favorits",
+    mine_only: "Només les meves publicacions",
     rating_min_label: "Valoració mínima",
     rating_all_filter: "Totes les valoracions",
     personal_prefs_note_local: "Favorits i valoracions es guarden només en aquest navegador (localStorage).",
@@ -283,6 +285,7 @@ const strings = {
     auth_status_google_disabled: "Google no està activat en esta instal·lació.",
     personal_prefs_note_local: "Favorits i valoracions es guarden només en este navegador (localStorage).",
     favorites_only: "Sols els meus favorits",
+    mine_only: "Sols les meves publicacions",
     submissions_only: "Sols propostes",
     admin_hide_confirm: "Vols ocultar esta activitat del llistat públic?",
     favorite_remove: "Traure de favorits",
@@ -352,6 +355,7 @@ const strings = {
     language_label: "Language",
     language_all: "All",
     favorites_only: "My favorites only",
+    mine_only: "My publications only",
     rating_min_label: "Minimum rating",
     rating_all_filter: "All ratings",
     personal_prefs_note_local: "Favorites and ratings are saved only in this browser (localStorage).",
@@ -500,6 +504,7 @@ const areaLabels = {
 const languageLabels = {
   es: {
     ca: "Catalán/Valenciano",
+    va: "Valenciano",
     es: "Castellano",
     en: "Inglés",
     fr: "Francés",
@@ -536,6 +541,7 @@ const languageLabels = {
   },
   ca: {
     ca: "Català/Valencià",
+    va: "Valencià",
     es: "Castellà",
     en: "Anglès",
     fr: "Francès",
@@ -572,6 +578,7 @@ const languageLabels = {
   },
   en: {
     ca: "Catalan/Valencian",
+    va: "Valencian",
     es: "Spanish",
     en: "English",
     fr: "French",
