@@ -251,18 +251,19 @@ test('reobrir una activitat JClic deté el reproductor anterior',async({page})=>
  await bank(page,{items:[{title:'Player test',url,format:'jclic'}]});
  await page.evaluate(()=>{
   const container=document.querySelector('#jclicContainer');
-  window.__jclicEnded=false;
-  window.JClicObject={currentPlayers:[{end(){window.__jclicEnded=true;},$topDiv:{get:()=>container}}],
+  window.__jclicEnded=false;window.__jclicStopped=0;
+  window.JClicObject={currentPlayers:[{end(){window.__jclicEnded=true;},timer:{stop(){window.__jclicStopped++;}},delayedTimer:{stop(){window.__jclicStopped++;}},$topDiv:{get:()=>container}}],
    loadProject:(_container,project)=>{window.loadedJClic=project;window.loadedAfterEnd=window.__jclicEnded;}};
  });
  await page.locator('.card-image-link').click();
  await expect.poll(()=>page.evaluate(()=>window.loadedJClic)).toContain('one.jclic.zip');
  expect(await page.evaluate(()=>window.loadedAfterEnd)).toBe(true);
+ expect(await page.evaluate(()=>window.__jclicStopped)).toBe(2);
  expect(await page.evaluate(()=>window.JClicObject.currentPlayers.length)).toBe(0);
  await page.evaluate(()=>{
   const container=document.querySelector('#jclicContainer');
   window.__closeEnded=false;
-  window.JClicObject.currentPlayers.push({end(){window.__closeEnded=true;},$topDiv:{get:()=>container}});
+  window.JClicObject.currentPlayers.push({end(){window.__closeEnded=true;},timer:{stop(){}},delayedTimer:{stop(){}},$topDiv:{get:()=>container}});
  });
  await page.locator('#jclicClose').click();
  expect(await page.evaluate(()=>window.__closeEnded)).toBe(true);

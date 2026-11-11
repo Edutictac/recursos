@@ -56,6 +56,8 @@ function releaseJClicPlayers(JClicObject) {
     const node = player?.$topDiv?.get?.(0) ?? player?.$topDiv?.[0];
     if (node !== jclicContainer) continue;
     try {
+      player.timer?.stop?.();
+      player.delayedTimer?.stop?.();
       player.end?.();
     } catch {
       // Seguimos: lo importante es liberar el contenedor para el próximo proyecto.
