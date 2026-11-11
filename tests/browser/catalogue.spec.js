@@ -245,3 +245,25 @@ test('el filtre de publicacions pròpies només mostra les de l’usuari',async(
  await expect(page.locator('#mineOnly')).toBeChecked();
  await expect(page.locator('#grid article')).toHaveCount(1);
 });
+
+test('reobrir una activitat JClic deté el reproductor anterior',async({page})=>{
+ const url='/jclic.html?project=https%3A%2F%2Fexample.test%2Fone.jclic.zip&title=One';
+ await bank(page,{items:[{title:'Player test',url,format:'jclic'}]});
+ await page.evaluate(()=>{
+  const container=document.querySelector('#jclicContainer');
+  window.__jclicEnded=false;
+  window.JClicObject={currentPlayers:[{end(){window.__jclicEnded=true;},$topDiv:{get:()=>container}}],
+   loadProject:(_container,project)=>{window.loadedJClic=project;window.loadedAfterEnd=window.__jclicEnded;}};
+ });
+ await page.locator('.card-image-link').click();
+ await expect.poll(()=>page.evaluate(()=>window.loadedJClic)).toContain('one.jclic.zip');
+ expect(await page.evaluate(()=>window.loadedAfterEnd)).toBe(true);
+ expect(await page.evaluate(()=>window.JClicObject.currentPlayers.length)).toBe(0);
+ await page.evaluate(()=>{
+  const container=document.querySelector('#jclicContainer');
+  window.__closeEnded=false;
+  window.JClicObject.currentPlayers.push({end(){window.__closeEnded=true;},$topDiv:{get:()=>container}});
+ });
+ await page.locator('#jclicClose').click();
+ expect(await page.evaluate(()=>window.__closeEnded)).toBe(true);
+});

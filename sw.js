@@ -1,4 +1,4 @@
-const CACHE_NAME = "recursos-v1.27.0-mine-filter";
+const CACHE_NAME = "recursos-v1.27.1-jclic-reload";
 const APP_SHELL = [
   "./",
   "./index.html",
