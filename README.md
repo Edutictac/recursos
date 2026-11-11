@@ -4,6 +4,10 @@ Directori de jocs educatius per a Infantil, Primària i Secundària. Lloc estàt
 
 🌐 **Producció**: [recursos.edutictac.es](https://recursos.edutictac.es)
 
+Les revisions d’EduCrea apareixen al principi del Banc per als comptes administradors,
+amb un enllaç visible i accés directe a `/#reviewsApp`. L’enllaç espera que es carregue
+el panell abans de desplaçar la pàgina, perquè la càrrega del catàleg no l’oculte.
+
 ---
 
 ## Índex

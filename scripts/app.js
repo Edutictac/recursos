@@ -194,6 +194,7 @@ function allGames() {
 }
 
 function render() {
+  document.querySelector('#reviewsNavigation')?.toggleAttribute('hidden', !isAdmin() || state.backendMode !== 'remote' || state.sessionChanging);
   sources?.setContext({backendMode:state.backendMode,isAdmin:isAdmin(),epoch:state.preferenceEpoch,sessionChanging:state.sessionChanging});
   reviews?.setContext({backendMode:state.backendMode,isAdmin:isAdmin(),epoch:state.preferenceEpoch,sessionChanging:state.sessionChanging});
   access?.setContext({backendMode:state.backendMode,epoch:state.preferenceEpoch});

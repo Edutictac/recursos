@@ -1,5 +1,5 @@
 <script setup>
-import {shallowRef,ref,onMounted,onBeforeUnmount} from 'vue';
+import {shallowRef,ref,nextTick,onMounted,onBeforeUnmount} from 'vue';
 import {i18n,getLang} from '/scripts/i18n.js';
 import {state} from '/scripts/state.js';
 const context=shallowRef({isAdmin:false,backendMode:'local',epoch:-1,language:getLang()});
@@ -17,6 +17,8 @@ async function refresh(){
     const data=await response.json();
     if(token!==sequence||!allowed()||epoch!==state.preferenceEpoch)return;
     items.value=Array.isArray(data.items)?data.items:[];
+    await nextTick();
+    if(token===sequence&&allowed()&&location.hash==='#reviewsApp')document.querySelector('#reviewsApp')?.scrollIntoView({block:'start'});
   }catch{if(token===sequence&&allowed())error.value=true;}
   finally{if(token===sequence)loading.value=false;}
 }

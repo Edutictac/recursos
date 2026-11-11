@@ -3731,7 +3731,7 @@ var Do = ["aria-busy"], Oo = [
 				if (!n.ok) throw Error(String(n.status));
 				let r = await n.json();
 				if (e !== p || !h() || t !== m.preferenceEpoch) return;
-				o.value = Array.isArray(r.items) ? r.items : [];
+				o.value = Array.isArray(r.items) ? r.items : [], await Pn(), e === p && h() && location.hash === "#reviewsApp" && document.querySelector("#reviewsApp")?.scrollIntoView({ block: "start" });
 			} catch {
 				e === p && h() && (c.value = !0);
 			} finally {
